@@ -44,7 +44,7 @@
 	
 	<name>Burningwave JVM Driver</name>
 	<description>
-		A driver to allow deep interaction with the JVM without any restrictions
+		A driver derived from ToolFactory JVM Driver to allow deep interaction with the JVM without any restrictions
 	</description>
 	<url>https://burningwave.github.io/jvm-driver/</url>
 

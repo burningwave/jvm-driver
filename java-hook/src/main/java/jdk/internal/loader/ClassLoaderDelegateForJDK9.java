@@ -1,7 +1,11 @@
 /*
- * This file is part of ToolFactory JVM driver.
+ * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
+ * 
+ * Modified by: Roberto Gentili
+ *
+ * Modifications hosted at: https://github.com/burningwave/jvm-driver
  *
  * --
  *

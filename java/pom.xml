@@ -1,13 +1,17 @@
 <!-- 
-	This file is part of ToolFactory JVM driver.                                                                      
-	                                                                                                            
-	Hosted at: https://github.com/toolfactory/jvm-driver                                                              
+	This file is derived from ToolFactory JVM driver.                 
+	                                                                  
+	Hosted at: https://github.com/toolfactory/jvm-driver              
+	                                                                  
+	Modified by: Roberto Gentili                                      
+	                                                                  
+	Modifications hosted at: https://github.com/burningwave/jvm-driver                                                           
 	                                                                                                            
 	- -                                                                                                          
 	                                                                                                            
 	The MIT License (MIT)                                                                                       
 	                                                                                                            
-	Copyright (c) 2019-2021 Luke Hutchison, Roberto Gentili                                                                          
+	Copyright (c) 2019-2021 Roberto Gentili                                                                          
 	                                                                                                            
 	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 	documentation files (the "Software"), to deal in the Software without restriction, including without        
@@ -27,57 +31,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>io.github.toolfactory</groupId>
+	<parent>
+    	<groupId>org.burningwave</groupId>
+    	<artifactId>jvm-driver-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+	
 	<artifactId>jvm-driver</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
-
+  	<version>1.0.7-SNAPSHOT</version>
+	
 	<packaging>jar</packaging>
-
-	<name>ToolFactory JVM Driver</name>
+	
+	<name>Burningwave JVM Driver</name>
 	<description>
 		A driver to allow deep interaction with the JVM without any restrictions
 	</description>
-	<url>https://toolfactory.github.io/jvm-driver/</url>
+	<url>https://burningwave.github.io/jvm-driver/</url>
 
 	<licenses>
 		<license>
 			<name>MIT License</name>
-			<url>https://github.com/toolfactory/jvm-driver/blob/master/LICENSE</url>
+			<url>https://github.com/burningwave/jvm-driver/blob/master/LICENSE</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
 	<organization>
-		<name>ToolFactory</name>
-		<url>https://github.com/toolfactory</url>
+		<name>Burningwave</name>
+		<url>https://www.burningwave.org/</url>
 	</organization>
 
 	<developers>
 		<developer>
-			<name>Luke Hutchison</name>
-			<email>tool.factory.heads@gmail.com</email>
-			<organization>ToolFactory</organization>
-			<organizationUrl>https://github.com/toolfactory</organizationUrl>
+			<name>Roberto Gentili</name>
+			<id>roberto.gentili</id>
+			<email>info@burningwave.org</email>
+			<organization>Burningwave</organization>
+			<organizationUrl>https://www.burningwave.org/</organizationUrl>
 			<roles>
 				<role>Administrator</role>
 				<role>Developer</role>
 			</roles>
 		</developer>
 		<developer>
-			<name>Roberto Gentili</name>
-			<id>roberto.gentili</id>
-			<email>tool.factory.heads@gmail.com</email>
-			<organization>ToolFactory</organization>
-			<organizationUrl>https://github.com/toolfactory</organizationUrl>
+			<name>Alessio Perrotta</name>
+			<email>info@burningwave.org</email>
+			<organization>Burningwave</organization>
+			<organizationUrl>https://www.burningwave.org/</organizationUrl>
 			<roles>
-				<role>Administrator</role>
+				<role>External relationship manager</role>
 				<role>Developer</role>
 			</roles>
 		</developer>
 	</developers>
-
+		
 	<properties>
-		<copyright.holder>Luke Hutchison, Roberto Gentili</copyright.holder>
+		<copyright.holder>Roberto Gentili</copyright.holder>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project_jdk_version>8</project_jdk_version>
@@ -86,7 +95,7 @@
 		<project.test.testSuite>AllExceptHeavyTestsSuite</project.test.testSuite>
 		<project.test.includes>**/${project.test.testSuite}.java</project.test.includes>
 		<project.test.excludes>**/*Test.java</project.test.excludes>
-		<repository.url>https://toolfactory@github.com/toolfactory/jvm-driver.git</repository.url>
+		<repository.url>https://burningwave@github.com/burningwave/jvm-driver.git</repository.url>
 
 		<coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
 		<jacoco-maven-plugin.version>0.7.6.201602180812</jacoco-maven-plugin.version>
@@ -103,33 +112,32 @@
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-scm-provider-gitexe.version>1.9.5</maven-scm-provider-gitexe.version>
 		<maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
-		<narcissus.version>1.0.0</narcissus.version>
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 	</properties>
 
 	<issueManagement>
 		<system>github.com</system>
-		<url>https://github.com/toolfactory/jvm-driver/issues</url>
+		<url>https://github.com/burningwave/jvm-driver/issues</url>
 	</issueManagement>
 
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
-			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
 
 	<scm>
 		<connection>scm:git:${repository.url}</connection>
 		<developerConnection>scm:git:${repository.url}</developerConnection>
-		<url>https://github.com/toolfactory/jvm-driver</url>
+		<url>https://github.com/burningwave/jvm-driver</url>
 		<tag>HEAD</tag>
 	</scm>
-
+	
 	<dependencies>
 
 		<dependency>
@@ -159,12 +167,6 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
-		<dependency>
-			<groupId>io.github.toolfactory</groupId>
-			<artifactId>narcissus</artifactId>
-			<version>${narcissus.version}</version>
-		</dependency>
 
 	</dependencies>
 
@@ -183,6 +185,12 @@
 					<include>**</include>
 				</includes>
 			</resource>
+			<resource>
+				<directory>${project.basedir}/../native/src/main/c-c++</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
 		</resources>
 		<testResources>
 			<testResource>
@@ -197,26 +205,29 @@
 		</testResources>
 		<plugins>
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>${maven-antrun-plugin.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<phase>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>
                             compile
                         </phase>
-						<configuration>
-							<target>
-								<copy file="${project.basedir}/../java-hook/bin/java/lang/ConsulterRetrieverForJDK9.class" tofile="${project.build.directory}/classes/io/github/toolfactory/jvm/ConsulterRetrieverForJDK9.bwc" />
-								<copy file="${project.basedir}/../java-hook/bin/java/lang/reflect/AccessibleSetterInvokerForJDK9.class" tofile="${project.build.directory}/classes/io/github/toolfactory/jvm/AccessibleSetterInvokerForJDK9.bwc" />
-								<copy file="${project.basedir}/../java-hook/bin/jdk/internal/loader/ClassLoaderDelegateForJDK9.class" tofile="${project.build.directory}/classes/io/github/toolfactory/jvm/ClassLoaderDelegateForJDK9.bwc" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+                        <configuration>
+                            <target>
+                                <copy toDir="${project.build.directory}/classes/org/burningwave/jvm">
+                                	<fileset dir="${project.basedir}/../native/bin" />
+                                </copy>
+                                <copy file="${project.basedir}/../java-hook/bin/java/lang/ConsulterRetrieverForJDK9.class" tofile="${project.build.directory}/classes/org/burningwave/jvm/ConsulterRetrieverForJDK9.bwc" />
+                                <copy file="${project.basedir}/../java-hook/bin/java/lang/reflect/AccessibleSetterInvokerForJDK9.class" tofile="${project.build.directory}/classes/org/burningwave/jvm/AccessibleSetterInvokerForJDK9.bwc" />
+                                <copy file="${project.basedir}/../java-hook/bin/jdk/internal/loader/ClassLoaderDelegateForJDK9.class" tofile="${project.build.directory}/classes/org/burningwave/jvm/ClassLoaderDelegateForJDK9.bwc" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -250,13 +261,13 @@
 						<exclude>java/</exclude>
 						<exclude>META-INF/maven/</exclude>
 						<exclude>**/*.c</exclude>
-						<exclude>**/*.cpp</exclude>
+						<exclude>**/*.cpp</exclude>			
 						<exclude>**/*.h</exclude>
 					</excludes>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
-							<built-by>ToolFactory</built-by>
+							<built-by>Burningwave</built-by>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -282,7 +293,7 @@
 					<localCheckout>true</localCheckout>
 					<pushChanges>true</pushChanges>
 					<mavenExecutorId>forked-path</mavenExecutorId>
-					<arguments>-Dgpg.passphrase="${gpg.passphrase}"</arguments>
+					<arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
 					<!-- <tagNameFormat>${project.artifactId}-${project.version}</tagNameFormat> -->
 				</configuration>
 				<dependencies>
@@ -301,7 +312,7 @@
 				<configuration>
 					<!-- <stagingProgressTimeoutMinutes>30</stagingProgressTimeoutMinutes> -->
 					<serverId>ossrh</serverId>
-					<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>

@@ -33,8 +33,11 @@ hs_err_pid*
 /java-hook/.classpath
 /java-hook/target/
 
+/native/.cproject
 /native/.project
 /native/.settings
 /native/.classpath
 /native/target/
+/native/Debug/
+/native/Release/
 *.bwc

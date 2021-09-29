@@ -35,17 +35,17 @@ NativeEnvironment* environment;
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 	JNIEnv* jNIEnv = NULL;
-	if (vm->GetEnv((void**)&jNIEnv, JNI_VERSION_9) != JNI_OK) {
+	if (vm->GetEnv((void**)&jNIEnv, JNI_VERSION_1_6) != JNI_OK) {
 		return -1;
 	}
 	environment = new NativeEnvironment(jNIEnv);
-	return JNI_VERSION_9;
+	return JNI_VERSION_1_6;
 }
 
 
 JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 	JNIEnv* jNIEnv = NULL;
-	vm->GetEnv((void**)&jNIEnv, JNI_VERSION_9);
+	vm->GetEnv((void**)&jNIEnv, JNI_VERSION_1_6);
 	environment->destroy(jNIEnv);
 	delete(environment);
 	environment = NULL;

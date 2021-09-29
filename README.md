@@ -17,7 +17,7 @@
 [![Artifact downloads](https://www.burningwave.org/generators/generate-burningwave-artifact-downloads-badge.php?type=svg&artifactId=jvm-driver)](https://www.burningwave.org/artifact-downloads/?show-monthly-trend-chart=false)
 [![Repository dependents](https://badgen.net/github/dependents-repo/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/network/dependents)
 
-A driver derived from [**ToolFactory JVM Driver**](https://toolfactory.github.io/jvm-driver/) to allow deep interaction with the JVM **without any restrictions**.
+A driver derived from [**ToolFactory JVM Driver**](https://toolfactory.github.io/jvm-driver/) with a custom JNI engine to allow deep interaction with the JVM **without any restrictions**.
 
 <br/>
 
@@ -26,7 +26,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>1.0.8</version>
+    <version>2.0.0</version>
 </dependency>	
 ```
 
@@ -34,69 +34,89 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 
 ## Overview
 
-There are two kinds of driver:
+There are three kinds of driver:
 
 * the **default driver** completely based on Java api
-* the **hybrid driver** that extends the default driver and uses some custom JNI code that works on the following system configurations:
-    * Windows (x86, x64)
-    * Linux (x86, x64)
-    * MacOs (x64)
+* the **hybrid driver** that extends the default driver and uses some JNI functions only when run on JVM 17 and later
+* the **native driver** that extends the hybrid driver and uses JNI functions more consistently regardless of the Java version it is running on
+
+All JNI methods used by the native and the hybrid driver are supplied by a custom JNI engine written in C++ that works on the following system configurations:
+* Windows (x86, x64)
+* Linux (x86, x64)
+* MacOs (x64) 
 
 <br/>
 
-## Using
+## Usage
 
-To create a default driver instance you should use this code:
+To create a driver a driver instance you should use this code:
 ```java
-
-org.burningwave.jvm.Driver driver = new org.burningwave.jvm.DefaultDriver();
+org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.getNew();
 ```
 
-To create a hybrid driver instance you should use this code:
-```java
+The driver type returned by the method `org.burningwave.jvm.Driver.Factory.getNew()` is **the first driver that can be initialized among the default, hybrid and native drivers respectively**.
 
-org.burningwave.jvm.Driver driver = new org.burningwave.jvm.HybridDriver();
+If you need to create a specific driver type you should use:
+
+* this code to create a default driver instance:
+
+```java
+org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.Factory.getNewDefault();
 ```
+
+* this code to create an hybrid driver instance:
+
+```java
+org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.Factory.getNewHybrid();
+```
+
+* this code to create a native driver instance:
+
+```java
+org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.Factory.getNewNative();
+```
+
+<br/>
+
+<br/>
 
 The methods exposed by the Driver interface are the following:
 ```java                                                                                                     
-public void setFieldValue(Object target, Field field, Object value);                                    
-                                                                                                        
-public <T> T getFieldValue(Object target, Field field);                                                 
-                                                                                                        
-public Method[] getDeclaredMethods(Class<?> cls);                                                       
-                                                                                                        
-public <T> Constructor<T>[] getDeclaredConstructors(Class<T> cls);                                      
-                                                                                                        
-public Field[] getDeclaredFields(Class<?> cls);                                                         
-                                                                                                        
-public Field getDeclaredField(Class<?> cls, String name);                                               
-                                                                                                        
-public <T> T newInstance(Constructor<T> ctor, Object[] params);                                         
-                                                                                                        
-public Object invoke(Method method, Object target, Object[] params);                                    
-                                                                                                        
-public MethodHandles.Lookup getConsulter(Class<?> cls);                                                               
-                                                                                                        
-public Class<?> getClassLoaderDelegateClass();                                                          
-                                                                                                        
-public Class<?> getBuiltinClassLoaderClass();                                                           
-                                                                                                        
-public boolean isClassLoaderDelegate(ClassLoader classLoader);                                          
-                                                                                                        
-public boolean isBuiltinClassLoader(ClassLoader classLoader);                                           
-                                                                                                        
-public Map<String, ?> retrieveLoadedPackages(ClassLoader classLoader);                                  
-                                                                                                        
-public Collection<Class<?>> retrieveLoadedClasses(ClassLoader classLoader);                             
-                                                                                                        
+public Class<?> defineHookClass(Class<?> clientClass, byte[] byteCode);
+
+public Class<?> getBuiltinClassLoaderClass();
+
+public Class<?> getClassLoaderDelegateClass();
+
+public MethodHandles.Lookup getConsulter(Class<?> cls);
+
+public <T> Constructor<T>[] getDeclaredConstructors(Class<T> cls);
+
+public Field[] getDeclaredFields(Class<?> cls);
+
+public Method[] getDeclaredMethods(Class<?> cls);
+
+public <T> T getFieldValue(Object target, Field field);
+
 public Package getPackage(ClassLoader classLoader, String packageName);
-                                                                                                        
-public Class<?> defineHookClass(Class<?> clientClass, byte[] byteCode);                                 
-                                                                                                        
-public void setAccessible(AccessibleObject object, boolean flag);                                       
-                                                                                                        
-public <T> T allocateInstance(Class<?> cls);                                                            
+
+public <T> T invoke(Method method, Object target, Object[] params);
+
+public boolean isBuiltinClassLoader(ClassLoader classLoader);
+
+public boolean isClassLoaderDelegate(ClassLoader classLoader);
+
+public <T> T newInstance(Constructor<T> ctor, Object[] params);
+
+public Collection<Class<?>> retrieveLoadedClasses(ClassLoader classLoader);
+
+public Map<String, ?> retrieveLoadedPackages(ClassLoader classLoader);
+
+public void setAccessible(AccessibleObject object, boolean flag);
+
+public void setFieldValue(Object target, Field field, Object value);
+
+public <T> T throwException(Object exceptionOrMessage, Object... placeHolderReplacements);                                                          
 ```
 
 <br/>

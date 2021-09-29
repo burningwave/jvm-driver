@@ -28,24 +28,27 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.util;
 
 
-import java.util.Map;
-
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
-import org.burningwave.jvm.util.ObjectProvider;
-
-
-public class HybridDriver extends DefaultDriver {
+public abstract class FunctionAdapter<F, I, O> {
 	
-
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
+	protected F function;
+	
+	public FunctionAdapter() {}
+	
+	public FunctionAdapter(F function) {
+		this.function = function;
 	}
-
+	
+	public FunctionAdapter<F, I, O> setFunction(F function) {
+		this.function = function;
+		return this;
+	}
+	
+	public F getFunction() {
+		return this.function;
+	}
+	
+	public abstract O apply(I input);
 }

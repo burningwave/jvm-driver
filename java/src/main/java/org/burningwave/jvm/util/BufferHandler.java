@@ -28,24 +28,45 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.util;
 
 
-import java.util.Map;
-
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
-import org.burningwave.jvm.util.ObjectProvider;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
 
-public class HybridDriver extends DefaultDriver {
-	
+@SuppressWarnings("unchecked")
+public class BufferHandler {
 
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
+	public static ByteBuffer shareContent(ByteBuffer byteBuffer) {
+		ByteBuffer duplicated = duplicate(byteBuffer);
+		if (position(byteBuffer) > 0) {
+			flip(duplicated);
+		}
+		return duplicated;
+	}
+
+	public static <T extends Buffer> T flip(T buffer) {
+		return (T)((Buffer)buffer).flip();
+	}
+
+	public static <T extends Buffer> int position(T buffer) {
+		return ((Buffer)buffer).position();
+	}
+
+	public static ByteBuffer duplicate(ByteBuffer buffer) {
+		return buffer.duplicate();
+	}
+
+	public static <T extends Buffer> int limit(T buffer) {
+		return ((Buffer)buffer).limit();
+	}
+
+	public static byte[] toByteArray(ByteBuffer byteBuffer) {
+    	byteBuffer = shareContent(byteBuffer);
+    	byte[] result = new byte[limit(byteBuffer)];
+    	byteBuffer.get(result, 0, result.length);
+        return result;
 	}
 
 }

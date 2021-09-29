@@ -145,6 +145,9 @@
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticCharacterFieldValue)
 	  (JNIEnv *, jobject, jclass, jobject, jobject);
 
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)
+		(JNIEnv* , jclass, jthrowable);
+
 	#ifdef __cplusplus
 		}
 	#endif

@@ -209,3 +209,7 @@ JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAccessible)(JNIEnv* j
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass instanceType) {
 	return jNIEnv->AllocObject(instanceType);
 }
+
+JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)(JNIEnv* jNIEnv, jclass ignored, jthrowable throwable) {
+	jNIEnv->Throw(throwable);
+}

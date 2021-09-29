@@ -28,24 +28,39 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.function.catalog;
 
 
 import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
-import org.burningwave.jvm.util.ObjectProvider;
+import org.burningwave.jvm.function.template.Supplier;
 
 
-public class HybridDriver extends DefaultDriver {
+public interface BuiltinClassLoaderClassSupplier extends Supplier<Class<?>> {
 	
-
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
+	public static class ForJava7 implements BuiltinClassLoaderClassSupplier{
+		
+		public ForJava7(Map<Object, Object> context) {}
+		
+		@Override
+		public Class<?> get() {
+			return null;
+		}
+		
 	}
-
+	
+	public static class ForJava9 implements BuiltinClassLoaderClassSupplier{
+		Class<?> cls;
+		
+		public ForJava9(Map<Object, Object> context) throws ClassNotFoundException {
+			cls = Class.forName("jdk.internal.loader.BuiltinClassLoader");
+		}
+		
+		@Override
+		public Class<?> get() {
+			return cls;
+		}
+		
+	}
+	
 }

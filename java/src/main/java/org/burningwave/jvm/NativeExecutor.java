@@ -33,8 +33,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 
+import org.burningwave.jvm.util.Libraries;
 
-class NativeExecutor {
+
+public class NativeExecutor {
 	private final static NativeExecutor INSTANCE;
 
 	private NativeExecutor() {}
@@ -44,85 +46,85 @@ class NativeExecutor {
 		INSTANCE = new NativeExecutor();
 	}
 
-	final static  NativeExecutor getInstance() {
+	public final static NativeExecutor getInstance() {
 		return INSTANCE;
 	}
 
 
-	native Object allocateInstance(Class<?> cls);
+	public native Object getFieldValue(Object target, Field field);
+
+	public native Integer getIntegerFieldValue(Object target, Field field);
+
+	public native Long getLongFieldValue(Object target, Field field);
+
+	public native Float getFloatFieldValue(Object target, Field field);
+
+	public native Double getDoubleFieldValue(Object target, Field field);
+
+	public native Boolean getBooleanFieldValue(Object target, Field field);
+
+	public native Byte getByteFieldValue(Object target, Field field);
+
+	public native Character getCharacterFieldValue(Object target, Field field);
 
 
-	native Object getFieldValue(Object target, Field field);
+	public native Object getStaticFieldValue(Class<?> target, Field field);
 
-	native Integer getIntegerFieldValue(Object target, Field field);
+	public native Integer getStaticIntegerFieldValue(Class<?> target, Field field);
 
-	native Long getLongFieldValue(Object target, Field field);
+	public native Long getStaticLongFieldValue(Class<?> target, Field field);
 
-	native Float getFloatFieldValue(Object target, Field field);
+	public native Float getStaticFloatFieldValue(Class<?> target, Field field);
 
-	native Double getDoubleFieldValue(Object target, Field field);
+	public native Double getStaticDoubleFieldValue(Class<?> target, Field field);
 
-	native Boolean getBooleanFieldValue(Object target, Field field);
+	public native Boolean getStaticBooleanFieldValue(Class<?> target, Field field);
 
-	native Byte getByteFieldValue(Object target, Field field);
+	public native Byte getStaticByteFieldValue(Class<?> target, Field field);
 
-	native Character getCharacterFieldValue(Object target, Field field);
+	public native Character getStaticCharacterFieldValue(Class<?> target, Field field);
+	
+	
+	public native void setFieldValue(Object target, Field field, Object value);
 
+	public native void setIntegerFieldValue(Object target, Field field, Integer value);
 
-	native Object getStaticFieldValue(Class<?> target, Field field);
+	public native void setLongFieldValue(Object target, Field field, Long value);
 
-	native Integer getStaticIntegerFieldValue(Class<?> target, Field field);
+	public native void setFloatFieldValue(Object target, Field field, Float value);
 
-	native Long getStaticLongFieldValue(Class<?> target, Field field);
+	public native void setDoubleFieldValue(Object target, Field field, Double value);
 
-	native Float getStaticFloatFieldValue(Class<?> target, Field field);
+	public native void setBooleanFieldValue(Object target, Field field, Boolean value);
 
-	native Double getStaticDoubleFieldValue(Class<?> target, Field field);
+	public native void setByteFieldValue(Object target, Field field, Byte value);
 
-	native Boolean getStaticBooleanFieldValue(Class<?> target, Field field);
-
-	native Byte getStaticByteFieldValue(Class<?> target, Field field);
-
-	native Character getStaticCharacterFieldValue(Class<?> target, Field field);
-
-
-	native void setAccessible(AccessibleObject target, boolean flag);
-
-	native void setAllowedModes(MethodHandles.Lookup consulter, int modes);
+	public native void setCharacterFieldValue(Object target, Field field, Character value);
 
 
-	native void setFieldValue(Object target, Field field, Object value);
+	public native void setStaticFieldValue(Class<?> target, Field field, Object value);
 
-	native void setIntegerFieldValue(Object target, Field field, Integer value);
+	public native void setStaticIntegerFieldValue(Class<?> target, Field field, Integer value);
 
-	native void setLongFieldValue(Object target, Field field, Long value);
+	public native void setStaticLongFieldValue(Class<?> target, Field field, Long value);
 
-	native void setFloatFieldValue(Object target, Field field, Float value);
+	public native void setStaticFloatFieldValue(Class<?> target, Field field, Float value);
 
-	native void setDoubleFieldValue(Object target, Field field, Double value);
+	public native void setStaticDoubleFieldValue(Class<?> target, Field field, Double value);
 
-	native void setBooleanFieldValue(Object target, Field field, Boolean value);
+	public native void setStaticBooleanFieldValue(Class<?> target, Field field, Boolean value);
 
-	native void setByteFieldValue(Object target, Field field, Byte value);
+	public native void setStaticByteFieldValue(Class<?> target, Field field, Byte value);
 
-	native void setCharacterFieldValue(Object target, Field field, Character value);
+	public native void setStaticCharacterFieldValue(Class<?> target, Field field, Character value);
+	
+	
+	public native Object allocateInstance(Class<?> cls);
 
+	public native void setAccessible(AccessibleObject target, boolean flag);
 
-	native void setStaticFieldValue(Class<?> target, Field field, Object value);
-
-	native void setStaticIntegerFieldValue(Class<?> target, Field field, Integer value);
-
-	native void setStaticLongFieldValue(Class<?> target, Field field, Long value);
-
-	native void setStaticFloatFieldValue(Class<?> target, Field field, Float value);
-
-	native void setStaticDoubleFieldValue(Class<?> target, Field field, Double value);
-
-	native void setStaticBooleanFieldValue(Class<?> target, Field field, Boolean value);
-
-	native void setStaticByteFieldValue(Class<?> target, Field field, Byte value);
-
-	native void setStaticCharacterFieldValue(Class<?> target, Field field, Character value);
-
+	public native void setAllowedModes(MethodHandles.Lookup consulter, int modes);
+	
+	public native void throwException(Throwable exc);
 }
 

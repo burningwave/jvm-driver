@@ -28,24 +28,42 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.function.catalog;
 
 
+import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
+import org.burningwave.jvm.function.template.BiFunction;
 import org.burningwave.jvm.util.ObjectProvider;
 
 
-public class HybridDriver extends DefaultDriver {
+public abstract class GetDeclaredFieldFunction implements BiFunction<Class<?>, String, Field> {
 	
+	public static class ForJava7 extends GetDeclaredFieldFunction {
+		MethodHandle getDeclaredFields;
+		ThrowExceptionFunction throwExceptionFunction;
+		
+		public ForJava7(Map<Object, Object> context) {
+			ObjectProvider functionProvider = ObjectProvider.get(context);
+			getDeclaredFields = functionProvider.getOrBuildObject(GetDeclaredFieldsMethodHandleSupplier.class, context).get();
+			throwExceptionFunction =
+				functionProvider.getOrBuildObject(ThrowExceptionFunction.class, context); 
+		}
 
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
-	}
-
+		@Override
+		public Field apply(Class<?> cls, String name) {
+			try {
+				for (Field field : (Field[])getDeclaredFields.invoke(cls, false)) {
+					if (field.getName().equals(name)) {
+						return field;
+					}
+				}
+			} catch (Throwable exc) {
+				return throwExceptionFunction.apply(exc);
+			}
+			return null;
+		}
+	}	
 }

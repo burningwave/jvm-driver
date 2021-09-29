@@ -28,24 +28,41 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.function.catalog;
 
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
+import org.burningwave.jvm.function.template.Supplier;
 import org.burningwave.jvm.util.ObjectProvider;
 
 
-public class HybridDriver extends DefaultDriver {
+public abstract class GetDeclaredFieldsMethodHandleSupplier implements Supplier<MethodHandle> {
+	MethodHandle methodHandle;
 	
-
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
+	@Override
+	public MethodHandle get() {
+		return methodHandle;
 	}
-
+	
+	public static class ForJava7 extends GetDeclaredFieldsMethodHandleSupplier {
+		
+		public ForJava7(Map<Object, Object> context) throws NoSuchMethodException, IllegalAccessException {
+			ObjectProvider functionProvider = ObjectProvider.get(context);
+			ConsulterSupplyFunction<?> getConsulterFunction =
+				functionProvider.getOrBuildObject(ConsulterSupplyFunction.class, context);
+			MethodHandles.Lookup consulter = getConsulterFunction.apply(Class.class);
+			methodHandle = consulter.findSpecial(
+				Class.class,
+				"getDeclaredFields0",
+				MethodType.methodType(Field[].class, boolean.class),
+				Class.class
+			);
+		}
+	}
+	
 }

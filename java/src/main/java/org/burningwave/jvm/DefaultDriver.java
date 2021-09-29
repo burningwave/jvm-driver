@@ -31,108 +31,335 @@
 package org.burningwave.jvm;
 
 
-import java.io.Closeable;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+
+import org.burningwave.jvm.function.catalog.AllocateInstanceFunction;
+import org.burningwave.jvm.function.catalog.BuiltinClassLoaderClassSupplier;
+import org.burningwave.jvm.function.catalog.ClassLoaderDelegateClassSupplier;
+import org.burningwave.jvm.function.catalog.ConstructorInvokeMethodHandleSupplier;
+import org.burningwave.jvm.function.catalog.ConsulterSupplyFunction;
+import org.burningwave.jvm.function.catalog.DeepConsulterSupplyFunction;
+import org.burningwave.jvm.function.catalog.DefineHookClassFunction;
+import org.burningwave.jvm.function.catalog.GetDeclaredConstructorsMethodHandleSupplier;
+import org.burningwave.jvm.function.catalog.GetDeclaredFieldsMethodHandleSupplier;
+import org.burningwave.jvm.function.catalog.GetDeclaredMethodsMethodHandleSupplier;
+import org.burningwave.jvm.function.catalog.GetFieldValueFunction;
+import org.burningwave.jvm.function.catalog.GetLoadedClassesFunction;
+import org.burningwave.jvm.function.catalog.GetLoadedPackagesFunction;
+import org.burningwave.jvm.function.catalog.GetPackageFunction;
+import org.burningwave.jvm.function.catalog.MethodInvokeMethodHandleSupplier;
+import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
+import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
+import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
+import org.burningwave.jvm.function.template.BiFunction;
+import org.burningwave.jvm.function.template.Function;
+import org.burningwave.jvm.function.template.TriConsumer;
+import org.burningwave.jvm.util.BiConsumerAdapter;
+import org.burningwave.jvm.util.FunctionAdapter;
+import org.burningwave.jvm.util.ObjectProvider;
 
 
-@SuppressWarnings("all")
-public class DefaultDriver implements Driver {
 
-	MethodHandle getDeclaredFieldsRetriever;
-	MethodHandle getDeclaredMethodsRetriever;
-	MethodHandle getDeclaredConstructorsRetriever;
-	MethodHandle methodInvoker;
-	MethodHandle constructorInvoker;
-
-	Function<ClassLoader, Collection<Class<?>>> loadedClassesRetriever;
-	Function<ClassLoader, Map<String, ?>> loadedPackagesRetriever;
-	Function<Class<?>, Object> allocateInstanceInvoker;
+@SuppressWarnings("unchecked")
+public class DefaultDriver implements Driver {	
+	
+	ThrowExceptionFunction exceptionThrower; 
+	Function<Class<?>, Object> allocateInstanceInvoker;	
 	BiFunction<Object, Field, Object> fieldValueRetriever;
-	Function<Object, BiConsumer<Field, Object>> fieldValueSetter;
-	BiConsumer<AccessibleObject, Boolean> accessibleSetter;
-	Function<Class<?>, MethodHandles.Lookup> consulterRetriever;
-	BiFunction<ClassLoader, String, Package> packageRetriever;
+	TriConsumer<Object, Field, Object> fieldValueSetter;
 	BiFunction<Class<?>, byte[], Class<?>> hookClassDefiner;
-
-	Class<?> classLoaderDelegateClass;
+	FunctionAdapter<?, Class<?>, MethodHandles.Lookup> consulterRetriever;
+	MethodHandle declaredFieldsRetriever;
+	MethodHandle declaredMethodsRetriever;
+	MethodHandle declaredConstructorsRetriever;
+	BiConsumerAdapter<?, AccessibleObject, Boolean> accessibleSetter;
+	MethodHandle constructorInvoker;
+	BiFunction<ClassLoader, String, Package> packageRetriever;
+	MethodHandle methodInvoker;
 	Class<?> builtinClassLoaderClass;
+	Class<?> classLoaderDelegateClass;
+	Function<ClassLoader, Collection<Class<?>>> loadedClassesRetriever;
+	Function<ClassLoader, Map<String, ?>> loadedPackagesRetriever;	
+
 
 	public DefaultDriver() {
-		retrieveInitializer().start().close();
+		ObjectProvider functionProvider = new ObjectProvider(
+			"ForJava", 7, 9, 14, 17
+		);
+		
+		Map<Object, Object> initializationContext = new HashMap<>();
+		
+		initExceptionThrower(functionProvider, initializationContext);	
+		try {
+			initAllocateInstanceInvoker(functionProvider, initializationContext);	
+			initFieldValueRetriever(functionProvider, initializationContext);
+			initFieldValueSetter(functionProvider, initializationContext);
+			initHookClassDefiner(functionProvider, initializationContext);
+			initConsulterRetriever(functionProvider, initializationContext);
+			initDeclaredFieldsRetriever(functionProvider, initializationContext);
+			initDeclaredMethodsRetriever(functionProvider, initializationContext);
+			initDeclaredConstructorsRetriever(functionProvider, initializationContext);
+			initAccessibleSetter(functionProvider, initializationContext);
+			initConstructorInvoker(functionProvider, initializationContext);
+			initMethodInvoker(functionProvider, initializationContext);
+			initPackageRetriever(functionProvider, initializationContext);		
+			initBuiltinClassLoaderClass(functionProvider, initializationContext);	
+			initClassLoaderDelegateClass(functionProvider, initializationContext);
+			replaceConsulterWithDeepConsulter(functionProvider, initializationContext);
+			initLoadedClassesRetriever(functionProvider, initializationContext);
+			initLoadedPackagesRetriever(functionProvider, initializationContext);
+		} catch (Throwable exc) {
+			throwException(
+				new InitializeException(
+					"Could not initiliaze " + this.getClass().getSimpleName(), exc
+				)
+			);
+		}
+	}
+	
+	//Initializers
+	void initExceptionThrower(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		exceptionThrower = functionProvider.getOrBuildObject(
+			ThrowExceptionFunction.class, initializationContext
+		);
+	}
+	
+	
+	void initLoadedPackagesRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		loadedPackagesRetriever = functionProvider.getOrBuildObject(
+			GetLoadedPackagesFunction.class, initializationContext
+		);
 	}
 
-	Initializer retrieveInitializer() {
-		JVMInfo jVMInfo = JVMInfo.getInstance();
-		return
-			(jVMInfo.getVersion() > 8 ?
-				jVMInfo.getVersion() > 13 ?
-					jVMInfo.getVersion() > 16 ?
-						newInitializerForJava17():
-						newInitializerForJava14():
-					newInitializerForJava9():
-				newInitializerForJava8());
+	
+	void initLoadedClassesRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		loadedClassesRetriever = functionProvider.getOrBuildObject(
+			GetLoadedClassesFunction.class, initializationContext
+		);
 	}
 
-	Initializer newInitializerForJava8() {
-		return new Initializer.ForJava8(this);
+	
+	void replaceConsulterWithDeepConsulter(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {	
+		//this cast is necessary to avoid the incompatible types error (no unique maximal instance exists for type variable)
+		consulterRetriever = (FunctionAdapter<?, Class<?>, MethodHandles.Lookup>)functionProvider.getOrBuildObject(
+			DeepConsulterSupplyFunction.class, initializationContext
+		);
 	}
 
-	Initializer newInitializerForJava9() {
-		return new Initializer.ForJava9(this);
+	
+	void initClassLoaderDelegateClass(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		classLoaderDelegateClass = functionProvider.getOrBuildObject(
+			ClassLoaderDelegateClassSupplier.class, initializationContext
+		).get();
 	}
 
-	Initializer newInitializerForJava14() {
-		return new Initializer.ForJava14(this);
+	
+	void initBuiltinClassLoaderClass(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		builtinClassLoaderClass = functionProvider.getOrBuildObject(
+			BuiltinClassLoaderClassSupplier.class, initializationContext
+		).get();
 	}
 
-	Initializer newInitializerForJava17() {
-		return new Initializer.ForJava17(this);
+	
+	void initPackageRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		packageRetriever = functionProvider.getOrBuildObject(
+			GetPackageFunction.class, initializationContext
+		);
 	}
 
+	
+	void initFieldValueSetter(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		fieldValueSetter = functionProvider.getOrBuildObject(
+			SetFieldValueFunction.class, initializationContext
+		);
+	}
+
+	
+	void initFieldValueRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		fieldValueRetriever = functionProvider.getOrBuildObject(
+			GetFieldValueFunction.class, initializationContext
+		);
+	}
+
+	
+	void initAllocateInstanceInvoker(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		allocateInstanceInvoker = functionProvider.getOrBuildObject(
+			AllocateInstanceFunction.class, initializationContext
+		);
+	}
+
+	
+	void initMethodInvoker(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		methodInvoker = functionProvider.getOrBuildObject(
+			MethodInvokeMethodHandleSupplier.class, initializationContext
+		).get();
+	}
+
+	
+	void initConstructorInvoker(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		constructorInvoker = functionProvider.getOrBuildObject(
+			ConstructorInvokeMethodHandleSupplier.class, initializationContext
+		).get();
+	}
+
+	
+	void initAccessibleSetter(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		//this cast is necessary to avoid the incompatible types error (no unique maximal instance exists for type variable)
+		accessibleSetter = (BiConsumerAdapter<?, AccessibleObject, Boolean>)functionProvider.getOrBuildObject(
+			SetAccessibleFunction.class, initializationContext
+		);
+	}
+
+	
+	void initDeclaredConstructorsRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		declaredConstructorsRetriever = functionProvider.getOrBuildObject(
+			GetDeclaredConstructorsMethodHandleSupplier.class, initializationContext
+		).get();
+	}
+
+	
+	void initDeclaredMethodsRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		declaredMethodsRetriever = functionProvider.getOrBuildObject(
+			GetDeclaredMethodsMethodHandleSupplier.class, initializationContext
+		).get();
+	}
+
+	
+	void initDeclaredFieldsRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		declaredFieldsRetriever = functionProvider.getOrBuildObject(
+			GetDeclaredFieldsMethodHandleSupplier.class, initializationContext
+		).get();
+	}
+
+	
+	void initHookClassDefiner(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {
+		hookClassDefiner = functionProvider.getOrBuildObject(
+			DefineHookClassFunction.class, initializationContext
+		);
+	}
+
+	
+	void initConsulterRetriever(
+		ObjectProvider functionProvider,
+		Map<Object, Object> initializationContext
+	) {	
+		//this cast is necessary to avoid the incompatible types error (no unique maximal instance exists for type variable)
+		consulterRetriever = (FunctionAdapter<?, Class<?>, MethodHandles.Lookup>)functionProvider.getOrBuildObject(
+			ConsulterSupplyFunction.class, initializationContext
+		);
+	}
+	
+	
+	//Exposed methods
+	@Override
+	public<T> T throwException(Object exceptionOrMessage, Object... placeHolderReplacements) {
+		return exceptionThrower.apply(exceptionOrMessage, placeHolderReplacements);
+	}
+	
+	
 	@Override
 	public void setAccessible(AccessibleObject object, boolean flag) {
-		try {
-			accessibleSetter.accept(object, flag);
-		} catch (Throwable exc) {
-			Throwables.throwException(exc);
-		}
+		accessibleSetter.accept(object, flag);
 	}
 
+	
 	@Override
 	public Class<?> defineHookClass(Class<?> clientClass, byte[] byteCode) {
-		try {
-			return hookClassDefiner.apply(clientClass, byteCode);
-		} catch (Throwable exc) {
-			return Throwables.throwException(exc);
-		}
+		return hookClassDefiner.apply(clientClass, byteCode);
 	}
 
+	
 	@Override
 	public Package getPackage(ClassLoader classLoader, String packageName) {
 		return packageRetriever.apply(classLoader, packageName);
 	}
 
+	
 	@Override
 	public Collection<Class<?>> retrieveLoadedClasses(ClassLoader classLoader) {
 		return loadedClassesRetriever.apply(classLoader);
 	}
 
+	
 	@Override
 	public Map<String, ?> retrieveLoadedPackages(ClassLoader classLoader) {
 		return loadedPackagesRetriever.apply(classLoader);
+	}
+	
+
+	@Override
+	public <T> T getFieldValue(Object target, Field field) {
+		return (T)fieldValueRetriever.apply(target, field);
+	}
+
+	@Override
+	public void setFieldValue(Object target, Field field, Object value) {
+		fieldValueSetter.accept(target, field, value);
+	}
+
+	@Override
+	public <T> T allocateInstance(Class<?> cls) {
+		return (T)allocateInstanceInvoker.apply(cls);
 	}
 
 	@Override
@@ -151,7 +378,7 @@ public class DefaultDriver implements Driver {
 	}
 
 	@Override
-	public Class getClassLoaderDelegateClass() {
+	public Class<?> getClassLoaderDelegateClass() {
 		return classLoaderDelegateClass;
 	}
 
@@ -165,7 +392,7 @@ public class DefaultDriver implements Driver {
 		try {
 			return (T)methodInvoker.invoke(method, target, params);
 		} catch (Throwable exc) {
-			return Throwables.throwException(exc);
+			return throwException(exc);
 		}
 	}
 
@@ -174,443 +401,56 @@ public class DefaultDriver implements Driver {
 		try {
 			return (T)constructorInvoker.invoke(ctor, params);
 		} catch (Throwable exc) {
-			return Throwables.throwException(exc);
+			return throwException(exc);
 		}
-	}
-
-	@Override
-	public Field getDeclaredField(Class<?> cls, String name) {
-		for (Field field : getDeclaredFields(cls)) {
-			if (field.getName().equals(name)) {
-				return field;
-			}
-		}
-		return null;
 	}
 
 	@Override
 	public Field[] getDeclaredFields(Class<?> cls)  {
 		try {
-			return (Field[])getDeclaredFieldsRetriever.invoke(cls, false);
+			return (Field[])declaredFieldsRetriever.invoke(cls, false);
 		} catch (Throwable exc) {
-			return Throwables.throwException(exc);
+			return throwException(exc);
 		}
 	}
 
 	@Override
 	public <T> Constructor<T>[] getDeclaredConstructors(Class<T> cls) {
 		try {
-			return (Constructor<T>[])getDeclaredConstructorsRetriever.invoke(cls, false);
+			return (Constructor<T>[])declaredConstructorsRetriever.invoke(cls, false);
 		} catch (Throwable exc) {
-			return Throwables.throwException(exc);
+			return throwException(exc);
 		}
 	}
 
 	@Override
 	public Method[] getDeclaredMethods(Class<?> cls) {
 		try {
-			return (Method[])getDeclaredMethodsRetriever.invoke(cls, false);
+			return (Method[])declaredMethodsRetriever.invoke(cls, false);
 		} catch (Throwable exc) {
-			return Throwables.throwException(exc);
+			return throwException(exc);
 		}
 	}
-
-	@Override
-	public <T> T getFieldValue(Object target, Field field) {
-		return (T)fieldValueRetriever.apply(target, field);
-	}
-
-	@Override
-	public void setFieldValue(Object target, Field field, Object value) {
-		fieldValueSetter.apply(target).accept(field, value);
-	}
-
-	@Override
-	public <T> T allocateInstance(Class<?> cls) {
-		return (T)allocateInstanceInvoker.apply(cls);
-	}
-
+	
+	
 	@Override
 	public void close() {
-		getDeclaredFieldsRetriever = null;
-		getDeclaredMethodsRetriever = null;
-		getDeclaredConstructorsRetriever = null;
+		exceptionThrower = null;
+		allocateInstanceInvoker = null;	
+		fieldValueRetriever = null;
+		fieldValueSetter = null;
+		hookClassDefiner = null;
+		consulterRetriever = null;
+		declaredFieldsRetriever = null;
+		declaredMethodsRetriever = null;
+		declaredConstructorsRetriever = null;
+		accessibleSetter = null;
+		constructorInvoker = null;
 		packageRetriever = null;
 		methodInvoker = null;
-		constructorInvoker = null;
-		accessibleSetter = null;
-		consulterRetriever = null;
 		classLoaderDelegateClass = null;
 		builtinClassLoaderClass = null;
-		hookClassDefiner = null;
+		loadedClassesRetriever = null;
+		loadedPackagesRetriever = null;	
 	}
-
-	abstract static class Initializer implements Closeable {
-		DefaultDriver driver;
-		DriverFunctionSupplier driverFunctionSupplier;
-
-		Initializer(DefaultDriver driver) {
-			this.driver = driver;
-			initNativeFunctionSupplier();
-		}
-
-		abstract void initNativeFunctionSupplier();
-
-		Initializer start() {
-			driver.allocateInstanceInvoker = driverFunctionSupplier.getAllocateInstanceFunction();
-			driver.fieldValueRetriever = driverFunctionSupplier.getFieldValueFunction();
-			driver.fieldValueSetter = driverFunctionSupplier.getSetFieldValueFunction();
-			initDefineHookClassFunction();
-			initConsulterRetriever();
-			initMembersRetrievers();
-			initAccessibleSetter();
-			initConstructorInvoker();
-			initMethodInvoker();
-			initSpecificElements();
-			driver.loadedClassesRetriever = driverFunctionSupplier.getRetrieveLoadedClassesFunction();
-			driver.loadedPackagesRetriever = driverFunctionSupplier.getRetrieveLoadedPackagesFunction();
-			return this;
-		}
-
-		abstract void initDefineHookClassFunction();
-
-		abstract void initConsulterRetriever();
-
-		abstract void initAccessibleSetter();
-
-		abstract void initSpecificElements();
-
-		abstract void initConstructorInvoker();
-
-		abstract void initMethodInvoker();
-
-		void initMembersRetrievers() {
-			try {
-				MethodHandles.Lookup consulter = driver.getConsulter(Class.class);
-				driver.getDeclaredFieldsRetriever = consulter.findSpecial(
-					Class.class,
-					"getDeclaredFields0",
-					MethodType.methodType(Field[].class, boolean.class),
-					Class.class
-				);
-
-				driver.getDeclaredMethodsRetriever = consulter.findSpecial(
-					Class.class,
-					"getDeclaredMethods0",
-					MethodType.methodType(Method[].class, boolean.class),
-					Class.class
-				);
-
-				driver.getDeclaredConstructorsRetriever = consulter.findSpecial(
-					Class.class,
-					"getDeclaredConstructors0",
-					MethodType.methodType(Constructor[].class, boolean.class),
-					Class.class
-				);
-			} catch (Throwable exc) {
-				Throwables.throwException(exc);
-			}
-		}
-
-		@Override
-		public void close() {
-			driverFunctionSupplier.close();
-			driverFunctionSupplier = null;
-			driver = null;
-		}
-
-		static class ForJava8 extends Initializer {
-			MethodHandles.Lookup mainConsulter;
-			MethodHandle privateLookupInMethodHandle;
-
-			ForJava8(DefaultDriver driver) {
-				super(driver);
-				try {
-					Field modes = MethodHandles.Lookup.class.getDeclaredField("allowedModes");
-					mainConsulter = MethodHandles.lookup();
-					modes.setAccessible(true);
-					modes.setInt(mainConsulter, -1);
-					privateLookupInMethodHandle = mainConsulter.findSpecial(
-						MethodHandles.Lookup.class, "in",
-						MethodType.methodType(MethodHandles.Lookup.class, Class.class),
-						MethodHandles.Lookup.class
-					);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize consulter retriever", exc));
-				}
-			}
-
-			@Override
-			void initNativeFunctionSupplier()  {
-				this.driverFunctionSupplier = new DriverFunctionSupplierUnsafe.ForJava8(this.driver);
-			}
-
-			@Override
-			void initConsulterRetriever() {
-				try {
-					driver.consulterRetriever = (cls) -> {
-						try {
-							return (Lookup) privateLookupInMethodHandle.invoke(mainConsulter, cls);
-						} catch (Throwable exc) {
-							return Throwables.throwException(exc);
-						}
-					};
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize consulter retriever", exc));
-				}
-			}
-
-			@Override
-			void initDefineHookClassFunction() {
-				try {
-					driver.hookClassDefiner = driverFunctionSupplier.getDefineHookClassFunction(mainConsulter, privateLookupInMethodHandle);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize consulter retriever", exc));
-				}
-			}
-
-			@Override
-			void initAccessibleSetter() {
-				try {
-					final Method accessibleSetterMethod = AccessibleObject.class.getDeclaredMethod("setAccessible0", AccessibleObject.class, boolean.class);
-					MethodHandle accessibleSetterMethodHandle = driver.getConsulter(AccessibleObject.class).unreflect(accessibleSetterMethod);
-					driver.accessibleSetter = (accessibleObject, flag) -> {
-						try {
-							accessibleSetterMethodHandle.invoke(accessibleObject, flag);
-						} catch (Throwable exc) {
-							Throwables.throwException(exc);
-						}
-					};
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize accessible setter", exc));
-				}
-			}
-
-			@Override
-			void initConstructorInvoker() {
-				try {
-					Class<?> nativeAccessorImplClass = Class.forName("sun.reflect.NativeConstructorAccessorImpl");
-					Method method = nativeAccessorImplClass.getDeclaredMethod("newInstance0", Constructor.class, Object[].class);
-					MethodHandles.Lookup consulter = driver.getConsulter(nativeAccessorImplClass);
-					driver.constructorInvoker = consulter.unreflect(method);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize constructor invoker", exc));
-				}
-			}
-
-			@Override
-			void initMethodInvoker() {
-				try {
-					Class<?> nativeAccessorImplClass = Class.forName("sun.reflect.NativeMethodAccessorImpl");
-					Method method = nativeAccessorImplClass.getDeclaredMethod("invoke0", Method.class, Object.class, Object[].class);
-					MethodHandles.Lookup consulter = driver.getConsulter(nativeAccessorImplClass);
-					driver.methodInvoker = consulter.unreflect(method);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize method invoker", exc));
-				}
-			}
-
-			@Override
-			void initSpecificElements() {
-				driver.packageRetriever = (classLoader, packageName) -> Package.getPackage(packageName);
-			}
-
-			@Override
-			public void close() {
-				super.close();
-				MethodHandles.Lookup mainConsulter = null;
-				MethodHandle privateLookupInMethodHandle =null;
-			}
-
-		}
-
-		static class ForJava9 extends Initializer {
-			MethodHandles.Lookup mainConsulter;
-			MethodHandle privateLookupInMethodHandle;
-
-			ForJava9(DefaultDriver driver) {
-				super(driver);
-				mainConsulter = driverFunctionSupplier.getMethodHandlesLookupSupplyingFunction().get();
-				try {
-					privateLookupInMethodHandle = mainConsulter.findStatic(
-						MethodHandles.class, "privateLookupIn",
-						MethodType.methodType(MethodHandles.Lookup.class, Class.class, MethodHandles.Lookup.class)
-					);
-				} catch (Throwable exc) {
-					Throwables.throwException(exc);
-				}
-			}
-
-			@Override
-			void initNativeFunctionSupplier() {
-				this.driverFunctionSupplier = new DriverFunctionSupplierUnsafe.ForJava9(this.driver);
-			}
-
-			@Override
-			void initDefineHookClassFunction() {
-				driver.hookClassDefiner = driverFunctionSupplier.getDefineHookClassFunction(mainConsulter, privateLookupInMethodHandle);
-			}
-
-			@Override
-			void initConsulterRetriever() {
-				try (
-					InputStream inputStream =
-						Resources.getAsInputStream(this.getClass().getClassLoader(), this.getClass().getPackage().getName().replace(".", "/") + "/ConsulterRetrieverForJDK9.bwc"
-					);
-				) {
-					Class<?> methodHandleWrapperClass = driver.defineHookClass(
-						Class.class, Streams.toByteArray(inputStream)
-					);
-					driver.setFieldValue(methodHandleWrapperClass, methodHandleWrapperClass.getDeclaredField("consulterRetriever"), privateLookupInMethodHandle);
-					driver.consulterRetriever = driver.allocateInstance(methodHandleWrapperClass);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize consulter retriever", exc));
-				}
-
-			}
-
-			@Override
-			void initAccessibleSetter() {
-				try (
-					InputStream inputStream =
-						Resources.getAsInputStream(this.getClass().getClassLoader(), this.getClass().getPackage().getName().replace(".", "/") + "/AccessibleSetterInvokerForJDK9.bwc"
-					);
-				) {
-					Class<?> methodHandleWrapperClass = driver.defineHookClass(
-						AccessibleObject.class, Streams.toByteArray(inputStream)
-					);
-					driver.setFieldValue(methodHandleWrapperClass, methodHandleWrapperClass.getDeclaredField("methodHandleRetriever"), driver.getConsulter(methodHandleWrapperClass));
-					driver.accessibleSetter = driver.allocateInstance(methodHandleWrapperClass);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize accessible setter", exc));
-				}
-			}
-
-
-			@Override
-			void initConstructorInvoker() {
-				try {
-					Class<?> nativeAccessorImplClass = Class.forName("jdk.internal.reflect.NativeConstructorAccessorImpl");
-					Method method = nativeAccessorImplClass.getDeclaredMethod("newInstance0", Constructor.class, Object[].class);
-					MethodHandles.Lookup consulter = driver.getConsulter(nativeAccessorImplClass);
-					driver.constructorInvoker = consulter.unreflect(method);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize constructor invoker", exc));
-				}
-			}
-
-			@Override
-			void initMethodInvoker() {
-				try {
-					Class<?> nativeMethodAccessorImplClass = Class.forName("jdk.internal.reflect.NativeMethodAccessorImpl");
-					Method invoker = nativeMethodAccessorImplClass.getDeclaredMethod("invoke0", Method.class, Object.class, Object[].class);
-					MethodHandles.Lookup consulter = driver.getConsulter(nativeMethodAccessorImplClass);
-					driver.methodInvoker = consulter.unreflect(invoker);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize method invoker", exc));
-				}
-			}
-
-
-			@Override
-			void initSpecificElements() {
-				try {
-					MethodHandles.Lookup classLoaderConsulter = driver.consulterRetriever.apply(ClassLoader.class);
-					MethodType methodType = MethodType.methodType(Package.class, String.class);
-					MethodHandle methodHandle = classLoaderConsulter.findSpecial(ClassLoader.class, "getDefinedPackage", methodType, ClassLoader.class);
-					driver.packageRetriever = (classLoader, packageName) -> {
-						try {
-							return (Package)methodHandle.invokeExact(classLoader, packageName);
-						} catch (Throwable exc) {
-							return Throwables.throwException(exc);
-						}
-					};
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize package retriever", exc));
-				}
-				try {
-					driver.builtinClassLoaderClass = Class.forName("jdk.internal.loader.BuiltinClassLoader");
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize builtin class loader class", exc));
-				}
-				try (
-					InputStream inputStream =
-						Resources.getAsInputStream(this.getClass().getClassLoader(), this.getClass().getPackage().getName().replace(".", "/") + "/ClassLoaderDelegateForJDK9.bwc"
-					);
-				) {
-					driver.classLoaderDelegateClass = driver.defineHookClass(
-						driver.builtinClassLoaderClass, Streams.toByteArray(inputStream)
-					);
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize class loader delegate class", exc));
-				}
-				try {
-					initDeepConsulterRetriever();
-				} catch (Throwable exc) {
-					Throwables.throwException(new InitializationException("Could not initialize deep consulter retriever", exc));
-				}
-			}
-
-			void initDeepConsulterRetriever() throws Throwable {
-				Constructor<MethodHandles.Lookup> lookupCtor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
-				driver.setAccessible(lookupCtor, true);
-				MethodHandle methodHandle = lookupCtor.newInstance(MethodHandles.Lookup.class, -1).findConstructor(
-					MethodHandles.Lookup.class, MethodType.methodType(void.class, Class.class, int.class)
-				);
-				driver.consulterRetriever = cls -> {
-					try {
-						return (MethodHandles.Lookup)methodHandle.invoke(cls, -1);
-					} catch (Throwable exc) {
-						return Throwables.throwException(exc);
-					}
-				};
-			}
-
-			@Override
-			public void close() {
-				super.close();
-				this.mainConsulter = null;
-				this.privateLookupInMethodHandle = null;
-			}
-
-		}
-
-		static class ForJava14 extends ForJava9 {
-
-			ForJava14(DefaultDriver driver) {
-				super(driver);
-			}
-
-			@Override
-			void initDeepConsulterRetriever() throws Throwable {
-				Constructor<?> lookupCtor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class);
-				driver.setAccessible(lookupCtor, true);
-				MethodHandle mthHandle = ((MethodHandles.Lookup)lookupCtor.newInstance(MethodHandles.Lookup.class, null, -1)).findConstructor(
-					MethodHandles.Lookup.class, MethodType.methodType(void.class, Class.class, Class.class, int.class)
-				);
-				driver.consulterRetriever = cls -> {
-					try {
-						return (MethodHandles.Lookup)mthHandle.invoke(cls, null, -1);
-					} catch (Throwable exc) {
-						return Throwables.throwException(exc);
-					}
-				};
-			}
-		}
-
-		static class ForJava17 extends ForJava14 {
-
-			ForJava17(DefaultDriver driver) {
-				super(driver);
-			}
-
-			@Override
-			void initNativeFunctionSupplier() {
-				this.driverFunctionSupplier = new DriverFunctionSupplierUnsafe.ForJava17(this.driver);
-			}
-
-		}
-
-	}
-
 }

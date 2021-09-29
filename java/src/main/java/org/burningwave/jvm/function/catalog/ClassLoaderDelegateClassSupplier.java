@@ -28,24 +28,57 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.function.catalog;
 
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
+import org.burningwave.jvm.function.template.Supplier;
+import org.burningwave.jvm.util.Classes;
 import org.burningwave.jvm.util.ObjectProvider;
+import org.burningwave.jvm.util.Resources;
+import org.burningwave.jvm.util.Streams;
 
 
-public class HybridDriver extends DefaultDriver {
+public interface ClassLoaderDelegateClassSupplier extends Supplier<Class<?>> {
 	
-
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
+	public static class ForJava7 implements ClassLoaderDelegateClassSupplier{
+		
+		public ForJava7(Map<Object, Object> context) {}
+		
+		@Override
+		public Class<?> get() {
+			return null;
+		}
+		
 	}
-
+	
+	public static class ForJava9 implements ClassLoaderDelegateClassSupplier{
+		Class<?> cls;
+		
+		public ForJava9(Map<Object, Object> context) throws ClassNotFoundException, IOException {
+			try (
+				InputStream inputStream =
+					Resources.getAsInputStream(this.getClass().getClassLoader(), Classes.class.getPackage().getName().replace(".", "/") + "/ClassLoaderDelegateForJDK9.bwc"
+				);
+			) {
+				ObjectProvider functionProvider = ObjectProvider.get(context);
+				cls = functionProvider.getOrBuildObject(
+					DefineHookClassFunction.class, context
+				).apply(
+					functionProvider.getOrBuildObject(BuiltinClassLoaderClassSupplier.class, context).get(), 
+					Streams.toByteArray(inputStream)
+				);
+			}
+		}
+		
+		@Override
+		public Class<?> get() {
+			return cls;
+		}
+		
+	}
+	
 }

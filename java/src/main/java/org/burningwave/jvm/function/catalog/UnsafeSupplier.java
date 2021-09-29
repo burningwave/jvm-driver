@@ -28,24 +28,33 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.function.catalog;
 
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
-import org.burningwave.jvm.util.ObjectProvider;
+import org.burningwave.jvm.function.template.Supplier;
+
+import sun.misc.Unsafe;
 
 
-public class HybridDriver extends DefaultDriver {
+@SuppressWarnings("all")
+public interface UnsafeSupplier extends Supplier<sun.misc.Unsafe> {
+
+	public static class ForJava7 implements UnsafeSupplier {
+		sun.misc.Unsafe unsafe;
+		
+		public ForJava7(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+			Field theUnsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+			theUnsafeField.setAccessible(true);
+			this.unsafe = (sun.misc.Unsafe)theUnsafeField.get(null);
+		}
+		
+		@Override
+		public sun.misc.Unsafe get() {
+			return unsafe;
+		}
 	
-
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
 	}
-
 }

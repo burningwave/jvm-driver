@@ -28,24 +28,41 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package org.burningwave.jvm.util;
 
+import java.util.Collection;
+import java.util.Iterator;
 
-import java.util.Map;
+public class Strings {
 
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
-import org.burningwave.jvm.util.ObjectProvider;
+	public static String compile(String message, Object... arguments) {
+		for (Object obj : arguments) {
+			message = message.replaceFirst("\\{\\}", obj == null ? "null" : clear(obj.toString()));
+		}
+		return message;
+	}
 
+	private static String clear(String text) {
+		return text
+		.replace("\\", "\\\\\\")
+		.replace("{", "\\{")
+		.replace("}", "\\}")
+		.replace("(", "\\(")
+		.replace(")", "\\)")
+		.replace(".", "\\.")
+		.replace("$", "\\$");
+	}
 
-public class HybridDriver extends DefaultDriver {
-	
-
-	void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
+	public static String join(String delimiter, Collection<?> objs) {
+		String joinedString = "";
+		Iterator<?> objsItr = objs.iterator();
+		while (objsItr.hasNext()) {
+			joinedString += objsItr.next().toString();
+			if (objsItr.hasNext()) {
+				joinedString += delimiter;
+			}
+		}
+		return joinedString;
 	}
 
 }

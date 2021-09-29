@@ -45,7 +45,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>${project_jdk_version}</maven.compiler.target>
     	<maven.compiler.source>${project_jdk_version}</maven.compiler.source>
-		<org.codehaus.mojo.option.gcc-target-artifact-arch>-m64</org.codehaus.mojo.option.gcc-target-artifact-arch>
 		<org.codehaus.mojo.option.spec-include-dir-one>${java.home}/include/</org.codehaus.mojo.option.spec-include-dir-one>
 		<org.codehaus.mojo.option.spec-include-dir-three>${java.home}/lib/</org.codehaus.mojo.option.spec-include-dir-three>
 		<org.codehaus.mojo.option.gcc-compiler.flags>-O3 -fPIC</org.codehaus.mojo.option.gcc-compiler.flags>
@@ -111,18 +110,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>x86</id>
-			<activation>
-				<property>
-					<name>sun.arch.data.model</name>
-					<value>32</value>
-				</property>
-			</activation>
-			<properties>
-				<org.codehaus.mojo.option.gcc-target-artifact-arch>-m32</org.codehaus.mojo.option.gcc-target-artifact-arch>
-			</properties>
-		</profile>
-		<profile>
 			<id>debug</id>
 			<activation>
 				<property>
@@ -152,7 +139,7 @@
 						<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
 					</compilerStartOptions>
 					<compilerEndOptions>
-						<compilerEndOption>${org.codehaus.mojo.option.gcc-target-artifact-arch}</compilerEndOption>
+						<compilerEndOption>-m${sun.arch.data.model}</compilerEndOption>
 						<compilerEndOption>${org.codehaus.mojo.option.gcc-compiler.flags}</compilerEndOption>
 					</compilerEndOptions>
 					<linkerStartOptions>
@@ -162,7 +149,7 @@
 						<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-three}</linkerStartOption>
 					</linkerStartOptions>
 					<linkerEndOptions>
-						<linkerEndOption>${org.codehaus.mojo.option.gcc-target-artifact-arch}</linkerEndOption>
+						<linkerEndOption>-m${sun.arch.data.model}</linkerEndOption>
 						<linkerEndOption>-lstdc++</linkerEndOption>
 					</linkerEndOptions>
 					<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>

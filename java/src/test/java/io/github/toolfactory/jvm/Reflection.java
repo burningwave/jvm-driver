@@ -28,13 +28,14 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.toolfactory.jvm;
+package io.github.toolfactory.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -71,6 +72,7 @@ public class Reflection {
 					return driver.getDeclaredMethods(input);
 				}
 			},
+			new HashSet<Class<?>>(),
 			new LinkedHashSet<Method>()
 		);		
 	}
@@ -111,6 +113,7 @@ public class Reflection {
 					return driver.getDeclaredFields(input);
 				}
 			},
+			new HashSet<Class<?>>(),
 			new LinkedHashSet<Field>()
 		);		
 	}
@@ -134,26 +137,31 @@ public class Reflection {
 					return driver.getDeclaredConstructors(input);
 				}
 			},
+			new HashSet<Class<?>>(),
 			new LinkedHashSet<Constructor<?>>()
 		);		
 	}
 	
 	private <M extends Member> Collection<M> getAll(
 		Class<?> cls, 
-		Function<Class<?>, M[]> memberSupplier, 
+		Function<Class<?>, M[]> memberSupplier,
+		Collection<Class<?>> visitedInterfaces,
 		Collection<M> collection
 	) {	
 		for (M member : memberSupplier.apply(cls)) {
 			collection.add(member);
 		}
 		for (Class<?> interf : cls.getInterfaces()) {
-			getAll(interf, memberSupplier, collection);
+			if (visitedInterfaces.add(interf)) {
+				getAll(interf, memberSupplier, visitedInterfaces, collection);
+			}
 		}
 		Class<?> superClass = cls.getSuperclass();
 		return superClass != null ?
 			getAll(
 				superClass,
 				memberSupplier,
+				visitedInterfaces,
 				collection
 			) : 
 			collection;
@@ -182,3 +190,4 @@ public class Reflection {
 		}
 	}
 }
+

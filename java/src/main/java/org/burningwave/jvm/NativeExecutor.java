@@ -124,7 +124,7 @@ public class NativeExecutor {
 			}
 		} else {
 			if(!fieldType.isPrimitive()) {
-				setFieldValue(target, field, value);
+				setObjectFieldValue(target, field, value);
 			} else if (fieldType == int.class) {
 				setIntegerFieldValue(target, field, (Integer)value);
 			} else if (fieldType == long.class) {

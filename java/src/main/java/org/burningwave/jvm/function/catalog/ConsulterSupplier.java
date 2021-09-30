@@ -36,7 +36,19 @@ import java.util.Map;
 
 
 public abstract class ConsulterSupplier extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplier {
-
+	
+	public static class Hybrid extends	ConsulterSupplier {
+		
+		public static class ForJava17 extends Hybrid {
+			
+			public ForJava17(Map<Object, Object> context) {
+				consulter = MethodHandles.lookup();
+				org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(consulter, -1);
+			}
+			
+		}
+	}
+	
 	static class Native extends	ConsulterSupplier {
 		
 		static class ForJava7 extends Native {

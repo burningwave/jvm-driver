@@ -38,7 +38,7 @@
     </parent>
 	
 	<artifactId>jvm-driver</artifactId>
-  	<version>3.1.1-SNAPSHOT</version>
+  	<version>4.0.0-SNAPSHOT</version>
 	
 	<packaging>jar</packaging>
 	
@@ -97,6 +97,7 @@
 
 		<junit-jupiter.version>5.7.0</junit-jupiter.version>
 		<junit.version>1.7.0</junit.version>
+		<jvm-driver.version>6.2.0</jvm-driver.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
@@ -104,9 +105,21 @@
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
 	</properties>
-
+	
 	<dependencies>
-
+		
+			<dependency>
+				<groupId>io.github.toolfactory</groupId>
+				<artifactId>jvm-driver</artifactId>
+				<version>${jvm-driver.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>io.github.toolfactory</groupId>
+						<artifactId>narcissus</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+		
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
@@ -153,12 +166,6 @@
 				</includes>
 			</resource>
 			<resource>
-				<directory>${project.basedir}/../java-hook/src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-			</resource>
-			<resource>
 				<directory>${project.basedir}/../native/src/main/c-c++</directory>
 				<includes>
 					<include>**</include>
@@ -166,12 +173,6 @@
 			</resource>
 		</resources>
 		<testResources>
-			<testResource>
-				<directory>${project.basedir}/src/test/java</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
 			<testResource>
 				<directory>${project.basedir}/src/test/resources</directory>
 			</testResource>
@@ -193,10 +194,7 @@
                                 <copy toDir="${project.build.directory}/classes/org/burningwave/jvm">
                                 	<fileset dir="${project.basedir}/../native/bin" />
                                 </copy>
-                                <copy file="${project.basedir}/../java-hook/bin/java/lang/ConsulterRetrieverForJDK9.class" tofile="${project.build.directory}/classes/org/burningwave/jvm/function/catalog/ConsulterRetrieverForJDK9.bwc" />
-                                <copy file="${project.basedir}/../java-hook/bin/java/lang/reflect/AccessibleSetterInvokerForJDK9.class" tofile="${project.build.directory}/classes/org/burningwave/jvm/function/catalog/AccessibleSetterInvokerForJDK9.bwc" />
-                                <copy file="${project.basedir}/../java-hook/bin/jdk/internal/loader/ClassLoaderDelegateForJDK9.class" tofile="${project.build.directory}/classes/org/burningwave/jvm/util/ClassLoaderDelegateForJDK9.bwc" />
-						</target>
+							</target>
 						</configuration>
 					</execution>
 				</executions>
@@ -267,11 +265,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${maven-source-plugin.version}</version>
-				<configuration>
-					<excludes>
-						<exclude>**/*.class</exclude>
-					</excludes>
-				</configuration>
 				<executions>
 					<execution>
 						<id>attach-sources</id>

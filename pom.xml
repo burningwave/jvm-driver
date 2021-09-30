@@ -48,7 +48,6 @@
 
     <modules>
         <module>native</module>
-		<module>java-hook</module>
         <module>java</module>
     </modules>
 

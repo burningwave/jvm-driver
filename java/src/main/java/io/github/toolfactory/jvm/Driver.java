@@ -28,7 +28,7 @@
  * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.burningwave.jvm;
+package io.github.toolfactory.jvm;
 
 
 import java.io.Closeable;
@@ -39,6 +39,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
+
+import org.burningwave.jvm.DefaultDriver;
+import org.burningwave.jvm.HybridDriver;
+import org.burningwave.jvm.NativeDriver;
 
 
 public interface Driver extends Closeable {

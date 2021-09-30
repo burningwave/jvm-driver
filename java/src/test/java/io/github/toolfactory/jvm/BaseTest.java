@@ -101,7 +101,7 @@ abstract class BaseTest {
 			assertTrue(charValue == 'a');
 			objectValue.get(10);
 		} catch (Throwable exc) {
-			//exc.printStackTrace();
+			exc.printStackTrace();
 			getReflection().getDriver().throwException(exc);
 		}
 	}

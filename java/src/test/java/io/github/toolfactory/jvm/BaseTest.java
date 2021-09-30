@@ -99,7 +99,6 @@ abstract class BaseTest {
 			reflection.setFieldValue(obj, field, 'a');
 			charValue = reflection.getFieldValue(obj, field);
 			assertTrue(charValue == 'a');
-			objectValue.get(10);
 		} catch (Throwable exc) {
 			exc.printStackTrace();
 			getReflection().getDriver().throwException(exc);

@@ -31,41 +31,11 @@
 package org.burningwave.jvm.function.catalog;
 
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.LambdaConversionException;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.Map;
 
-import org.burningwave.jvm.function.template.Function;
-import org.burningwave.jvm.util.ObjectProvider;
 
-
-@SuppressWarnings("all")
-public interface AllocateInstanceFunction extends Function<Class<?>, Object> {
+public interface AllocateInstanceFunction extends io.github.toolfactory.jvm.function.catalog.AllocateInstanceFunction {
 	
-	public static class ForJava7 implements AllocateInstanceFunction {
-		final sun.misc.Unsafe unsafe;
-		final ThrowExceptionFunction throwExceptionFunction;
-		
-		public ForJava7(Map<Object, Object> context) {
-			ObjectProvider functionProvider = ObjectProvider.get(context);
-			unsafe = functionProvider.getOrBuildObject(UnsafeSupplier.class, context).get();
-			throwExceptionFunction =
-				functionProvider.getOrBuildObject(ThrowExceptionFunction.class, context);
-		}
-
-		@Override
-		public Object apply(Class<?> input) {
-			try {
-				return unsafe.allocateInstance(input);
-			} catch (InstantiationException exc) {
-				return throwExceptionFunction.apply(exc);
-			}
-		}
-		
-	}
-
 	public static abstract class Native implements AllocateInstanceFunction {
 		org.burningwave.jvm.NativeExecutor nativeExecutor;
 		

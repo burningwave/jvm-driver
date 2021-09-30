@@ -40,16 +40,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
-import org.burningwave.jvm.function.template.Consumer;
+
+import io.github.toolfactory.jvm.Info;
+import io.github.toolfactory.jvm.function.template.Consumer;
+import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 public class Files {
 	
-	private static final ThrowExceptionFunction throwExceptionFunction;
+	private static final io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction throwExceptionFunction;
 	
 	static {
 		ObjectProvider functionProvider = new ObjectProvider(
-			"ForJava", 7, 9, 14, 17
+			"ForJava", Info.CRITICAL_VERSIONS
 		);		
 		Map<Object, Object> initializationContext = new HashMap<>();
 		throwExceptionFunction = functionProvider.getOrBuildObject(ThrowExceptionFunction.class, initializationContext);

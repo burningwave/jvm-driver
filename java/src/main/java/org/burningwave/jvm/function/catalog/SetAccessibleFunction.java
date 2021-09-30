@@ -31,89 +31,19 @@
 package org.burningwave.jvm.function.catalog;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.burningwave.jvm.function.template.BiConsumer;
-import org.burningwave.jvm.util.BiConsumerAdapter;
-import org.burningwave.jvm.util.ObjectProvider;
-import org.burningwave.jvm.util.Resources;
-import org.burningwave.jvm.util.Streams;
+import io.github.toolfactory.jvm.function.template.BiConsumer;
 
 
-@SuppressWarnings("unchecked")
-public abstract class SetAccessibleFunction<B> extends BiConsumerAdapter<B, AccessibleObject, Boolean>{
-	ThrowExceptionFunction throwExceptionFunction;
+public abstract class SetAccessibleFunction<B> extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction<B> {
 	
 	public SetAccessibleFunction(Map<Object, Object> context) {
-		ObjectProvider functionProvider = ObjectProvider.get(context);
-		throwExceptionFunction =
-			functionProvider.getOrBuildObject(ThrowExceptionFunction.class, context); 
+		super(context);
 	}
-	
-	public static class ForJava7 extends SetAccessibleFunction<BiConsumer<AccessibleObject, Boolean>> {
-		
-		public ForJava7(Map<Object, Object> context) throws NoSuchMethodException, SecurityException, IllegalAccessException {
-			super(context);
-			final Method accessibleSetterMethod = AccessibleObject.class.getDeclaredMethod("setAccessible0", AccessibleObject.class, boolean.class);
-			ObjectProvider functionProvider = ObjectProvider.get(context);
-			final MethodHandle accessibleSetterMethodHandle = functionProvider.getOrBuildObject(
-				ConsulterSupplier.class, context
-			).get().unreflect(accessibleSetterMethod);
-			setFunction(
-				new BiConsumer<AccessibleObject, Boolean>() {
-					@Override
-					public void accept(AccessibleObject accessibleObject, Boolean flag) {
-						try {
-							accessibleSetterMethodHandle.invoke(accessibleObject, flag);
-						} catch (Throwable exc) {
-							throwExceptionFunction.apply(exc);
-						}
-					}
-				}
-			);
-		}
-		
-		@Override
-		public void accept(AccessibleObject accessibleObject, Boolean flag) {
-			function.accept(accessibleObject, flag);
-		}
-		
-	}
-	
-	
-	public static class ForJava9 extends SetAccessibleFunction<java.util.function.BiConsumer<AccessibleObject, Boolean>> {
-		
-		public ForJava9(Map<Object, Object> context) throws NoSuchMethodException, SecurityException, IllegalAccessException, IOException, NoSuchFieldException {			
-			super(context);
-			try (
-				InputStream inputStream =
-					Resources.getAsInputStream(this.getClass().getClassLoader(), this.getClass().getPackage().getName().replace(".", "/") + "/AccessibleSetterInvokerForJDK9.bwc"
-				);
-			) {	
-				ObjectProvider functionProvider = ObjectProvider.get(context);
-				Class<?> methodHandleWrapperClass = functionProvider.getOrBuildObject(
-					DefineHookClassFunction.class, context
-				).apply(AccessibleObject.class, Streams.toByteArray(inputStream));
-				functionProvider.getOrBuildObject(SetFieldValueFunction.class, context).accept(
-					methodHandleWrapperClass, methodHandleWrapperClass.getDeclaredField("methodHandleRetriever"),
-					functionProvider.getOrBuildObject(ConsulterSupplyFunction.class, context).apply(methodHandleWrapperClass)
-				);
-				setFunction((java.util.function.BiConsumer<AccessibleObject, Boolean>)
-					functionProvider.getOrBuildObject(AllocateInstanceFunction.class, context).apply(methodHandleWrapperClass));
-			}
-		}
-		
-		@Override
-		public void accept(AccessibleObject accessibleObject, Boolean flag) {
-			function.accept(accessibleObject, flag);
-		}
-		
-	}
+
+	ThrowExceptionFunction throwExceptionFunction;
 	
 	public static abstract class Native<B> extends SetAccessibleFunction<B>{		
 		

@@ -39,7 +39,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.burningwave.jvm.function.template.Function;
+import io.github.toolfactory.jvm.function.template.Function;
 
 public class Reflection {
 	private Driver driver;	

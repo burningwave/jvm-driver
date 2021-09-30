@@ -33,49 +33,10 @@ package org.burningwave.jvm.function.catalog;
 
 import java.util.Map;
 
-import org.burningwave.jvm.function.template.Consumer;
-import org.burningwave.jvm.util.ObjectProvider;
-import org.burningwave.jvm.util.Strings;
-
 
 @SuppressWarnings("all")
-public abstract class ThrowExceptionFunction implements Consumer<Throwable> {
+public abstract class ThrowExceptionFunction extends io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction {
 	
-	public<T> T apply(Object exceptionOrMessage, Object... placeHolderReplacements) {
-		Throwable exception = null;
-		if (exceptionOrMessage instanceof String) {
-			StackTraceElement[] stackTraceOfException = null;
-			if (placeHolderReplacements == null || placeHolderReplacements.length == 0) {
-				exception = new Exception((String)exceptionOrMessage);
-			} else {
-				exception = new Exception(Strings.compile((String)exceptionOrMessage, placeHolderReplacements));
-			}
-			StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-			stackTraceOfException = new StackTraceElement[stackTrace.length - 3];
-			System.arraycopy(stackTrace, 3, stackTraceOfException, 0, stackTraceOfException.length);
-			exception.setStackTrace(stackTraceOfException);
-		} else {
-			exception = (Throwable)exceptionOrMessage;
-		}
-		accept(exception);
-		return null;
-	}
-	
-	public static class ForJava7 extends ThrowExceptionFunction {
-		final sun.misc.Unsafe unsafe;
-		
-		public ForJava7(Map<Object, Object> context) {
-			unsafe = ObjectProvider.get(context).getOrBuildObject(UnsafeSupplier.class, context).get();
-		}
-
-		@Override
-		public void accept(Throwable exception) {
-			unsafe.throwException(exception);			
-		}
-
-		
-	}
-
 	public static abstract class Native extends ThrowExceptionFunction {
 		
 		public static class ForJava7 extends Native {

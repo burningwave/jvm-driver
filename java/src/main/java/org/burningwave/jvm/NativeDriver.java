@@ -41,15 +41,16 @@ import org.burningwave.jvm.function.catalog.GetLoadedPackagesFunction;
 import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
-import org.burningwave.jvm.util.BiConsumerAdapter;
-import org.burningwave.jvm.util.ObjectProvider;
+
+import io.github.toolfactory.jvm.util.BiConsumerAdapter;
+import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 @SuppressWarnings("unchecked")
 public class NativeDriver extends HybridDriver {
 	
 	
-	void initExceptionThrower(
+	protected void initExceptionThrower(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {
@@ -59,7 +60,7 @@ public class NativeDriver extends HybridDriver {
 	}
 	
 	
-	void initLoadedPackagesRetriever(
+	protected void initLoadedPackagesRetriever(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {
@@ -70,7 +71,7 @@ public class NativeDriver extends HybridDriver {
 
 	
 	@Override
-	void initLoadedClassesRetriever(
+	protected void initLoadedClassesRetriever(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {
@@ -81,7 +82,7 @@ public class NativeDriver extends HybridDriver {
 
 	
 	@Override
-	void initFieldValueSetter(
+	protected void initFieldValueSetter(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {
@@ -92,7 +93,7 @@ public class NativeDriver extends HybridDriver {
 
 	
 	@Override
-	void initFieldValueRetriever(
+	protected void initFieldValueRetriever(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {
@@ -103,7 +104,7 @@ public class NativeDriver extends HybridDriver {
 
 	
 	@Override		
-	void initAllocateInstanceInvoker(
+	protected void initAllocateInstanceInvoker(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {
@@ -114,7 +115,7 @@ public class NativeDriver extends HybridDriver {
 	
 	
 	@Override
-	void initAccessibleSetter(
+	protected void initAccessibleSetter(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {

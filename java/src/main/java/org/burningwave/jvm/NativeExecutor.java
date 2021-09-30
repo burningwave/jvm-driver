@@ -34,8 +34,9 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import org.burningwave.jvm.util.Classes;
 import org.burningwave.jvm.util.Libraries;
+
+import io.github.toolfactory.jvm.util.Classes;
 
 
 public class NativeExecutor {

@@ -32,37 +32,16 @@ package org.burningwave.jvm.function.catalog;
 
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.GetFieldValueFunction.Native;
-import org.burningwave.jvm.function.template.Function;
-import org.burningwave.jvm.util.ObjectProvider;
+import io.github.toolfactory.jvm.function.catalog.GetDeclaredFieldFunction;
+import io.github.toolfactory.jvm.function.catalog.UnsafeSupplier;
+import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 @SuppressWarnings("all")
-public abstract class GetLoadedClassesFunction implements Function<ClassLoader, Collection<Class<?>>> {
-	
-	public static class ForJava7 extends GetLoadedClassesFunction {
-		final sun.misc.Unsafe unsafe;
-		final Long loadedClassesVectorMemoryOffset;
-		
-		public ForJava7(Map<Object, Object> context) {
-			ObjectProvider functionProvider = ObjectProvider.get(context);
-			unsafe = functionProvider.getOrBuildObject(UnsafeSupplier.class, context).get();
-			GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
-			loadedClassesVectorMemoryOffset = unsafe.objectFieldOffset(
-				getDeclaredFieldFunction.apply(ClassLoader.class, "classes")
-			);
-		}		
-		
-		@Override
-		public Collection<Class<?>> apply(ClassLoader classLoader) {
-			return (Collection<Class<?>>)unsafe.getObject(classLoader, loadedClassesVectorMemoryOffset);
-		}
-		
-	}
+public abstract class GetLoadedClassesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedClassesFunction {
 	
 	public static abstract class Native extends GetLoadedClassesFunction {
 		

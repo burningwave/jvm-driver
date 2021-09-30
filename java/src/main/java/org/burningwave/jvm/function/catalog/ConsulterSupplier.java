@@ -32,66 +32,11 @@ package org.burningwave.jvm.function.catalog;
 
 
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.burningwave.jvm.function.template.Supplier;
-import org.burningwave.jvm.util.ObjectProvider;
 
+public abstract class ConsulterSupplier extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplier {
 
-@SuppressWarnings("restriction")
-public abstract class ConsulterSupplier implements Supplier<MethodHandles.Lookup> {
-	MethodHandles.Lookup consulter;
-	
-	@Override
-	public MethodHandles.Lookup get() {
-		return consulter;
-	}
-	
-	
-	public static class ForJava7 extends ConsulterSupplier {
-		
-		public ForJava7(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-			Field modes = MethodHandles.Lookup.class.getDeclaredField("allowedModes");
-			consulter = MethodHandles.lookup();
-			modes.setAccessible(true);
-			modes.setInt(consulter, -1);
-		}
-		
-	}
-	
-	
-	public static class ForJava9 extends ConsulterSupplier {
-		
-		public ForJava9(Map<Object, Object> context) {
-			consulter = MethodHandles.lookup();
-		}
-		
-	}
-
-	
-	public static class ForJava17 extends ConsulterSupplier {
-		
-		public ForJava17(Map<Object, Object> context) {
-			sun.misc.Unsafe unsafe = ObjectProvider.get(context).getOrBuildObject(UnsafeSupplier.class, context).get();
-			final long allowedModesFieldMemoryOffset = io.github.toolfactory.jvm.Info.Provider.getInfoInstance().is64Bit() ? 12L : 8L;
-			consulter = MethodHandles.lookup();
-			unsafe.putInt(consulter, allowedModesFieldMemoryOffset, -1);
-		}
-		
-	}
-	
-	public static class Hybrid extends	ConsulterSupplier {		
-		
-		public static class ForJava17 extends Hybrid {
-			public ForJava17(Map<Object, Object> context) {
-				consulter = MethodHandles.lookup();
-				org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(consulter, -1);
-			}
-			
-		}
-	}
-	
 	static class Native extends	ConsulterSupplier {
 		
 		static class ForJava7 extends Native {

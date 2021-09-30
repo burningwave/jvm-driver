@@ -32,37 +32,14 @@ package org.burningwave.jvm.function.catalog;
 
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.GetLoadedClassesFunction.Native;
-import org.burningwave.jvm.function.template.Function;
-import org.burningwave.jvm.util.ObjectProvider;
+import io.github.toolfactory.jvm.function.catalog.GetDeclaredFieldFunction;
+import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 @SuppressWarnings("all")
-public abstract class GetLoadedPackagesFunction implements Function<ClassLoader, Map<String, ?>> {
-	
-	public static class ForJava7 extends GetLoadedPackagesFunction {
-		final sun.misc.Unsafe unsafe;
-		final Long fieldOffset;
-		
-		public ForJava7(Map<Object, Object> context) {
-			ObjectProvider functionProvider = ObjectProvider.get(context);
-			unsafe = functionProvider.getOrBuildObject(UnsafeSupplier.class, context).get();
-			GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
-			fieldOffset = unsafe.objectFieldOffset(
-				getDeclaredFieldFunction.apply(ClassLoader.class, "packages")
-			);
-		}
-		
-		@Override
-		public Map<String, ?> apply(ClassLoader classLoader) {
-			return (Map<String, ?>)unsafe.getObject(classLoader, fieldOffset);
-		}		
-		
-	}
-	
+public abstract class GetLoadedPackagesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedPackagesFunction {
 	
 	public static abstract class Native extends GetLoadedPackagesFunction {
 		

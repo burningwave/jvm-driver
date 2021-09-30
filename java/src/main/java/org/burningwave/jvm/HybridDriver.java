@@ -34,13 +34,15 @@ package org.burningwave.jvm;
 import java.util.Map;
 
 import org.burningwave.jvm.function.catalog.ConsulterSupplier;
-import org.burningwave.jvm.util.ObjectProvider;
+
+import io.github.toolfactory.jvm.DefaultDriver;
+import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 public class HybridDriver extends DefaultDriver {
 	
 
-	void initHookClassDefiner(
+	protected void initHookClassDefiner(
 		ObjectProvider functionProvider,
 		Map<Object, Object> initializationContext
 	) {

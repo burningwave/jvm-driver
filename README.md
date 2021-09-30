@@ -51,29 +51,29 @@ All JNI methods used by the native and the hybrid driver are supplied by a custo
 
 To create a driver a driver instance you should use this code:
 ```java
-org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.getNew();
+io.github.toolfactory.jvm.Driver driver = io.github.toolfactory.jvm.Driver.getNew();
 ```
 
-The driver type returned by the method `org.burningwave.jvm.Driver.Factory.getNew()` is **the first driver that can be initialized among the default, hybrid and native drivers respectively**.
+The driver type returned by the method `io.github.toolfactory.jvm.Driver.Factory.getNew()` is **the first driver that can be initialized among the default, hybrid and native drivers respectively**.
 
 If you need to create a specific driver type you should use:
 
 * this code to create a default driver instance:
 
 ```java
-org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.Factory.getNewDefault();
+io.github.toolfactory.jvm.Driver driver = io.github.toolfactory.jvm.Driver.Factory.getNewDefault();
 ```
 
 * this code to create an hybrid driver instance:
 
 ```java
-org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.Factory.getNewHybrid();
+io.github.toolfactory.jvm.Driver driver = io.github.toolfactory.jvm.Driver.Factory.getNewHybrid();
 ```
 
 * this code to create a native driver instance:
 
 ```java
-org.burningwave.jvm.Driver driver = org.burningwave.jvm.Driver.Factory.getNewNative();
+io.github.toolfactory.jvm.Driver driver = io.github.toolfactory.jvm.Driver.Factory.getNewNative();
 ```
 
 <br/>

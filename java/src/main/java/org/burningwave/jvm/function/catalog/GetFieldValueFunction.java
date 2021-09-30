@@ -122,45 +122,7 @@ public interface GetFieldValueFunction extends BiFunction<Object, Field, Object>
 
 			@Override
 			public Object apply(Object target, Field field) {
-				Class<?> fieldType = field.getType();
-				if (Modifier.isStatic(field.getModifiers())) {
-					target = field.getDeclaringClass();
-					if(!fieldType.isPrimitive()) {
-						return nativeExecutor.getStaticFieldValue((Class<?>)target, field);
-					} else if (fieldType == int.class) {
-						return nativeExecutor.getStaticIntegerFieldValue((Class<?>)target, field);
-					} else if (fieldType == long.class) {
-						return nativeExecutor.getStaticLongFieldValue((Class<?>)target, field);
-					} else if (fieldType == float.class) {
-						return nativeExecutor.getStaticFloatFieldValue((Class<?>)target, field);
-					} else if (fieldType == double.class) {
-						return nativeExecutor.getStaticDoubleFieldValue((Class<?>)target, field);
-					} else if (fieldType == boolean.class) {
-						return nativeExecutor.getStaticBooleanFieldValue((Class<?>)target, field);
-					} else if (fieldType == byte.class) {
-						return nativeExecutor.getStaticByteFieldValue((Class<?>)target, field);
-					} else {
-						return nativeExecutor.getStaticCharacterFieldValue((Class<?>)target, field);
-					}
-				} else {
-					if(!fieldType.isPrimitive()) {
-						return nativeExecutor.getFieldValue(target, field);
-					} else if (fieldType == int.class) {
-						return nativeExecutor.getIntegerFieldValue(target, field);
-					} else if (fieldType == long.class) {
-						return nativeExecutor.getLongFieldValue(target, field);
-					} else if (fieldType == float.class) {
-						return nativeExecutor.getFloatFieldValue(target, field);
-					} else if (fieldType == double.class) {
-						return nativeExecutor.getDoubleFieldValue(target, field);
-					} else if (fieldType == boolean.class) {
-						return nativeExecutor.getBooleanFieldValue(target, field);
-					} else if (fieldType == byte.class) {
-						return nativeExecutor.getByteFieldValue(target, field);
-					} else {
-						return nativeExecutor.getCharacterFieldValue(target, field);
-					}
-				}
+				return nativeExecutor.getFieldValue(target, field);
 			}
 		}
 		

@@ -40,10 +40,7 @@
 		extern "C" {
 	#endif
 
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
-	  (JNIEnv *, jobject, jclass);
-
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getFieldValue)
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getObjectFieldValue)
 	  (JNIEnv *, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getIntegerFieldValue)
@@ -67,7 +64,7 @@
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getCharacterFieldValue)
 	  (JNIEnv *, jobject, jobject, jobject);
 
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticFieldValue)
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticObjectFieldValue)
 	  (JNIEnv *, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticIntegerFieldValue)
@@ -91,13 +88,7 @@
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticCharacterFieldValue)
 	  (JNIEnv *, jobject, jclass, jobject);
 
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAccessible)
-	  (JNIEnv *, jobject, jobject, jboolean);
-
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAllowedModes)
-	  (JNIEnv *, jobject, jobject, jint);
-
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setFieldValue)
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setObjectFieldValue)
 	  (JNIEnv *, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setIntegerFieldValue)
@@ -121,7 +112,7 @@
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setCharacterFieldValue)
 	  (JNIEnv *, jobject, jobject, jobject, jobject);
 
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticFieldValue)
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticObjectFieldValue)
 	  (JNIEnv *, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticIntegerFieldValue)
@@ -144,6 +135,15 @@
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticCharacterFieldValue)
 	  (JNIEnv *, jobject, jclass, jobject, jobject);
+
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
+	  (JNIEnv *, jobject, jclass);
+
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAccessible)
+	  (JNIEnv *, jobject, jobject, jboolean);
+
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAllowedModes)
+	  (JNIEnv *, jobject, jobject, jint);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)
 		(JNIEnv* , jclass, jthrowable);

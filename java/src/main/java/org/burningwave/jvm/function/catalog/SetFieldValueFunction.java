@@ -139,52 +139,8 @@ public abstract class SetFieldValueFunction implements TriConsumer<Object, Field
 			}
 
 			@Override
-			public void accept(Object origTarget, Field field, Object value) {
-				if(value != null && !Classes.isAssignableFrom(field.getType(), value.getClass())) {
-					throwExceptionFunction.apply("Value {} is not assignable to {}", value , field.getName());
-				}
-				Class<?> fieldType = field.getType();
-				Object target = Modifier.isStatic(field.getModifiers())?
-					field.getDeclaringClass() :
-					origTarget;
-				if (Modifier.isStatic(field.getModifiers())) {
-					target = field.getDeclaringClass();
-					if(!fieldType.isPrimitive()) {
-						nativeExecutor.setStaticFieldValue((Class<?>)target, field, value);
-					} else if (fieldType == int.class) {
-						nativeExecutor.setStaticIntegerFieldValue((Class<?>)target, field, (Integer)value);
-					} else if (fieldType == long.class) {
-						nativeExecutor.setStaticLongFieldValue((Class<?>)target, field, (Long)value);
-					} else if (fieldType == float.class) {
-						nativeExecutor.setStaticFloatFieldValue((Class<?>)target, field, (Float)value);
-					} else if (fieldType == double.class) {
-						nativeExecutor.setStaticDoubleFieldValue((Class<?>)target, field, (Double)value);
-					} else if (fieldType == boolean.class) {
-						nativeExecutor.setStaticBooleanFieldValue((Class<?>)target, field, (Boolean)value);
-					} else if (fieldType == byte.class) {
-						nativeExecutor.setStaticByteFieldValue((Class<?>)target, field, (Byte)value);
-					} else {
-						nativeExecutor.setStaticCharacterFieldValue((Class<?>)target, field, (Character)value);
-					}
-				} else {
-					if(!fieldType.isPrimitive()) {
-						nativeExecutor.setFieldValue(target, field, value);
-					} else if (fieldType == int.class) {
-						nativeExecutor.setIntegerFieldValue(target, field, (Integer)value);
-					} else if (fieldType == long.class) {
-						nativeExecutor.setLongFieldValue(target, field, (Long)value);
-					} else if (fieldType == float.class) {
-						nativeExecutor.setFloatFieldValue(target, field, (Float)value);
-					} else if (fieldType == double.class) {
-						nativeExecutor.setDoubleFieldValue(target, field, (Double)value);
-					} else if (fieldType == boolean.class) {
-						nativeExecutor.setBooleanFieldValue(target, field, (Boolean)value);
-					} else if (fieldType == byte.class) {
-						nativeExecutor.setByteFieldValue(target, field, (Byte)value);
-					} else {
-						nativeExecutor.setCharacterFieldValue(target, field, (Character)value);
-					}
-				}	
+			public void accept(Object target, Field field, Object value) {
+				nativeExecutor.setFieldValue(target, field, value);
 			}
 		}
 	}

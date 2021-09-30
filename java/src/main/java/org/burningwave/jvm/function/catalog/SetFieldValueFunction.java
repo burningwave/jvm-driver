@@ -135,7 +135,7 @@ public abstract class SetFieldValueFunction implements TriConsumer<Object, Field
 			
 			public ForJava7(Map<Object, Object> context) {
 				super(context);
-				nativeExecutor = nativeExecutor.getInstance();
+				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
 			}
 
 			@Override

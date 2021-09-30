@@ -49,16 +49,4 @@ public abstract class ConsulterSupplier extends io.github.toolfactory.jvm.functi
 		}
 	}
 	
-	static class Native extends	ConsulterSupplier {
-		
-		static class ForJava7 extends Native {
-			
-			ForJava7(Map<Object, Object> context) {
-				consulter = MethodHandles.lookup();
-				org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(consulter, -1);
-			}
-			
-		}
-	}
-	
 }

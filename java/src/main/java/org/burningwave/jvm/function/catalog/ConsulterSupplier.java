@@ -32,11 +32,9 @@ package org.burningwave.jvm.function.catalog;
 
 
 import java.lang.invoke.MethodHandles;
-
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.burningwave.jvm.Info;
 import org.burningwave.jvm.function.template.Supplier;
 import org.burningwave.jvm.util.ObjectProvider;
 
@@ -76,7 +74,7 @@ public abstract class ConsulterSupplier implements Supplier<MethodHandles.Lookup
 		
 		public ForJava17(Map<Object, Object> context) {
 			sun.misc.Unsafe unsafe = ObjectProvider.get(context).getOrBuildObject(UnsafeSupplier.class, context).get();
-			final long allowedModesFieldMemoryOffset = Info.getInstance().is64Bit() ? 12L : 8L;
+			final long allowedModesFieldMemoryOffset = io.github.toolfactory.jvm.Info.Provider.getInfoInstance().is64Bit() ? 12L : 8L;
 			consulter = MethodHandles.lookup();
 			unsafe.putInt(consulter, allowedModesFieldMemoryOffset, -1);
 		}

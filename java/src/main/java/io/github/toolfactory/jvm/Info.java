@@ -32,10 +32,6 @@ package io.github.toolfactory.jvm;
 
 public interface Info {
 	
-	public static Info getInstance() {
-		return org.burningwave.jvm.Info.getInstance();
-	}
-	
 	boolean isCompressedOopsOffOn64BitHotspot();
 
 	boolean isCompressedOopsOffOn64Bit();
@@ -46,4 +42,12 @@ public interface Info {
 
 	int getVersion();
 	
+	
+	public static class Provider {
+		
+		public static Info getInfoInstance() {
+			return org.burningwave.jvm.Info.getInstance();
+		}
+		
+	}
 }

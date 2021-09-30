@@ -36,8 +36,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.TreeSet;
 
-import org.burningwave.jvm.Info;
-
 
 @SuppressWarnings("all")
 public class ObjectProvider {
@@ -51,7 +49,7 @@ public class ObjectProvider {
 	
 	public ObjectProvider(String classSuffix, int... versions) {
 		this.classSuffix = classSuffix;
-		int jVMVersion = Info.getInstance().getVersion();
+		int jVMVersion = io.github.toolfactory.jvm.Info.Provider.getInfoInstance().getVersion();
 		TreeSet<Integer> registeredVersions = new TreeSet<>();
 		for (int i = 0; i < versions.length; i++) {
 			if (jVMVersion >= versions[i]) {

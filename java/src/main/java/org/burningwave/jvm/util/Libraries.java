@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.burningwave.jvm.Info;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 import org.burningwave.jvm.function.template.Consumer;
 
@@ -56,7 +55,7 @@ public class Libraries {
 	}
 
 	private Libraries() {
-		Info jVMInfo = Info.getInstance();
+		io.github.toolfactory.jvm.Info jVMInfo = io.github.toolfactory.jvm.Info.Provider.getInfoInstance();
 		if (jVMInfo.is32Bit()) {
 			conventionedSuffix = "x32";
 		} else if (jVMInfo.is64Bit()) {

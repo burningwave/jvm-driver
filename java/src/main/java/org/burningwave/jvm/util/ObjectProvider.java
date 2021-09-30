@@ -1,11 +1,7 @@
 /*
- * This file is derived from ToolFactory JVM driver.
+ * This file is part of ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
- * Modified by: Roberto Gentili
- *
- * Modifications hosted at: https://github.com/burningwave/jvm-driver
  *
  * --
  *
@@ -36,6 +32,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.TreeSet;
 
+import io.github.toolfactory.jvm.Info;
+
 
 @SuppressWarnings("all")
 public class ObjectProvider {
@@ -49,7 +47,7 @@ public class ObjectProvider {
 	
 	public ObjectProvider(String classSuffix, int... versions) {
 		this.classSuffix = classSuffix;
-		int jVMVersion = io.github.toolfactory.jvm.Info.Provider.getInfoInstance().getVersion();
+		int jVMVersion = Info.Provider.getInfoInstance().getVersion();
 		TreeSet<Integer> registeredVersions = new TreeSet<>();
 		for (int i = 0; i < versions.length; i++) {
 			if (jVMVersion >= versions[i]) {
@@ -66,14 +64,14 @@ public class ObjectProvider {
 		T object = getObject(clazz, context);		
 		context.put(CLASS_NAME, this);
 		for (int version : registeredVersions) {
-			String clsName = className + "$" +  classSuffix + version;
+			String clsName = className + classSuffix + version;
 			try {
 				Class<?> effectiveClass = null;
 				try {
 					effectiveClass = Class.forName(clsName);
 				} catch (ClassNotFoundException exc) {
 					searchedClasses.add(clsName);
-					clsName = className + classSuffix + version;
+					clsName = className + "$" +  classSuffix + version;
 					effectiveClass = Class.forName(clsName);
 				}
 				object = (T) effectiveClass.getDeclaredConstructor(Map.class).newInstance(context);

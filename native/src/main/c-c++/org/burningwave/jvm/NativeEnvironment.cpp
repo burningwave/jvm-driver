@@ -114,11 +114,24 @@ void NativeEnvironment::init(JNIEnv* jNIEnv) {
 		&JNIEnv::GetCharField, &JNIEnv::GetStaticCharField,
 		&JNIEnv::SetCharField, &JNIEnv::SetStaticCharField
 	);
-	this->java_lang_invoke_MethodHandles$Lookup_allowedModesFieldId =
-		jNIEnv->GetFieldID(
+	if (jNIEnv->ExceptionOccurred()) {
+		return;
+	}
+	this->java_lang_invoke_MethodHandles$Lookup_allowedModesFieldId = jNIEnv->GetFieldID(
+		jNIEnv->FindClass("java/lang/invoke/MethodHandles$Lookup"),
+		"allowedModes", "I"
+	);
+	if (jNIEnv->ExceptionOccurred()) {
+		jNIEnv->ExceptionClear();
+		// IBM Semeru JDK support
+		this->java_lang_invoke_MethodHandles$Lookup_allowedModesFieldId = jNIEnv->GetFieldID(
 			jNIEnv->FindClass("java/lang/invoke/MethodHandles$Lookup"),
-			"allowedModes", "I"
+			"accessMode", "I"
 		);
+	}
+	if (jNIEnv->ExceptionOccurred()) {
+		return;
+	}
 	this->java_lang_reflect_AccessibleObject_overrideFieldId =
 		jNIEnv->GetFieldID(
 			jNIEnv->FindClass("java/lang/reflect/AccessibleObject"),

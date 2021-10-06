@@ -39,14 +39,14 @@ import java.util.Map;
 import io.github.toolfactory.jvm.function.catalog.GetDeclaredFieldFunction;
 import io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction;
 import io.github.toolfactory.jvm.function.template.Function;
-import io.github.toolfactory.jvm.util.ClenableSupplier;
+import io.github.toolfactory.jvm.util.CleanableSupplier;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 @SuppressWarnings("all")
-public interface GetLoadedClassesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedClassesFunction {
+public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedClassesRetrieverFunction {
 	
-	public static interface Native extends GetLoadedClassesFunction {
+	public static interface Native extends GetLoadedClassesRetrieverFunction {
 		
 		public static class ForJava7 implements Native {
 			protected Field classesField;
@@ -60,11 +60,11 @@ public interface GetLoadedClassesFunction extends io.github.toolfactory.jvm.func
 			}
 
 			@Override
-			public ClenableSupplier<Collection<Class<?>>> apply(final ClassLoader classLoader) {
+			public CleanableSupplier<Collection<Class<?>>> apply(final ClassLoader classLoader) {
 				if (classLoader == null) {
 					throw new NullPointerException("Input classLoader parameter can't be null");
 				}
-				return new ClenableSupplier<Collection<Class<?>>>() {
+				return new CleanableSupplier<Collection<Class<?>>>() {
 					Collection<Class<?>> classes;
 					
 					@Override
@@ -86,7 +86,7 @@ public interface GetLoadedClassesFunction extends io.github.toolfactory.jvm.func
 				};
 			}
 			
-			public static class ForSemeru extends GetLoadedClassesFunction.ForJava7.ForSemeru {
+			public static class ForSemeru extends GetLoadedClassesRetrieverFunction.ForJava7.ForSemeru {
 				protected org.burningwave.jvm.NativeExecutor nativeExecutor;
 				
 				

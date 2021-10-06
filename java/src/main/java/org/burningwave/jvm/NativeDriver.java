@@ -34,14 +34,14 @@ package org.burningwave.jvm;
 import java.util.Map;
 
 import org.burningwave.jvm.function.catalog.AllocateInstanceFunction;
+import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 import org.burningwave.jvm.function.catalog.GetFieldValueFunction;
-import org.burningwave.jvm.function.catalog.GetLoadedClassesFunction;
+import org.burningwave.jvm.function.catalog.GetLoadedClassesRetrieverFunction;
 import org.burningwave.jvm.function.catalog.GetLoadedPackagesFunction;
 import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
-import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
@@ -66,10 +66,9 @@ public class NativeDriver extends HybridDriver {
 		return GetLoadedPackagesFunction.Native.class;
 	}
 	
-	
 	@Override
-	protected Class<? extends GetLoadedClassesFunction> getGetLoadedClassesFunctionClass() {
-		return GetLoadedClassesFunction.Native.class;
+	protected Class<? extends GetLoadedClassesRetrieverFunction> getGetLoadedClassesRetrieverFunctionClass() {
+		return GetLoadedClassesRetrieverFunction.class;
 	}
 
 	

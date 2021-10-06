@@ -45,7 +45,11 @@ public class NativeExecutor {
 	private NativeExecutor() {}
 
 	static {
-		Libraries.getInstance().loadFor(NativeExecutor.class);
+		try {
+			Libraries.getInstance().loadFor(NativeExecutor.class);
+		} catch (Throwable exc) {
+			exc.printStackTrace();		
+		}
 		INSTANCE = new NativeExecutor();
 	}
 

@@ -52,7 +52,7 @@ public class Files {
 	
 	static {
 		ObjectProvider functionProvider = new ObjectProvider(
-			"ForJava", Info.CRITICAL_VERSIONS
+			Info.CRITICAL_VERSIONS
 		);		
 		Map<Object, Object> initializationContext = new HashMap<>();
 		throwExceptionFunction = functionProvider.getOrBuildObject(ThrowExceptionFunction.class, initializationContext);

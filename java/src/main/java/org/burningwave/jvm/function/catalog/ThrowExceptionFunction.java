@@ -35,11 +35,11 @@ import java.util.Map;
 
 
 @SuppressWarnings("all")
-public abstract class ThrowExceptionFunction extends io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction {
+public interface ThrowExceptionFunction extends io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction {
 	
-	public static abstract class Native extends ThrowExceptionFunction {
+	public static interface Native extends ThrowExceptionFunction {
 		
-		public static class ForJava7 extends Native {
+		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction.Abst implements Native {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			
 			public ForJava7(Map<Object, Object> context) {

@@ -31,7 +31,6 @@
 package org.burningwave.jvm;
 
 
-import java.lang.reflect.AccessibleObject;
 import java.util.Map;
 
 import org.burningwave.jvm.function.catalog.AllocateInstanceFunction;
@@ -42,87 +41,59 @@ import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
-import io.github.toolfactory.jvm.util.BiConsumerAdapter;
+import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
-@SuppressWarnings("unchecked")
 public class NativeDriver extends HybridDriver {
 	
 	
-	protected void initExceptionThrower(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		exceptionThrower = functionProvider.getOrBuildObject(
-			ThrowExceptionFunction.Native.class, initializationContext
-		);
+	@Override
+	protected Map<Object, Object> functionsToMap() {
+		Map<Object, Object> context = super.functionsToMap();
+		ObjectProvider.get(context).getOrBuildObject(ConsulterSupplier.Native.class, context);
+		return context;
 	}
-	
-	
-	protected void initLoadedPackagesRetriever(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		loadedPackagesRetriever = functionProvider.getOrBuildObject(
-			GetLoadedPackagesFunction.Native.class, initializationContext
-		);
-	}
-
 	
 	@Override
-	protected void initLoadedClassesRetriever(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		loadedClassesRetriever = functionProvider.getOrBuildObject(
-			GetLoadedClassesFunction.Native.class, initializationContext
-		);
-	}
-
-	
-	@Override
-	protected void initFieldValueSetter(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		fieldValueSetter = functionProvider.getOrBuildObject(
-			SetFieldValueFunction.Native.class, initializationContext
-		);
-	}
-
-	
-	@Override
-	protected void initFieldValueRetriever(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		fieldValueRetriever = functionProvider.getOrBuildObject(
-			GetFieldValueFunction.Native.class, initializationContext
-		);
-	}
-
-	
-	@Override		
-	protected void initAllocateInstanceInvoker(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		allocateInstanceInvoker = functionProvider.getOrBuildObject(
-			AllocateInstanceFunction.Native.class, initializationContext
-		);
+	protected Class<? extends ThrowExceptionFunction> getThrowExceptionFunctionClass() {
+		return ThrowExceptionFunction.Native.class;
 	}
 	
 	
 	@Override
-	protected void initAccessibleSetter(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		//this cast is necessary to avoid the incompatible types error (no unique maximal instance exists for type variable)
-		accessibleSetter = (BiConsumerAdapter<?, AccessibleObject, Boolean>)functionProvider.getOrBuildObject(
-			SetAccessibleFunction.Native.class, initializationContext
-		);
+	protected Class<? extends GetLoadedPackagesFunction> getGetLoadedPackagesFunctionClass() {
+		return GetLoadedPackagesFunction.Native.class;
+	}
+	
+	
+	@Override
+	protected Class<? extends GetLoadedClassesFunction> getGetLoadedClassesFunctionClass() {
+		return GetLoadedClassesFunction.Native.class;
+	}
+
+	
+	@Override
+	protected Class<? extends SetFieldValueFunction> getSetFieldValueFunctionClass() {
+		return SetFieldValueFunction.Native.class;
+	}
+	
+	
+	@Override
+	protected Class<? extends GetFieldValueFunction> getGetFieldValueFunctionClass() {
+		return GetFieldValueFunction.Native.class;
+	}
+	
+	
+	@Override
+	protected Class<? extends AllocateInstanceFunction> getAllocateInstanceFunctionClass() {
+		return AllocateInstanceFunction.Native.class;
+	}
+	
+
+	@Override
+	protected Class<? extends SetAccessibleFunction> getSetAccessibleFunctionClass() {
+		return SetAccessibleFunction.Native.class;
 	}
 
 }

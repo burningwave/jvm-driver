@@ -31,21 +31,65 @@
 package org.burningwave.jvm.function.catalog;
 
 
-import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 
-public abstract class ConsulterSupplier extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplier {
+public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplier {
 	
-	public static class Hybrid extends	ConsulterSupplier {
+	public static interface Native extends ConsulterSupplier {
 		
-		public static class ForJava17 extends Hybrid {
+		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.Abst implements Native {
 			
-			public ForJava17(Map<Object, Object> context) {
-				consulter = MethodHandles.lookup();
+			public ForJava7(Map<Object, Object> context) throws NoSuchFieldException {
+				super(context);
 				org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(consulter, -1);
 			}
 			
+			public static class ForSemeru extends Abst implements ConsulterSupplier.Native {
+				
+				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException {
+					super(context);
+					org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(
+						consulter,
+						io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.ForJava7.ForSemeru.INTERNAL_PRIVILEGED
+					);
+				}				
+			}
+		}
+		
+		public static interface ForJava9 extends Native, ConsulterSupplier {
+			
+			public static class ForSemeru extends Abst implements Native.ForJava9 {
+				
+				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+					super(context);
+					org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(
+						consulter,
+						io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.ForJava7.ForSemeru.INTERNAL_PRIVILEGED | 
+						io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.ForJava9.ForSemeru.MODULE
+					);
+				}
+				
+			}		
+		}
+		
+	}
+	
+	
+	public static interface Hybrid extends ConsulterSupplier {
+		
+		public static class ForJava17 extends Abst implements Hybrid {
+			
+			public ForJava17(Map<Object, Object> context) throws NoSuchFieldException {
+				super(context);
+			}
+			
+			public static class ForSemeru extends ConsulterSupplier.Native.ForJava9.ForSemeru implements ConsulterSupplier.Hybrid {
+				
+				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+					super(context);				
+				}
+			}
 		}
 	}
 	

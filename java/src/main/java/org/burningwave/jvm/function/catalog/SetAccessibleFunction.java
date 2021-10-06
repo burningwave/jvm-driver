@@ -37,21 +37,11 @@ import java.util.Map;
 import io.github.toolfactory.jvm.function.template.BiConsumer;
 
 
-public abstract class SetAccessibleFunction<B> extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction<B> {
+public interface SetAccessibleFunction extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction {
 	
-	public SetAccessibleFunction(Map<Object, Object> context) {
-		super(context);
-	}
+	public interface Native extends SetAccessibleFunction {		
 
-	ThrowExceptionFunction throwExceptionFunction;
-	
-	public static abstract class Native<B> extends SetAccessibleFunction<B>{		
-		
-		public Native(Map<Object, Object> context) {
-			super(context);
-		}
-
-		public static class ForJava7 extends Native<BiConsumer<AccessibleObject, Boolean>> {
+		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.Abst<BiConsumer<AccessibleObject, Boolean>> {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			public ForJava7(Map<Object, Object> context) {
 				super(context);

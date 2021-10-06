@@ -39,11 +39,11 @@ import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 @SuppressWarnings("all")
-public abstract class GetLoadedPackagesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedPackagesFunction {
+public interface GetLoadedPackagesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedPackagesFunction {
 	
-	public static abstract class Native extends GetLoadedPackagesFunction {
+	public interface Native extends GetLoadedPackagesFunction {
 		
-		public static class ForJava7 extends Native {
+		public static class ForJava7 implements Native {
 			Field packagesField;
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			

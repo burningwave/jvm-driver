@@ -42,12 +42,11 @@ import io.github.toolfactory.jvm.util.ObjectProvider;
 public class HybridDriver extends DefaultDriver {
 	
 
-	protected void initHookClassDefiner(
-		ObjectProvider functionProvider,
-		Map<Object, Object> initializationContext
-	) {
-		functionProvider.getOrBuildObject(ConsulterSupplier.Hybrid.class, initializationContext);
-		super.initHookClassDefiner(functionProvider, initializationContext);
+	@Override
+	protected Map<Object, Object> functionsToMap() {
+		Map<Object, Object> context = super.functionsToMap();
+		ObjectProvider.get(context).getOrBuildObject(ConsulterSupplier.Hybrid.class, context);
+		return super.functionsToMap();
 	}
 
 }

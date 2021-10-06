@@ -35,19 +35,11 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 
-public abstract class SetFieldValueFunction extends io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction {
+public interface SetFieldValueFunction extends io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction {
 	
-	public SetFieldValueFunction(Map<Object, Object> context) {
-		super(context);
-	}
-	
-	public static abstract class Native extends SetFieldValueFunction{
-		
-		public Native(Map<Object, Object> context) {
-			super(context);
-		}
+	public interface Native extends SetFieldValueFunction {
 
-		public static class ForJava7 extends Native {
+		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction.Abst {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			
 			public ForJava7(Map<Object, Object> context) {

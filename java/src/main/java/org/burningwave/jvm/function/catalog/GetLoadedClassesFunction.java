@@ -33,21 +33,24 @@ package org.burningwave.jvm.function.catalog;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.Map;
 
 import io.github.toolfactory.jvm.function.catalog.GetDeclaredFieldFunction;
-import io.github.toolfactory.jvm.function.catalog.UnsafeSupplier;
+import io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction;
+import io.github.toolfactory.jvm.function.template.Function;
+import io.github.toolfactory.jvm.util.ClenableSupplier;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
 @SuppressWarnings("all")
-public abstract class GetLoadedClassesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedClassesFunction {
+public interface GetLoadedClassesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedClassesFunction {
 	
-	public static abstract class Native extends GetLoadedClassesFunction {
+	public static interface Native extends GetLoadedClassesFunction {
 		
-		public static class ForJava7 extends Native {
-			Field classesField;
-			org.burningwave.jvm.NativeExecutor nativeExecutor;
+		public static class ForJava7 implements Native {
+			protected Field classesField;
+			protected org.burningwave.jvm.NativeExecutor nativeExecutor;
 			
 			public ForJava7(Map<Object, Object> context) {
 				ObjectProvider functionProvider = ObjectProvider.get(context);
@@ -57,8 +60,59 @@ public abstract class GetLoadedClassesFunction extends io.github.toolfactory.jvm
 			}
 
 			@Override
-			public Collection<Class<?>> apply(ClassLoader classLoader) {
-				return (Collection<Class<?>>)nativeExecutor.getFieldValue(classLoader, classesField);
+			public ClenableSupplier<Collection<Class<?>>> apply(final ClassLoader classLoader) {
+				if (classLoader == null) {
+					throw new NullPointerException("Input classLoader parameter can't be null");
+				}
+				return new ClenableSupplier<Collection<Class<?>>>() {
+					Collection<Class<?>> classes;
+					
+					@Override
+					public Collection<Class<?>> get() {
+						if (classes != null) {
+							return classes;
+						}
+						return classes = (Collection<Class<?>>)nativeExecutor.getFieldValue(classLoader, classesField);
+					}
+
+					@Override
+					public void clear() {
+						get();
+						if (classes != null) {
+							classes.clear();
+						}
+					}
+					
+				};
+			}
+			
+			public static class ForSemeru extends GetLoadedClassesFunction.ForJava7.ForSemeru {
+				protected org.burningwave.jvm.NativeExecutor nativeExecutor;
+				
+				
+				public ForSemeru(Map<Object, Object> context) {
+					super(context);
+					nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				}
+				
+				@Override
+				protected Function<ClassLoader, Hashtable<String, Object>> buildClassNameBasedLockSupplierSupplier(final Map<Object, Object> context) {
+					return new Function<ClassLoader, Hashtable<String, Object>>() {
+						protected ThrowExceptionFunction throwExceptionFunction = 
+								ObjectProvider.get(context).getOrBuildObject(ThrowExceptionFunction.class, context);
+						@Override
+						public Hashtable<String, Object> apply(ClassLoader classLoader) {
+							try {
+								return (Hashtable<String, Object>)nativeExecutor.getFieldValue(classLoader, classNameBasedLockField);
+							} catch (Throwable exc) {
+								return throwExceptionFunction.apply(exc);
+							}
+						}
+						
+					};				
+							
+				}
+				
 			}
 		}
 		

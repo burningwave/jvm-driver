@@ -95,9 +95,9 @@
 
 		<coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
 		<jacoco-maven-plugin.version>0.7.6.201602180812</jacoco-maven-plugin.version>
-		<junit-jupiter.version>5.7.0</junit-jupiter.version>
-		<junit.version>1.7.0</junit.version>
-		<jvm-driver.version>7.1.3</jvm-driver.version>
+		<junit-jupiter.version>5.8.1</junit-jupiter.version>
+		<junit.version>1.8.0</junit.version>
+		<jvm-driver.version>7.1.4</jvm-driver.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -108,7 +108,7 @@
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-scm-provider-gitexe.version>1.9.5</maven-scm-provider-gitexe.version>
-		<maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 	</properties>
 
@@ -232,11 +232,42 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${project_jdk_version}</source>
-					<target>${project_jdk_version}</target>
-					<verbose>true</verbose>
-				</configuration>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<configuration>
+							<!-- compile everything to ensure module-info contains right entries -->
+							<release>9</release>
+						<!-- <excludes>
+								<exclude>module-info.java</exclude>
+							</excludes> -->
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<configuration>
+							<testExcludes>
+								<testExclude>module-info.java</testExclude>
+							</testExcludes>
+							<release>${project_jdk_version}</release>
+							<verbose>true</verbose>
+						</configuration>
+					</execution>
+					<execution>
+						<id>base-compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<!-- recompile everything for target VM except the module-info.java -->
+						<configuration>
+							<excludes>
+								<exclude>module-info.java</exclude>
+							</excludes>
+							<source>${project_jdk_version}</source>
+							<target>${project_jdk_version}</target>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

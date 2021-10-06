@@ -95,15 +95,15 @@
 		<project.test.includes>**/${project.test.testSuite}.java</project.test.includes>
 		<project.test.excludes>**/*Test.java</project.test.excludes>
 
-		<junit-jupiter.version>5.7.0</junit-jupiter.version>
-		<junit.version>1.7.0</junit.version>
+		<junit-jupiter.version>5.8.1</junit-jupiter.version>
+		<junit.version>1.8.0</junit.version>
 		<jvm-driver.version>7.1.4</jvm-driver.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-		<maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
 	</properties>
 	
 	<dependencies>
@@ -203,11 +203,42 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${project_jdk_version}</source>
-					<target>${project_jdk_version}</target>
-					<verbose>true</verbose>
-				</configuration>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<configuration>
+							<!-- compile everything to ensure module-info contains right entries -->
+							<release>9</release>
+						<!-- <excludes>
+								<exclude>module-info.java</exclude>
+							</excludes> -->
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<configuration>
+							<testExcludes>
+								<testExclude>module-info.java</testExclude>
+							</testExcludes>
+							<release>${project_jdk_version}</release>
+							<verbose>true</verbose>
+						</configuration>
+					</execution>
+					<execution>
+						<id>base-compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<!-- recompile everything for target VM except the module-info.java -->
+						<configuration>
+							<excludes>
+								<exclude>module-info.java</exclude>
+							</excludes>
+							<source>${project_jdk_version}</source>
+							<target>${project_jdk_version}</target>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -238,7 +269,7 @@
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
-							<built-by>ToolFactory</built-by>
+							<built-by>Burningwave</built-by>
 						</manifestEntries>
 					</archive>
 				</configuration>

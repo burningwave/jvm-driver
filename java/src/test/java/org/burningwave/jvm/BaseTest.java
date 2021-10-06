@@ -1,25 +1,27 @@
-package io.github.toolfactory.jvm;
+package org.burningwave.jvm;
 
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 @SuppressWarnings("unused")
 abstract class BaseTest {
-	protected static Reflection reflection;
+	protected Reflection reflection;
 	
 	abstract Reflection getReflection();
 	
 
 	void getAndSetDirectVolatileTestOne() {
 		try {
-		
 			Object obj = new Object() {
-				
 				volatile List<Object> objectValue;
 				volatile int intValue;
 				volatile long longValue;
@@ -105,16 +107,157 @@ abstract class BaseTest {
 		}
 	}
 	
+	
+	void getConsulterTestOne() {
+		try {
+			getReflection().getDriver().getConsulter(Class.class);
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	void getDeclaredFieldsTestOne() {
+		try {
+			for (Member member : getReflection().getDriver().getDeclaredFields(Class.class)) {
+				log(member);
+			}
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	void getDeclaredMethodsTestOne() {
+		try {
+			for (Member member : getReflection().getDriver().getDeclaredMethods(Class.class)) {
+				log(member);
+			}
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	void getDeclaredConstructorsTestOne() {
+		try {
+			for (Member member : getReflection().getDriver().getDeclaredConstructors(Class.class)) {
+				log(member);
+			}
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	
+	void allocateInstanceTestOne() {
+		try {
+			log(getReflection().getDriver().allocateInstance(ClassForTest.class).toString());
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	
+	void setAccessibleTestOne() {
+		try {
+			ClassForTest object = new ClassForTest();
+			Field field = ClassForTest.class.getDeclaredField("intValue");
+			getReflection().getDriver().setAccessible(field, true);
+			log(field.get(object));			
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	
+	void setInvokeTestOne() {
+		try {
+			int newValue = 10;
+			getReflection().getDriver().invoke(
+				ClassForTest.class.getDeclaredMethod("setIntValue", int.class),
+				null,
+				new Object[] {newValue}
+			);
+			assertTrue(
+				(Integer)getReflection().getDriver().getFieldValue(null, ClassForTest.class.getDeclaredField("intValue")) == newValue
+			);
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	
+	void newInstanceTestOne() {
+		try {
+			int newValue = 20;
+			getReflection().getDriver().newInstance(
+				ClassForTest.class.getDeclaredConstructor(int.class),
+				new Object[] {newValue}
+			);
+			assertTrue(
+				(Integer)getReflection().getDriver().getFieldValue(null, ClassForTest.class.getDeclaredField("intValue")) == newValue
+			);
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	
+	void retrieveLoadedClassesTestOne() {
+		try {
+			Collection<Class<?>> loadedClasses = getReflection().getDriver().getLoadedClassesRetriever(Thread.currentThread().getContextClassLoader()).get();
+			for (Class<?> cls : loadedClasses) {
+				log(cls.getName());
+			}
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	
+	void retrieveLoadedPackagesTestOne() {
+		try {
+			Map<String, ?> loadedClasses = getReflection().getDriver().retrieveLoadedPackages(Thread.currentThread().getContextClassLoader());
+			for (Entry<String, ?> cls : loadedClasses.entrySet()) {
+				log(cls.getValue().toString());
+			}
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	private void log(Object value) {
+		//System.out.println(value.toString());
+	}
+	
 	private static class ClassForTest {
 		
-		static volatile List<Object> objectValue;
-		static volatile int intValue;
-		static volatile long longValue;
-		static volatile float floatValue;
-		static volatile double doubleValue;
-		static volatile boolean booleanValue;
-		static volatile byte byteValue;
-		static volatile char charValue;
+		private static volatile List<Object> objectValue;
+		private static volatile int intValue;
+		private static volatile long longValue;
+		private static volatile float floatValue;
+		private static volatile double doubleValue;
+		private static volatile boolean booleanValue;
+		private static volatile byte byteValue;
+		private static volatile char charValue;
+		
+		private ClassForTest() {}
+		
+		private ClassForTest(int value) {
+			setIntValue(value);
+		}
+		
+		private static void setIntValue(int value) {
+			intValue = value;
+		}
 	};
 	
 }

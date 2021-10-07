@@ -97,7 +97,7 @@
 
 		<junit-jupiter.version>5.8.1</junit-jupiter.version>
 		<junit.version>1.8.0</junit.version>
-		<jvm-driver.version>7.2.0</jvm-driver.version>
+		<jvm-driver.version>7.2.1</jvm-driver.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
@@ -197,6 +197,20 @@
 							</target>
 						</configuration>
 					</execution>
+					<execution>
+                        <id>add-module-info-to-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <jar update="true" destfile="${project.build.directory}/${project.build.finalName}.jar">
+                                    <zipfileset prefix="META-INF/versions/9" dir="${project.build.directory}/classes" includes="module-info.class" />
+                                </jar>
+                            </target>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -259,8 +273,7 @@
 				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<excludes>
-						<exclude>jdk/</exclude>
-						<exclude>java/</exclude>
+						<exclude>module-info.class</exclude>
 						<exclude>META-INF/maven/</exclude>
 						<exclude>**/*.c</exclude>
 						<exclude>**/*.cpp</exclude>
@@ -270,6 +283,7 @@
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<built-by>Burningwave</built-by>
+							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>
 				</configuration>

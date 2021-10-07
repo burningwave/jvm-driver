@@ -1,19 +1,19 @@
-package org.burningwave.jvm;
+package org.burningwave.jvm.test;
 
 
 import org.junit.Test;
 
 
-public class HybridDriverTest extends BaseTest {
+public class DefaultDriverTest extends BaseTest {
 	
 	public static void main(String[] args) {
-		new HybridDriverTest().getAndSetDirectVolatileTestOne();
+		new DefaultDriverTest().getAndSetDirectVolatileTestOne();
 	}
 	
 	Reflection getReflection() {
 		if (reflection == null) {
 			try {
-				reflection = Reflection.Factory.getNewWithHybridDriver();
+				reflection = Reflection.Factory.getNewWithDefaultDriver();
 			} catch (Throwable exc) {
 				exc.printStackTrace();
 				throw new RuntimeException(exc);
@@ -87,4 +87,5 @@ public class HybridDriverTest extends BaseTest {
 	public void retrieveLoadedPackagesTestOne() {
 		super.retrieveLoadedPackagesTestOne();
 	}
+	
 }

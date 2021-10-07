@@ -1,4 +1,4 @@
-package org.burningwave.jvm;
+package org.burningwave.jvm.test;
 
 
 import static org.junit.Assert.assertTrue;

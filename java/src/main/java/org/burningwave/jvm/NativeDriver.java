@@ -68,7 +68,7 @@ public class NativeDriver extends HybridDriver {
 	
 	@Override
 	protected Class<? extends GetLoadedClassesRetrieverFunction> getGetLoadedClassesRetrieverFunctionClass() {
-		return GetLoadedClassesRetrieverFunction.class;
+		return GetLoadedClassesRetrieverFunction.Native.class;
 	}
 
 	

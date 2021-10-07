@@ -137,6 +137,9 @@ void NativeEnvironment::init(JNIEnv* jNIEnv) {
 			jNIEnv->FindClass("java/lang/reflect/AccessibleObject"),
 			"override", "Z"
 		);
+	if (jNIEnv->ExceptionOccurred()) {
+		return;
+	}
 }
 
 
@@ -291,7 +294,8 @@ jobject checkAndGetFieldValue(
 jobject checkAndGetStaticFieldValue(
 	NativeEnvironment* environment,
 	JNIEnv* jNIEnv,
-	jclass target, jobject field,
+	jclass target,
+	jobject field,
 	FieldAccessor* fieldAccessor
 ) {
 	if (throwNullPointerExceptionIfNull(environment, jNIEnv, target, "Target is null") != 0) {

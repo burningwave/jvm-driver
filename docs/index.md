@@ -26,7 +26,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>4.0.2</version>
+    <version>5.0.0</version>
 </dependency>	
 ```
 
@@ -100,7 +100,7 @@ public <T> T getFieldValue(Object target, Field field);
 
 public Package getPackage(ClassLoader classLoader, String packageName);
 
-public <T> T invoke(Method method, Object target, Object[] params);
+public <T> T invoke(Object target, Method method, Object[] params);
 
 public boolean isBuiltinClassLoader(ClassLoader classLoader);
 
@@ -108,7 +108,7 @@ public boolean isClassLoaderDelegate(ClassLoader classLoader);
 
 public <T> T newInstance(Constructor<T> ctor, Object[] params);
 
-public Collection<Class<?>> retrieveLoadedClasses(ClassLoader classLoader);
+public CleanableSupplier<Collection<Class<?>>> getLoadedClassesRetriever(ClassLoader classLoader);
 
 public Map<String, ?> retrieveLoadedPackages(ClassLoader classLoader);
 
@@ -116,7 +116,7 @@ public void setAccessible(AccessibleObject object, boolean flag);
 
 public void setFieldValue(Object target, Field field, Object value);
 
-public <T> T throwException(Object exceptionOrMessage, Object... placeHolderReplacements);                                                          
+public <T> T throwException(Object exceptionOrMessage, Object... placeHolderReplacements);                                                       
 ```
 
 <br/>

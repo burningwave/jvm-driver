@@ -88,7 +88,7 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 	
 	public static interface Hybrid extends ConsulterSupplier {
 		
-		public static class ForJava17 extends Abst implements Hybrid {
+		public static class ForJava17 extends ConsulterSupplier.Native.ForJava7 implements Hybrid {
 			
 			public ForJava17(Map<Object, Object> context) throws NoSuchFieldException {
 				super(context);

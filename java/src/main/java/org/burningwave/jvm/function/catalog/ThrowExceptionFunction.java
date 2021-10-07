@@ -34,7 +34,6 @@ package org.burningwave.jvm.function.catalog;
 import java.util.Map;
 
 
-@SuppressWarnings("all")
 public interface ThrowExceptionFunction extends io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction {
 	
 	public static interface Native extends ThrowExceptionFunction {

@@ -36,10 +36,10 @@ import java.util.Map;
 
 public interface AllocateInstanceFunction extends io.github.toolfactory.jvm.function.catalog.AllocateInstanceFunction {
 	
-	public static abstract class Native implements AllocateInstanceFunction {
-		org.burningwave.jvm.NativeExecutor nativeExecutor;
+	public static interface Native extends AllocateInstanceFunction {
 		
-		public static class ForJava7 extends Native {
+		public static class ForJava7 implements Native {
+			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			
 			public ForJava7(Map<Object, Object> context) {
 				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();

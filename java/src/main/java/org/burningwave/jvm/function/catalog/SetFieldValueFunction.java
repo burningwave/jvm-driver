@@ -39,7 +39,7 @@ public interface SetFieldValueFunction extends io.github.toolfactory.jvm.functio
 	
 	public interface Native extends SetFieldValueFunction {
 
-		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction.Abst {
+		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction.Abst implements Native {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			
 			public ForJava7(Map<Object, Object> context) {

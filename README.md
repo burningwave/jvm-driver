@@ -72,6 +72,12 @@ If you need to create a specific driver type you should use:
 io.github.toolfactory.jvm.Driver driver = io.github.toolfactory.jvm.Driver.Factory.getNewDefault();
 ```
 
+* this code to create a dynamic driver instance:
+
+```java
+io.github.toolfactory.jvm.Driver driver = io.github.toolfactory.jvm.Driver.Factory.getNewDynamic();
+```
+
 * this code to create an hybrid driver instance:
 
 ```java
@@ -86,7 +92,7 @@ io.github.toolfactory.jvm.Driver driver = io.github.toolfactory.jvm.Driver.Facto
 
 <br/>
 
-Each functionality offered by the driver is **initialized in deferred way** at the first call. However, it is possible to initialize all of the functionalities at once by calling the method `Driver.init()`.
+Each functionality offered by the driver is **initialized in deferred way** at the first call if the driver is not obtained through the method `io.github.toolfactory.jvm.Driver.getNew()`. However, it is possible to initialize all of the functionalities at once by calling the method `Driver.init()`.
 
 The methods exposed by the Driver interface are the following:
 ```java

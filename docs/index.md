@@ -4,7 +4,7 @@
 <img src="https://raw.githubusercontent.com/burningwave/burningwave.github.io/main/logo.png" alt="Burningwave-logo.png" height="180px" align="right"/>
 </a>
 
-[![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.burningwave/jvm-driver/5)](https://maven-badges.herokuapp.com/maven-central/org.burningwave/jvm-driver/)
+[![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.burningwave/jvm-driver/6)](https://maven-badges.herokuapp.com/maven-central/org.burningwave/jvm-driver/)
 [![GitHub](https://img.shields.io/github/license/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/blob/main/LICENSE)
 
 [![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/1338268529)
@@ -26,7 +26,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>5.3.1</version>
+    <version>6.0.0</version>
 </dependency>	
 ```
 ### Requiring the Burningwave JMV Driver module
@@ -41,9 +41,10 @@ requires org.burningwave.jvm;
 
 ## Overview
 
-There are three kinds of driver:
+There are four kinds of driver:
 
 * the **default driver** completely based on Java api
+* the **dynamic driver** that extends the default driver and uses JNI functions only if the the Java based functions offered by the default driver are unable to accomplish the tasks
 * the **hybrid driver** that extends the default driver and uses some JNI functions only when run on JVM 17 and later
 * the **native driver** that extends the hybrid driver and uses JNI functions more consistently regardless of the Java version it is running on
 

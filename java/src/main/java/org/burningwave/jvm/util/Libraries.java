@@ -32,31 +32,19 @@ package org.burningwave.jvm.util;
 
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
-
-import io.github.toolfactory.jvm.Info;
 import io.github.toolfactory.jvm.function.template.Consumer;
-import io.github.toolfactory.jvm.util.ObjectProvider;
+import io.github.toolfactory.jvm.util.Strings;
 
 
 public class Libraries {
-	private static final io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction throwExceptionFunction;
+
 	String conventionedSuffix;
 	String extension;
 	String prefix;	
-	
-	static {
-		ObjectProvider functionProvider = new ObjectProvider(
-			Info.CRITICAL_VERSIONS
-		);		
-		Map<Object, Object> initializationContext = new HashMap<>();
-		throwExceptionFunction = functionProvider.getOrBuildObject(ThrowExceptionFunction.class, initializationContext);
-	}
 
+	
 	private Libraries() {
 		io.github.toolfactory.jvm.Info jVMInfo = io.github.toolfactory.jvm.Info.Provider.getInfoInstance();
 		if (jVMInfo.is32Bit()) {
@@ -74,7 +62,12 @@ public class Libraries {
 		} else if (operatingSystemName.indexOf("nux") >= 0) {
 			extension = "so";
 		} else {
-			throwExceptionFunction.apply("Unable to initialize {}: unsupported operating system ('{}')", this, operatingSystemName);
+			throw new InitializeException(
+				Strings.compile(
+					"Unable to initialize {}: unsupported operating system ('{}')",
+					this, operatingSystemName
+				)
+			);
 		}
 	}
 
@@ -116,5 +109,20 @@ public class Libraries {
 		private static Libraries getWithinInstance() {
 			return INSTANCE;
 		}
+	}
+	
+	
+	public static class InitializeException extends RuntimeException {
+
+		private static final long serialVersionUID = 424757273075028708L;
+
+		public InitializeException(String message, Throwable cause) {
+	        super(message, cause);
+	    }
+		
+		public InitializeException(String message) {
+	        super(message);
+	    }
+
 	}
 }

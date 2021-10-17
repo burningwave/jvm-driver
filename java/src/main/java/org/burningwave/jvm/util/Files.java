@@ -36,27 +36,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
-
-import io.github.toolfactory.jvm.Info;
 import io.github.toolfactory.jvm.function.template.Consumer;
-import io.github.toolfactory.jvm.util.ObjectProvider;
+import io.github.toolfactory.jvm.util.Strings;
 
 
 public class Files {
-	
-	private static final io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction throwExceptionFunction;
-	
-	static {
-		ObjectProvider functionProvider = new ObjectProvider(
-			Info.CRITICAL_VERSIONS
-		);		
-		Map<Object, Object> initializationContext = new HashMap<>();
-		throwExceptionFunction = functionProvider.getOrBuildObject(ThrowExceptionFunction.class, initializationContext);
-	}
+
 	
 	public static void extractAndExecute(Class<?> callerClass, String resourcePath, Consumer<File> extractedFileConsumer) {
         File tempFile = null;
@@ -90,7 +76,7 @@ public class Files {
 
             extractedFileConsumer.accept(tempFile);
         } catch (Throwable exc) {
-        	throwExceptionFunction.apply(exc);
+        	throw new NotLoadedException(Strings.compile("Unable to load file {}", resourcePath), exc);
         } finally {
             if (tempFile != null) {
                 boolean deleted = false;
@@ -103,5 +89,18 @@ public class Files {
             }
         }
     }
+	
+	public static class NotLoadedException extends RuntimeException {
 
+		private static final long serialVersionUID = -461698261422622020L;
+
+		public NotLoadedException(String message, Throwable cause) {
+	        super(message, cause);
+	    }
+		
+		public NotLoadedException(String message) {
+	        super(message);
+	    }
+
+	}
 }

@@ -100,4 +100,18 @@ public class DynamicDriverTest extends BaseTest {
 		super.retrieveLoadedPackagesTestOne();
 	}
 	
+	
+	@Override
+	@Test
+	public void retrieveResourcesTestOne() {
+		super.retrieveResourcesTestOne();
+	}
+	
+	@Override
+	@Test
+	public void getClassByNameTestOne() {
+		super.getClassByNameTestOne();
+	}	
+
+	
 }

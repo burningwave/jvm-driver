@@ -8,9 +8,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     DefaultDriverTest.class,
-    DynamicDriverTest.class,
     HybridDriverTest.class,
-    NativeDriverTest.class
+    NativeDriverTest.class,
+    DynamicDriverTest.class
 })
 public class AllTestsSuite {
 

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -227,6 +228,30 @@ abstract class BaseTest {
 			Map<String, ?> loadedClasses = getReflection().getDriver().retrieveLoadedPackages(Thread.currentThread().getContextClassLoader());
 			for (Entry<String, ?> cls : loadedClasses.entrySet()) {
 				log(cls.getValue().toString());
+			}
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	public void getClassByNameTestOne() {
+		try {
+			Class<?> cls = getReflection().getDriver().getClassByName(
+				"java.lang.AssertionStatusDirectives", false,
+				this.getClass().getClassLoader(), this.getClass());
+			log(cls);
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+	
+	public void retrieveResourcesTestOne() {
+		try {
+			Collection<URL> resource = getReflection().getDriver().getResources("com/sun/source/util/JavacTask.class", false);
+			for (URL resourceURL : resource) {
+				log(resourceURL.getPath());
 			}
 		} catch (Throwable exc) {
 			exc.printStackTrace();

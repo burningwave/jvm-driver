@@ -38,7 +38,6 @@ import java.util.Map;
 
 import io.github.toolfactory.jvm.function.catalog.GetDeclaredFieldFunction;
 import io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction;
-import io.github.toolfactory.jvm.function.template.Function;
 import io.github.toolfactory.jvm.util.CleanableSupplier;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 
@@ -96,17 +95,19 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 				}
 				
 				@Override
-				protected Function<ClassLoader, Hashtable<String, Object>> buildClassNameBasedLockSupplierSupplier(final Map<Object, Object> context) {
-					return new Function<ClassLoader, Hashtable<String, Object>>() {
+				protected ClassNameBasedLockSupplier buildClassNameBasedLockSupplier(final Map<Object, Object> context) {
+					return new ClassNameBasedLockSupplier() {
 						protected ThrowExceptionFunction throwExceptionFunction = 
 								ObjectProvider.get(context).getOrBuildObject(ThrowExceptionFunction.class, context);
+						
 						@Override
-						public Hashtable<String, Object> apply(ClassLoader classLoader) {
-							try {
-								return (Hashtable<String, Object>)nativeExecutor.getFieldValue(classLoader, classNameBasedLockField);
-							} catch (Throwable exc) {
-								return throwExceptionFunction.apply(exc);
-							}
+						public Hashtable<String, Object> get(ClassLoader classLoader) {
+							return (Hashtable<String, Object>)nativeExecutor.getFieldValue(classLoader, classNameBasedLockField);
+						}
+						
+						@Override
+						protected ClassLoader getClassLoader(Class<?> cls) {
+							return (ClassLoader)nativeExecutor.getFieldValue(cls, classLoaderField);
 						}
 						
 					};				

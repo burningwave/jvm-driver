@@ -1,4 +1,4 @@
-package org.burningwave.jvm;
+package org.burningwave.jvm.test;
 
 
 import org.junit.runner.RunWith;

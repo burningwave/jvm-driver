@@ -1,4 +1,4 @@
-package org.burningwave.jvm.test;
+package org.burningwave.jvm;
 
 
 import org.junit.Test;

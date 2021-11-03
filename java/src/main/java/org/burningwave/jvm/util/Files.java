@@ -45,10 +45,10 @@ public class Files {
 
 	
 	public static void extractAndExecute(Class<?> callerClass, String resourcePath, Consumer<File> extractedFileConsumer) {
-        File tempFile = null;
-        boolean tempFileIsPosix = false;
-        try (InputStream inputSream = callerClass.getResourceAsStream(resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath);) {
-
+        
+        try (
+        	InputStream inputSream = callerClass.getResourceAsStream(resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath);
+        ) {
             if (inputSream == null) {
                 throw new FileNotFoundException("Could not find file: " + resourcePath);
             }
@@ -56,37 +56,17 @@ public class Files {
             int dotIdx = filename.indexOf('.');
             String baseName = dotIdx < 0 ? filename : filename.substring(0, dotIdx);
             String extension = dotIdx < 0 ? "" : filename.substring(dotIdx);
-            tempFile = File.createTempFile(baseName + "_", extension);
-
-            try {
-                if (tempFile.toPath().getFileSystem().supportedFileAttributeViews().contains("posix")) {
-                    tempFileIsPosix = true;
-                }
-            } catch (Throwable e) {}
-
-            byte[] buffer = new byte[1024];
-            OutputStream os = new FileOutputStream(tempFile);
-            try {
-                for (int readBytes; (readBytes = inputSream.read(buffer)) != -1;) {
-                    os.write(buffer, 0, readBytes);
-                }
-            } finally {
-                os.close();
+            try (TempFileHolder tempFileHandler = new TempFileHolder(baseName + "_", extension)) {
+	            byte[] buffer = new byte[1024];
+	            try (OutputStream os = new FileOutputStream(tempFileHandler.getFile())) {
+	                for (int readBytes; (readBytes = inputSream.read(buffer)) != -1;) {
+	                    os.write(buffer, 0, readBytes);
+	                }
+	            }
+	            extractedFileConsumer.accept(tempFileHandler.file);
             }
-
-            extractedFileConsumer.accept(tempFile);
         } catch (Throwable exc) {
         	throw new NotLoadedException(Strings.compile("Unable to load file {}", resourcePath), exc);
-        } finally {
-            if (tempFile != null) {
-                boolean deleted = false;
-                if (tempFileIsPosix) {
-                    deleted = tempFile.delete();
-                }
-                if (!deleted) {
-                    tempFile.deleteOnExit();
-                }
-            }
         }
     }
 	

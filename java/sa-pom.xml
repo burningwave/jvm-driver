@@ -35,7 +35,7 @@
 	<groupId>org.burningwave</groupId>
 	<artifactId>jvm-driver</artifactId>
   	<version>6.3.0-SNAPSHOT</version>
-	
+  	
 	<packaging>jar</packaging>
 	
 	<name>Burningwave JVM Driver</name>

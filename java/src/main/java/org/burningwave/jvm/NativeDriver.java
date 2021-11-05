@@ -31,8 +31,6 @@
 package org.burningwave.jvm;
 
 
-import java.util.Map;
-
 import org.burningwave.jvm.function.catalog.AllocateInstanceFunction;
 import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 import org.burningwave.jvm.function.catalog.GetFieldValueFunction;
@@ -44,11 +42,7 @@ import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
 
 public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
-	
-	@Override
-	protected Map<Object, Object> functionsToMap() {
-		return super.functionsToMap();
-	}
+
 	
 	@Override
 	protected Class<? extends ConsulterSupplier> getConsulterSupplierFunctionClass() {

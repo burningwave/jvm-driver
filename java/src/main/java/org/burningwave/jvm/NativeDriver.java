@@ -54,15 +54,6 @@ public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
 	protected Map<Object, Object> functionsToMap() {
 		Map<Object, Object> context = super.functionsToMap();
 		final NativeDriver nativeDriver = this;
-		ObjectProvider objectProvider = ObjectProvider.get(context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getThrowExceptionFunctionClass(), context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getConsulterSupplierFunctionClass(), context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getSetFieldValueFunctionClass(), context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getAllocateInstanceFunctionClass(), context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getGetFieldValueFunctionClass(), context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getSetAccessibleFunctionClass(), context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getGetLoadedPackagesFunctionClass(), context);
-		objectProvider.markToBeInitializedViaExceptionHandler(nativeDriver.getGetLoadedClassesRetrieverFunctionClass(), context);
 		ObjectProvider.setExceptionHandler(
 				context,
 				new ObjectProvider.ExceptionHandler() {

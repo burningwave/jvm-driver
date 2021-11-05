@@ -31,22 +31,14 @@
 package org.burningwave.jvm;
 
 
-import java.util.Map;
-
 import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 
-import io.github.toolfactory.jvm.DefaultDriver;
-import io.github.toolfactory.jvm.util.ObjectProvider;
 
-
-public class HybridDriver extends DefaultDriver {
+public class HybridDriver extends io.github.toolfactory.jvm.HybridDriver {
 	
-
 	@Override
-	protected Map<Object, Object> functionsToMap() {
-		Map<Object, Object> context = super.functionsToMap();
-		ObjectProvider.get(context).getOrBuildObject(ConsulterSupplier.Hybrid.class, context);
-		return context;
+	protected Class<? extends ConsulterSupplier> getConsulterSupplierFunctionClass() {
+		return ConsulterSupplier.Hybrid.class;
 	}
 
 }

@@ -42,18 +42,28 @@ import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
+import io.github.toolfactory.jvm.DefaultDriver;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 import io.github.toolfactory.jvm.util.ObjectProvider.BuildingException;
 
 
 @SuppressWarnings({"unchecked", "resource"})
-public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
+public class NativeDriver extends DefaultDriver {
 	
 	
 	@Override
 	protected Map<Object, Object> functionsToMap() {
 		Map<Object, Object> context = super.functionsToMap();
 		final NativeDriver nativeDriver = this;
+		ObjectProvider objectProvider = ObjectProvider.get(context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction.class, context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.class, context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction.class, context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.AllocateInstanceFunction.class, context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.GetFieldValueFunction.class, context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.class, context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.GetLoadedPackagesFunction.class, context);
+		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.GetLoadedClassesRetrieverFunction.class, context);
 		ObjectProvider.setExceptionHandler(
 				context,
 				new ObjectProvider.ExceptionHandler() {

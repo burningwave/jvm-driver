@@ -31,8 +31,6 @@
 package org.burningwave.jvm;
 
 
-import java.util.Map;
-
 import org.burningwave.jvm.function.catalog.AllocateInstanceFunction;
 import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 import org.burningwave.jvm.function.catalog.GetFieldValueFunction;
@@ -42,68 +40,10 @@ import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
-import io.github.toolfactory.jvm.DefaultDriver;
-import io.github.toolfactory.jvm.util.ObjectProvider;
-import io.github.toolfactory.jvm.util.ObjectProvider.BuildingException;
 
-
-@SuppressWarnings({"unchecked", "resource"})
-public class NativeDriver extends DefaultDriver {
-	
+public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
 	
 	@Override
-	protected Map<Object, Object> functionsToMap() {
-		Map<Object, Object> context = super.functionsToMap();
-		final NativeDriver nativeDriver = this;
-		ObjectProvider objectProvider = ObjectProvider.get(context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.ThrowExceptionFunction.class, context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.class, context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction.class, context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.AllocateInstanceFunction.class, context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.GetFieldValueFunction.class, context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.class, context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.GetLoadedPackagesFunction.class, context);
-		objectProvider.markToBeInitializedViaExceptionHandler(io.github.toolfactory.jvm.function.catalog.GetLoadedClassesRetrieverFunction.class, context);
-		ObjectProvider.setExceptionHandler(
-				context,
-				new ObjectProvider.ExceptionHandler() {
-					@Override
-					public <T> T handle(ObjectProvider objectProvider, Class<? super T> clazz, Map<Object, Object> context,
-						BuildingException exception) {
-						if (objectProvider.isMarkedToBeInitializedViaExceptionHandler(exception)) {
-							if (clazz.isAssignableFrom(nativeDriver.getConsulterSupplierFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getConsulterSupplierFunctionClass(), context);
-							}
-							if (clazz.isAssignableFrom(nativeDriver.getThrowExceptionFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getThrowExceptionFunctionClass(), context);
-							}
-							if (clazz.isAssignableFrom(nativeDriver.getSetFieldValueFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getSetFieldValueFunctionClass(), context);
-							}
-							if (clazz.isAssignableFrom(nativeDriver.getAllocateInstanceFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getAllocateInstanceFunctionClass(), context);
-							}
-							if (clazz.isAssignableFrom(nativeDriver.getSetAccessibleFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getSetAccessibleFunctionClass(), context);
-							}
-							if (clazz.isAssignableFrom(nativeDriver.getGetFieldValueFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getGetFieldValueFunctionClass(), context);
-							}
-							if (clazz.isAssignableFrom(nativeDriver.getGetLoadedClassesRetrieverFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getGetLoadedClassesRetrieverFunctionClass(), context);
-							}
-							if (clazz.isAssignableFrom(nativeDriver.getGetLoadedPackagesFunctionClass())) {
-								return (T)objectProvider.getOrBuildObject(nativeDriver.getGetLoadedPackagesFunctionClass(), context);
-							}
-						}
-						throw exception;
-					}	
-				}
-			);
-		return context;
-	}
-	
-	
 	protected Class<? extends ConsulterSupplier> getConsulterSupplierFunctionClass() {
 		return ConsulterSupplier.Native.class;
 	}

@@ -33,7 +33,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 
 To use Burningwave JMV Driver as a Java module, add the following to your `module-info.java`: 
 
-```
+```java
 //Mandatory if you use the default, dynamic or hybrid driver
 requires jdk.unsupported;
 requires org.burningwave.jvm;

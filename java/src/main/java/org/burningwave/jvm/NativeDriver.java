@@ -31,8 +31,6 @@
 package org.burningwave.jvm;
 
 
-import java.util.Map;
-
 import org.burningwave.jvm.function.catalog.AllocateInstanceFunction;
 import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 import org.burningwave.jvm.function.catalog.GetFieldValueFunction;
@@ -42,20 +40,15 @@ import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
-import io.github.toolfactory.jvm.util.ObjectProvider;
 
-
-public class NativeDriver extends HybridDriver {
+public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
 	
 	
 	@Override
-	protected Map<Object, Object> functionsToMap() {
-		Map<Object, Object> context = super.functionsToMap();
-		ObjectProvider objectProvider = ObjectProvider.get(context);
-		objectProvider.getOrBuildObject(ThrowExceptionFunction.Native.class, context);
-		objectProvider.getOrBuildObject(ConsulterSupplier.Native.class, context);
-		return context;
+	protected Class<? extends ConsulterSupplier> getConsulterSupplierFunctionClass() {
+		return ConsulterSupplier.Native.class;
 	}
+	
 	
 	@Override
 	protected Class<? extends ThrowExceptionFunction> getThrowExceptionFunctionClass() {

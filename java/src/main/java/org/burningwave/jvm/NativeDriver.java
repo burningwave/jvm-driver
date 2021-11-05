@@ -42,13 +42,12 @@ import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
-import io.github.toolfactory.jvm.DefaultDriver;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 import io.github.toolfactory.jvm.util.ObjectProvider.BuildingException;
 
 
 @SuppressWarnings({"unchecked", "resource"})
-public class NativeDriver extends DefaultDriver {
+public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
 	
 	
 	@Override

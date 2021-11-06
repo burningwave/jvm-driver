@@ -54,6 +54,7 @@ public class TempFileHolder implements Closeable {
 		return isPosix;
 	}
 
+
 	@Override
 	public void close() throws IOException {
 		boolean deleted = false;
@@ -63,5 +64,5 @@ public class TempFileHolder implements Closeable {
 		if (!deleted) {
 			file.deleteOnExit();
 		}
-	};
+	}
 }

@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory Narcissus.
  *
  * Hosted at: https://github.com/toolfactory/narcissus
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -42,9 +42,9 @@ public class Libraries {
 
 	String conventionedSuffix;
 	String extension;
-	String prefix;	
+	String prefix;
 
-	
+
 	private Libraries() {
 		io.github.toolfactory.jvm.Info jVMInfo = io.github.toolfactory.jvm.Info.Provider.getInfoInstance();
 		if (jVMInfo.is32Bit()) {
@@ -96,10 +96,10 @@ public class Libraries {
 			new Consumer<File>() {
 				@Override
 				public void accept(File libraryFile) {
-					System.load(libraryFile.getAbsolutePath());					
+					System.load(libraryFile.getAbsolutePath());
 				}
 			}
-				
+
 		);
 	}
 
@@ -110,8 +110,8 @@ public class Libraries {
 			return INSTANCE;
 		}
 	}
-	
-	
+
+
 	public static class InitializeException extends RuntimeException {
 
 		private static final long serialVersionUID = 424757273075028708L;
@@ -119,7 +119,7 @@ public class Libraries {
 		public InitializeException(String message, Throwable cause) {
 	        super(message, cause);
 	    }
-		
+
 		public InitializeException(String message) {
 	        super(message);
 	    }

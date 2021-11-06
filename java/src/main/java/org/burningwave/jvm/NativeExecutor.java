@@ -56,7 +56,7 @@ public class NativeExecutor {
 	public final static NativeExecutor getInstance() {
 		return INSTANCE;
 	}
-	
+
 	public Object getFieldValue(Object target, Field field) {
 		Class<?> fieldType = field.getType();
 		if (Modifier.isStatic(field.getModifiers())) {
@@ -97,8 +97,8 @@ public class NativeExecutor {
 				return getCharacterFieldValue(target, field);
 			}
 		}
-	}	
-	
+	}
+
 
 	public void setFieldValue(Object origTarget, Field field, Object value) {
 		if(value != null && !Classes.isAssignableFrom(field.getType(), value.getClass())) {
@@ -145,9 +145,9 @@ public class NativeExecutor {
 			} else {
 				setCharacterFieldValue(target, field, (Character)value);
 			}
-		}	
+		}
 	}
-	
+
 	private native Object getObjectFieldValue(Object target, Field field);
 
 	private native Integer getIntegerFieldValue(Object target, Field field);
@@ -180,8 +180,8 @@ public class NativeExecutor {
 	private native Byte getStaticByteFieldValue(Class<?> target, Field field);
 
 	private native Character getStaticCharacterFieldValue(Class<?> target, Field field);
-	
-	
+
+
 	private native void setObjectFieldValue(Object target, Field field, Object value);
 
 	private native void setIntegerFieldValue(Object target, Field field, Integer value);
@@ -214,14 +214,14 @@ public class NativeExecutor {
 	private native void setStaticByteFieldValue(Class<?> target, Field field, Byte value);
 
 	private native void setStaticCharacterFieldValue(Class<?> target, Field field, Character value);
-	
-	
+
+
 	public native Object allocateInstance(Class<?> cls);
 
 	public native void setAccessible(AccessibleObject target, boolean flag);
 
 	public native void setAllowedModes(MethodHandles.Lookup consulter, int modes);
-	
+
 	public native void throwException(Throwable exc);
 }
 

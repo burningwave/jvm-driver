@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -36,12 +36,12 @@ import java.util.Map;
 
 
 public interface SetFieldValueFunction extends io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction {
-	
+
 	public interface Native extends SetFieldValueFunction {
 
 		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetFieldValueFunction.Abst implements Native {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
-			
+
 			public ForJava7(Map<Object, Object> context) {
 				super(context);
 				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();

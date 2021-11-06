@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -42,47 +42,47 @@ import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
 
 public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
-	
+
 	@Override
 	protected Class<? extends ConsulterSupplier> getConsulterSupplierFunctionClass() {
 		return ConsulterSupplier.Native.class;
 	}
-	
-	
+
+
 	@Override
 	protected Class<? extends ThrowExceptionFunction> getThrowExceptionFunctionClass() {
 		return ThrowExceptionFunction.Native.class;
 	}
-	
-	
+
+
 	@Override
 	protected Class<? extends GetLoadedPackagesFunction> getGetLoadedPackagesFunctionClass() {
 		return GetLoadedPackagesFunction.Native.class;
 	}
-	
+
 	@Override
 	protected Class<? extends GetLoadedClassesRetrieverFunction> getGetLoadedClassesRetrieverFunctionClass() {
 		return GetLoadedClassesRetrieverFunction.Native.class;
 	}
 
-	
+
 	@Override
 	protected Class<? extends SetFieldValueFunction> getSetFieldValueFunctionClass() {
 		return SetFieldValueFunction.Native.class;
 	}
-	
-	
+
+
 	@Override
 	protected Class<? extends GetFieldValueFunction> getGetFieldValueFunctionClass() {
 		return GetFieldValueFunction.Native.class;
 	}
-	
-	
+
+
 	@Override
 	protected Class<? extends AllocateInstanceFunction> getAllocateInstanceFunctionClass() {
 		return AllocateInstanceFunction.Native.class;
 	}
-	
+
 
 	@Override
 	protected Class<? extends SetAccessibleFunction> getSetAccessibleFunctionClass() {

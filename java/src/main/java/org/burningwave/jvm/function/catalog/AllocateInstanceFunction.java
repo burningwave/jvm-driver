@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -35,22 +35,22 @@ import java.util.Map;
 
 
 public interface AllocateInstanceFunction extends io.github.toolfactory.jvm.function.catalog.AllocateInstanceFunction {
-	
+
 	public static interface Native extends AllocateInstanceFunction {
-		
+
 		public static class ForJava7 implements Native {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
-			
+
 			public ForJava7(Map<Object, Object> context) {
 				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
 			}
-			
+
 			@Override
 			public Object apply(Class<?> cls) {
 				return nativeExecutor.allocateInstance(cls);
 			}
-			
+
 		}
 	}
-	
+
 }

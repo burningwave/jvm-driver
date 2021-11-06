@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -40,13 +40,13 @@ import io.github.toolfactory.jvm.util.ObjectProvider;
 
 @SuppressWarnings("all")
 public interface GetLoadedPackagesFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedPackagesFunction {
-	
+
 	public interface Native extends GetLoadedPackagesFunction {
-		
+
 		public static class ForJava7 implements Native {
 			Field packagesField;
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
-			
+
 			public ForJava7(Map<Object, Object> context) {
 				ObjectProvider functionProvider = ObjectProvider.get(context);
 				GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
@@ -59,7 +59,7 @@ public interface GetLoadedPackagesFunction extends io.github.toolfactory.jvm.fun
 				return (Map<String, ?>)nativeExecutor.getFieldValue(classLoader, packagesField);
 			}
 		}
-		
+
 	}
-	
+
 }

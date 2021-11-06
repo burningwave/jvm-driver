@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory Narcissus.
  *
  * Hosted at: https://github.com/toolfactory/narcissus
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -43,9 +43,9 @@ import io.github.toolfactory.jvm.util.Strings;
 
 public class Files {
 
-	
+
 	public static void extractAndExecute(Class<?> callerClass, String resourcePath, Consumer<File> extractedFileConsumer) {
-        
+
         try (
         	InputStream inputSream = callerClass.getResourceAsStream(resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath);
         ) {
@@ -69,7 +69,7 @@ public class Files {
         	throw new NotLoadedException(Strings.compile("Unable to load file {}", resourcePath), exc);
         }
     }
-	
+
 	public static class NotLoadedException extends RuntimeException {
 
 		private static final long serialVersionUID = -461698261422622020L;
@@ -77,7 +77,7 @@ public class Files {
 		public NotLoadedException(String message, Throwable cause) {
 	        super(message, cause);
 	    }
-		
+
 		public NotLoadedException(String message) {
 	        super(message);
 	    }

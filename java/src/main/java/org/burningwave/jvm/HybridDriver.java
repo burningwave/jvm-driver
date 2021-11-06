@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -35,7 +35,7 @@ import org.burningwave.jvm.function.catalog.ConsulterSupplier;
 
 
 public class HybridDriver extends io.github.toolfactory.jvm.HybridDriver {
-	
+
 	@Override
 	protected Class<? extends ConsulterSupplier> getConsulterSupplierFunctionClass() {
 		return ConsulterSupplier.Hybrid.class;

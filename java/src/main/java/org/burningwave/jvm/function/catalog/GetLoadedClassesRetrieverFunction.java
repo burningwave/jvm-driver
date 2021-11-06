@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -44,13 +44,13 @@ import io.github.toolfactory.jvm.util.ObjectProvider;
 
 @SuppressWarnings("all")
 public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedClassesRetrieverFunction {
-	
+
 	public static interface Native extends GetLoadedClassesRetrieverFunction {
-		
+
 		public static class ForJava7 implements Native {
 			protected Field classesField;
 			protected org.burningwave.jvm.NativeExecutor nativeExecutor;
-			
+
 			public ForJava7(Map<Object, Object> context) {
 				ObjectProvider functionProvider = ObjectProvider.get(context);
 				GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
@@ -63,9 +63,9 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 				if (classLoader == null) {
 					throw new NullPointerException("Input classLoader parameter can't be null");
 				}
-				return new CleanableSupplier<Collection<Class<?>>>() {
+				return new CleanableSupplier<>() {
 					Collection<Class<?>> classes;
-					
+
 					@Override
 					public Collection<Class<?>> get() {
 						if (classes != null) {
@@ -81,42 +81,42 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 							classes.clear();
 						}
 					}
-					
+
 				};
 			}
-			
+
 			public static class ForSemeru extends GetLoadedClassesRetrieverFunction.ForJava7.ForSemeru {
 				protected org.burningwave.jvm.NativeExecutor nativeExecutor;
-				
-				
+
+
 				public ForSemeru(Map<Object, Object> context) {
 					super(context);
 					nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
 				}
-				
+
 				@Override
 				protected ClassNameBasedLockSupplier buildClassNameBasedLockSupplier(final Map<Object, Object> context) {
 					return new ClassNameBasedLockSupplier() {
-						protected ThrowExceptionFunction throwExceptionFunction = 
+						protected ThrowExceptionFunction throwExceptionFunction =
 								ObjectProvider.get(context).getOrBuildObject(ThrowExceptionFunction.class, context);
-						
+
 						@Override
 						public Hashtable<String, Object> get(ClassLoader classLoader) {
 							return (Hashtable<String, Object>)nativeExecutor.getFieldValue(classLoader, classNameBasedLockField);
 						}
-						
+
 						@Override
 						protected ClassLoader getClassLoader(Class<?> cls) {
 							return (ClassLoader)nativeExecutor.getFieldValue(cls, classLoaderField);
 						}
-						
-					};				
-							
+
+					};
+
 				}
-				
+
 			}
 		}
-		
+
 	}
-	
+
 }

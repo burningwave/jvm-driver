@@ -2,7 +2,7 @@
  * This file is derived from ToolFactory JVM driver.
  *
  * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
+ *
  * Modified by: Roberto Gentili
  *
  * Modifications hosted at: https://github.com/burningwave/jvm-driver
@@ -38,8 +38,8 @@ import io.github.toolfactory.jvm.function.template.BiConsumer;
 
 
 public interface SetAccessibleFunction extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction {
-	
-	public interface Native extends SetAccessibleFunction {		
+
+	public interface Native extends SetAccessibleFunction {
 
 		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.Abst<BiConsumer<AccessibleObject, Boolean>> {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
@@ -52,10 +52,10 @@ public interface SetAccessibleFunction extends io.github.toolfactory.jvm.functio
 						nativeExecutor.setAccessible(accessibleObject, flag);
 					}
 				});
-				
+
 
 			}
-			
+
 			@Override
 			public void accept(AccessibleObject accessibleObject, Boolean flag) {
 				function.accept(accessibleObject, flag);

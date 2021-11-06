@@ -1,17 +1,15 @@
 /*
- * This file is derived from ToolFactory JVM driver.
+ * This file is part of Burningwave JVM driver.
  *
- * Hosted at: https://github.com/toolfactory/jvm-driver
- * 
- * Modified by: Roberto Gentili
+ * Author: Roberto Gentili
  *
- * Modifications hosted at: https://github.com/burningwave/jvm-driver
+ * Hosted at: https://github.com/burningwave/jvm-driver
  *
  * --
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019-2021 Luke Hutchison, Roberto Gentili
+ * Copyright (c) 2019-2021 Roberto Gentili
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without
@@ -30,41 +28,40 @@
  */
 package org.burningwave.jvm.util;
 
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
-
 public class TempFileHolder implements Closeable {
 	File file = null;
 	boolean isPosix = false;
-	
+
 	public TempFileHolder(String prefix, String suffix) throws IOException {
 		file = File.createTempFile(prefix, suffix);
-        try {
-            if (file.toPath().getFileSystem().supportedFileAttributeViews().contains("posix")) {
-            	isPosix = true;
-            }
-        } catch (Throwable e) {}
+		try {
+			if (file.toPath().getFileSystem().supportedFileAttributeViews().contains("posix")) {
+				isPosix = true;
+			}
+		} catch (Throwable e) {
+		}
 	}
-	
+
 	public File getFile() {
 		return file;
 	}
-	
+
 	public boolean isPosix() {
 		return isPosix;
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		boolean deleted = false;
-        if (isPosix) {
-            deleted = file.delete();
-        }
-        if (!deleted) {
-        	file.deleteOnExit();
-        }				
+		if (isPosix) {
+			deleted = file.delete();
+		}
+		if (!deleted) {
+			file.deleteOnExit();
+		}
 	};
 }

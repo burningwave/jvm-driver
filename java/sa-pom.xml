@@ -98,7 +98,7 @@
 		<coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
 		<jacoco-maven-plugin.version>0.7.6.201602180812</jacoco-maven-plugin.version>
 		<junit-jupiter.version>5.8.1</junit-jupiter.version>
-		<junit.version>1.8.0</junit.version>
+		<junit.version>1.8.1</junit.version>
 		<jvm-driver.version>8.4.0</jvm-driver.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>

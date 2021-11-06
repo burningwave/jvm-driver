@@ -63,7 +63,7 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 				if (classLoader == null) {
 					throw new NullPointerException("Input classLoader parameter can't be null");
 				}
-				return new CleanableSupplier<>() {
+				return new CleanableSupplier<Collection<Class<?>>>() {
 					Collection<Class<?>> classes;
 
 					@Override

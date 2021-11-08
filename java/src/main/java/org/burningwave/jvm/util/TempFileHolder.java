@@ -31,19 +31,41 @@ package org.burningwave.jvm.util;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
+
+import io.github.toolfactory.jvm.util.Strings;
 
 public class TempFileHolder implements Closeable {
-	File file = null;
+	private static File mainTemporaryFolder;
+	private File file = null;
 	boolean isPosix = false;
-
-	public TempFileHolder(String prefix, String suffix) throws IOException {
-		file = File.createTempFile(prefix, suffix);
+	
+	static {
+		File toDelete = null;
 		try {
-			if (file.toPath().getFileSystem().supportedFileAttributeViews().contains("posix")) {
-				isPosix = true;
-			}
-		} catch (Throwable e) {
+			toDelete = File.createTempFile("_BW_TEMP_", "_temp");
+		} catch (IOException exception) {
+			throw new RuntimeException("Unable to create temporary folder", exception);
 		}
+		File tempFolder = toDelete.getParentFile();
+		File folder = new File(tempFolder.getAbsolutePath() + "/" + "Burningwave" +"/"+ UUID.randomUUID().toString() + "_" + System.currentTimeMillis());
+		if (!folder.exists()) {
+			folder.mkdirs();
+			folder.deleteOnExit();
+		}
+		toDelete.delete();
+		mainTemporaryFolder =  folder;
+	}
+	
+	public TempFileHolder(String fileName) throws IOException {
+		file = new File(mainTemporaryFolder.getAbsolutePath() + "/" + fileName);
+		if (file.exists()) {
+			throw new IllegalArgumentException(Strings.compile("Temporary file {} already exists", file.getAbsolutePath()));
+		}
+		file.createNewFile();
+		try {
+			isPosix = file.toPath().getFileSystem().supportedFileAttributeViews().contains("posix");
+		} catch (Throwable e) {}
 	}
 
 	public File getFile() {
@@ -57,12 +79,14 @@ public class TempFileHolder implements Closeable {
 
 	@Override
 	public void close() throws IOException {
-		boolean deleted = false;
-		if (isPosix) {
-			deleted = file.delete();
-		}
-		if (!deleted) {
-			file.deleteOnExit();
+		if (file != null) {
+			boolean deleted = false;
+			if (isPosix) {
+				deleted = file.delete();
+			}
+			if (!deleted) {
+				file.deleteOnExit();
+			}
 		}
 	}
 }

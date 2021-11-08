@@ -53,17 +53,14 @@ public class Files {
                 throw new FileNotFoundException("Could not find file: " + resourcePath);
             }
             String filename = resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
-            int dotIdx = filename.indexOf('.');
-            String baseName = dotIdx < 0 ? filename : filename.substring(0, dotIdx);
-            String extension = dotIdx < 0 ? "" : filename.substring(dotIdx);
-            try (TempFileHolder tempFileHandler = new TempFileHolder(baseName + "_", extension)) {
+            try (TempFileHolder tempFileHandler = new TempFileHolder(filename)) {
 	            byte[] buffer = new byte[1024];
 	            try (OutputStream os = new FileOutputStream(tempFileHandler.getFile())) {
 	                for (int readBytes; (readBytes = inputSream.read(buffer)) != -1;) {
 	                    os.write(buffer, 0, readBytes);
 	                }
 	            }
-	            extractedFileConsumer.accept(tempFileHandler.file);
+	            extractedFileConsumer.accept(tempFileHandler.getFile());
             }
         } catch (Throwable exc) {
         	throw new NotLoadedException(Strings.compile("Unable to load file {}", resourcePath), exc);

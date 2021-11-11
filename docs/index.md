@@ -7,9 +7,9 @@
 [![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.burningwave/jvm-driver/6)](https://maven-badges.herokuapp.com/maven-central/org.burningwave/jvm-driver/)
 [![GitHub](https://img.shields.io/github/license/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/blob/main/LICENSE)
 
-[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/1437008732)
+[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/1449754657)
 
-[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(17)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/1437008732)
+[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(17)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/1449754657)
 
 [![GitHub open issues](https://img.shields.io/github/issues/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues?q=is%3Aissue+is%3Aclosed)

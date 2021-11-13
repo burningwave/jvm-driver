@@ -29,7 +29,7 @@ name: Update artifact downloads
 
 on:
   schedule:
-    - cron: "0 0 20 * *"
+    - cron: "15 0 20 * *"
 
 jobs:
         

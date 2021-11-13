@@ -28,9 +28,14 @@
 name: Clear cache
 
 on:
-  schedule:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/**"
+#  schedule:
 #    - cron: "0 0 20 * *"
-     - ".github/workflows/**"
+
 
 jobs:
         

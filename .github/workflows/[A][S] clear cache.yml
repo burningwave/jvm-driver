@@ -50,9 +50,11 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
-          sed -r -i "s%type=svg%type=svgg%" ./README.md
+          sed -r -i "s%type=svggg%type=svg%" ./README.md
+          if [ -s ./README.md ]; then
+                # CHANGES MADE, DO SOME STUFF HERE
+          else
+             sed -r -i "s%type=svg%type=svg%" ./README.md
+          fi          
           git commit -am "Artifact downloads update"
-          git push    
-        env:
-          MAVEN_USERNAME: ${{ secrets.nexus_username }}
-          MAVEN_PASSWORD: ${{ secrets.nexus_password }}
+          git push

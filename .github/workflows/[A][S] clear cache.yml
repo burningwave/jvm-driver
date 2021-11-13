@@ -46,12 +46,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Clear Camo cache and update README.md
         run: |
-          export GPG_TTY=$(tty)
-          echo "${{ secrets.gpg_private_key }}" | gpg --batch --import
+          curl -X PURGE https://camo.githubusercontent.com/ea88fe45784db00ce8fed60ea22f1a208cb50588ae7db0d8a74c9508ba0d7b25/68747470733a2f2f7777772e6275726e696e67776176652e6f72672f67656e657261746f72732f67656e65726174652d6275726e696e67776176652d61727469666163742d646f776e6c6f6164732d62616467652e7068703f747970653d73766726617274696661637449643d6a766d2d647269766572
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
-          curl -X PURGE https://camo.githubusercontent.com/ea88fe45784db00ce8fed60ea22f1a208cb50588ae7db0d8a74c9508ba0d7b25/68747470733a2f2f7777772e6275726e696e67776176652e6f72672f67656e657261746f72732f67656e65726174652d6275726e696e67776176652d61727469666163742d646f776e6c6f6164732d62616467652e7068703f747970653d73766726617274696661637449643d6a766d2d647269766572
           sed -r -i "s%type=svg%type=svgg%" ./README.md
           git commit -am "Artifact downloads update"
           git push    

@@ -49,7 +49,11 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
-          sed -r -i "s%type=svggg%type=svg%" ./README.md
-          if [ -s ./README.md ]; then echo 'no modification'; else sed -r -i "s%type=svg%type=svgg%" ./README.md; fi          
+          sed -i "s/type=svggg/type=svg/w changelog.txt" ./README.md
+          if [ -s changelog.txt ]; then
+             echo 'no modification';
+          else
+             sed -r -i "s%type=svg%type=svgg%" ./README.md;
+          fi          
           git commit -am "Artifact downloads update"
           git push

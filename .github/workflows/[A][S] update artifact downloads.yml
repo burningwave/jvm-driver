@@ -25,16 +25,11 @@
 #	AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 #	OR OTHER DEALINGS IN THE SOFTWARE.
 #
-name: Clear cache
+name: Update artifact downloads
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/**"
-#  schedule:
-#    - cron: "0 0 20 * *"
+  schedule:
+    - cron: "0 0 20 * *"
 
 jobs:
         
@@ -49,7 +44,7 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
-          sed -i "s/type=svggg/type=svg/w changelog.txt" ./README.md
+          sed -i "s/type=svgggg/type=svg/w changelog.txt" ./README.md
           if ! [ -s changelog.txt ]; then
              sed -r -i "s%type=svg%type=svgg%" ./README.md;
           fi          

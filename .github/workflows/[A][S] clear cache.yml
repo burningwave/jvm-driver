@@ -53,7 +53,7 @@ jobs:
           if  [ -s ./README.md ]; then
              echo 'no modification'
           else
-             sed -r -i "s%type=svg%type=svg%" ./README.md
+             sed -r -i "s%type=svg%type=svgg%" ./README.md
           fi          
           git commit -am "Artifact downloads update"
           git push

@@ -36,7 +36,6 @@ on:
 #  schedule:
 #    - cron: "0 0 20 * *"
 
-
 jobs:
         
   update-artifact-downloads:

@@ -52,8 +52,6 @@ jobs:
           sed -i "s/type=svggg/type=svg/w changelog.txt" ./README.md
           if ! -s changelog.txt ; then
              sed -r -i "s%type=svg%type=svgg%" ./README.md;
-          else
-             
           fi          
           git commit -am "Artifact downloads update"
           git push

@@ -29,7 +29,7 @@ name: Update artifact downloads
 
 on:
   schedule:
-    - cron: "56 * 20 * *"
+    - cron: "15 0 20 * *"
 
 jobs:
         
@@ -48,5 +48,5 @@ jobs:
           if ! [ -s changelog.txt ]; then
              sed -r -i "s%type=svg%type=svgg%" ./README.md;
           fi          
-          git commit -am "Artifact downloads update"
+          git commit -am "Artifact downloads automatic update"
           git push

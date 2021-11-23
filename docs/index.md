@@ -7,14 +7,14 @@
 [![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.burningwave/jvm-driver/6)](https://maven-badges.herokuapp.com/maven-central/org.burningwave/jvm-driver/)
 [![GitHub](https://img.shields.io/github/license/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/blob/main/LICENSE)
 
-[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/1481409780)
+[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/1494818747)
 
-[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(17)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/1481409780)
+[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(17)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/1494818747)
 
 [![GitHub open issues](https://img.shields.io/github/issues/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues?q=is%3Aissue+is%3Aclosed)
 
-[![Artifact downloads](https://www.burningwave.org/generators/generate-burningwave-artifact-downloads-badge.php?type=svggggg&artifactId=jvm-driver)](https://www.burningwave.org/artifact-downloads/?show-monthly-trend-chart=false)
+[![Artifact downloads](https://www.burningwave.org/generators/generate-burningwave-artifact-downloads-badge.php?type=svgggggg&artifactId=jvm-driver)](https://www.burningwave.org/artifact-downloads/?show-monthly-trend-chart=false)
 [![Repository dependents](https://badgen.net/github/dependents-repo/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/network/dependents)
 
 A driver derived from [**ToolFactory JVM Driver**](https://toolfactory.github.io/jvm-driver/) with a fully extensible architecture and with a custom JNI engine to allow deep interaction with the JVM **without any restrictions**.
@@ -26,7 +26,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>6.5.0</version>
+    <version>6.6.0</version>
 </dependency>	
 ```
 ### Requiring the Burningwave JMV Driver module
@@ -103,6 +103,10 @@ public <D extends Driver> D init();
 
 public <T> T allocateInstance(Class<?> cls);
 
+// Return a ClassLoaderDelegate or the input itself if the input is a 
+// BuiltinClassLoader or null if the JVM version is less than 9
+public ClassLoader convertToBuiltinClassLoader(ClassLoader classLoader);
+
 public Class<?> defineHookClass(Class<?> clientClass, byte[] byteCode);
 
 public Class<?> getBuiltinClassLoaderClass();
@@ -143,9 +147,9 @@ public void setAccessible(AccessibleObject object, boolean flag);
 
 public void setFieldValue(Object target, Field field, Object value);
 
+public <T> T throwException(String message, Object... placeHolderReplacements);
+
 public <T> T throwException(Throwable exception);
-	
-public <T> T throwException(String message, Object... placeHolderReplacements);                                                         
 ```
 
 <br/>

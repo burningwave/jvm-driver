@@ -47,7 +47,7 @@ public interface GetLoadedPackagesFunction extends io.github.toolfactory.jvm.fun
 			Field packagesField;
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
 
-			public ForJava7(Map<Object, Object> context) {
+			public ForJava7(Map<Object, Object> context) throws Throwable {
 				ObjectProvider functionProvider = ObjectProvider.get(context);
 				GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
 				packagesField = getDeclaredFieldFunction.apply(ClassLoader.class, "packages");

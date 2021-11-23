@@ -34,19 +34,19 @@ package org.burningwave.jvm.function.catalog;
 import java.lang.reflect.AccessibleObject;
 import java.util.Map;
 
-import io.github.toolfactory.jvm.function.template.BiConsumer;
+import io.github.toolfactory.jvm.function.template.ThrowingBiConsumer;
 
 
 public interface SetAccessibleFunction extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction {
 
 	public interface Native extends SetAccessibleFunction {
 
-		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.Abst<BiConsumer<AccessibleObject, Boolean>> {
+		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.Abst<ThrowingBiConsumer<AccessibleObject, Boolean, Throwable>> {
 			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			public ForJava7(Map<Object, Object> context) {
 				super(context);
 				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
-				setFunction(new BiConsumer<AccessibleObject, Boolean>() {
+				setFunction(new ThrowingBiConsumer<AccessibleObject, Boolean, Throwable>() {
 					@Override
 					public void accept(AccessibleObject accessibleObject, Boolean flag) {
 						nativeExecutor.setAccessible(accessibleObject, flag);
@@ -57,7 +57,7 @@ public interface SetAccessibleFunction extends io.github.toolfactory.jvm.functio
 			}
 
 			@Override
-			public void accept(AccessibleObject accessibleObject, Boolean flag) {
+			public void accept(AccessibleObject accessibleObject, Boolean flag) throws Throwable {
 				function.accept(accessibleObject, flag);
 			}
 		}

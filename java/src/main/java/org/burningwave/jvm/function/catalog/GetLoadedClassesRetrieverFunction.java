@@ -51,7 +51,7 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 			protected Field classesField;
 			protected org.burningwave.jvm.NativeExecutor nativeExecutor;
 
-			public ForJava7(Map<Object, Object> context) {
+			public ForJava7(Map<Object, Object> context) throws Throwable {
 				ObjectProvider functionProvider = ObjectProvider.get(context);
 				GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
 				classesField = getDeclaredFieldFunction.apply(ClassLoader.class, "classes");
@@ -89,7 +89,7 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 				protected org.burningwave.jvm.NativeExecutor nativeExecutor;
 
 
-				public ForSemeru(Map<Object, Object> context) {
+				public ForSemeru(Map<Object, Object> context) throws Throwable {
 					super(context);
 					nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
 				}

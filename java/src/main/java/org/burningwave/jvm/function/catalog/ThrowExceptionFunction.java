@@ -47,6 +47,9 @@ public interface ThrowExceptionFunction extends io.github.toolfactory.jvm.functi
 
 			@Override
 			public void accept(Throwable exception) {
+				if (exception == null) {
+					throw new NullPointerException("Input exception is null");
+				}
 				nativeExecutor.throwException(exception);
 			}
 

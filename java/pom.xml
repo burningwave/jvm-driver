@@ -40,7 +40,7 @@
 	</parent>
 
 	<artifactId>jvm-driver</artifactId>
-	<version>6.6.2-SNAPSHOT</version>
+	<version>6.6.3-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 

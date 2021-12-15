@@ -98,11 +98,50 @@ jobs:
       max-parallel: 15
       matrix:
         architecture: [x86, x64]
+        distribution: [zulu, adopt , adopt-openj9]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18-ea, 19-ea]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18-ea]
         exclude:
           - os: macOS-latest
             architecture: x86
+          - distribution: adopt-openj9
+            architecture: x86
+          - distribution: adopt-openj9
+            java: 9
+          - distribution: adopt-openj9
+            java: 10
+          - distribution: adopt-openj9
+            java: 12
+          - distribution: adopt-openj9
+            java: 13
+          - distribution: adopt-openj9
+            java: 14
+          - distribution: adopt-openj9
+            java: 15
+          - distribution: adopt-openj9
+            java: 18-ea
+          - distribution: adopt-openj9
+            java: 19-ea
+          - distribution: adopt
+            architecture: x86
+          - distribution: adopt
+            java: 9
+          - distribution: adopt
+            java: 10
+          - distribution: adopt
+            java: 12
+          - distribution: adopt
+            java: 13
+          - distribution: adopt
+            java: 14
+          - distribution: adopt
+            java: 15
+          - distribution: adopt
+            java: 17
+          - distribution: adopt
+            java: 18-ea
+          - distribution: adopt
+            java: 19-ea         
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2

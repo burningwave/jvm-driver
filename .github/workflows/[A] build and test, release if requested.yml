@@ -47,6 +47,7 @@ jobs:
 
   elaborate-native-module:
     name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
+    needs: [release]
     strategy:
       fail-fast: false
       max-parallel: 2
@@ -161,7 +162,7 @@ jobs:
 
   
   release:
-    needs: [build-and-test-with-Java-9-and-later]
+#    needs: [build-and-test-with-Java-9-and-later]
     name: Release if requested
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')

@@ -41,109 +41,112 @@
 	#endif
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getObjectFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getIntegerFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getLongFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getFloatFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDoubleFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getBooleanFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getByteFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getCharacterFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticObjectFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticIntegerFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticLongFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticFloatFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticDoubleFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticBooleanFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticByteFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticCharacterFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject);
+	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setObjectFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setIntegerFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setLongFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setFloatFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setDoubleFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setBooleanFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setByteFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setCharacterFieldValue)
-	  (JNIEnv *, jobject, jobject, jobject, jobject);
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticObjectFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticIntegerFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticLongFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticFloatFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticDoubleFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticBooleanFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticByteFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticCharacterFieldValue)
-	  (JNIEnv *, jobject, jclass, jobject, jobject);
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
-	  (JNIEnv *, jobject, jclass);
+	  (JNIEnv*, jobject, jclass);
+
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(findField)
+	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAccessible)
-	  (JNIEnv *, jobject, jobject, jboolean);
+	  (JNIEnv*, jobject, jobject, jboolean);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAllowedModes)
-	  (JNIEnv *, jobject, jobject, jint);
+	  (JNIEnv*, jobject, jobject, jint);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)
 		(JNIEnv* , jclass, jthrowable);

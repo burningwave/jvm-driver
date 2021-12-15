@@ -33,6 +33,7 @@ package org.burningwave.jvm;
 
 import org.burningwave.jvm.function.catalog.AllocateInstanceFunction;
 import org.burningwave.jvm.function.catalog.ConsulterSupplier;
+import org.burningwave.jvm.function.catalog.ConsulterSupplyFunction;
 import org.burningwave.jvm.function.catalog.GetFieldValueFunction;
 import org.burningwave.jvm.function.catalog.GetLoadedClassesRetrieverFunction;
 import org.burningwave.jvm.function.catalog.GetLoadedPackagesFunction;
@@ -46,6 +47,11 @@ public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
 	@Override
 	protected Class<? extends ConsulterSupplier> getConsulterSupplierFunctionClass() {
 		return ConsulterSupplier.Native.class;
+	}
+
+	@Override
+	protected Class<? extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplyFunction> getConsulterSupplyFunctionClass() {
+		return ConsulterSupplyFunction.Native.class;
 	}
 
 

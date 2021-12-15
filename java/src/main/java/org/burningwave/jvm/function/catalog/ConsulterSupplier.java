@@ -83,6 +83,16 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 			}
 		}
 
+		public static interface ForJava17 extends Native, ConsulterSupplier {
+
+			public static class ForSemeru extends Native.ForJava7 implements Native.ForJava17 {
+
+				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+					super(context);
+				}
+			}
+		}
+
 	}
 
 
@@ -94,7 +104,7 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 				super(context);
 			}
 
-			public static class ForSemeru extends ConsulterSupplier.Native.ForJava9.ForSemeru implements ConsulterSupplier.Hybrid {
+			public static class ForSemeru extends ConsulterSupplier.Native.ForJava17.ForSemeru implements ConsulterSupplier.Hybrid {
 
 				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 					super(context);

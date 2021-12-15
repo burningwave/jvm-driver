@@ -32,6 +32,9 @@ package org.burningwave.jvm;
 
 
 import org.burningwave.jvm.function.catalog.ConsulterSupplier;
+import org.burningwave.jvm.function.catalog.ConsulterSupplyFunction;
+
+
 
 
 public class HybridDriver extends io.github.toolfactory.jvm.HybridDriver {
@@ -41,4 +44,8 @@ public class HybridDriver extends io.github.toolfactory.jvm.HybridDriver {
 		return ConsulterSupplier.Hybrid.class;
 	}
 
+	@Override
+	protected Class<? extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplyFunction> getConsulterSupplyFunctionClass() {
+		return ConsulterSupplyFunction.Hybrid.class;
+	}
 }

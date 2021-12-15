@@ -146,8 +146,8 @@ public class NativeExecutor {
 		}
 	}
 
-	public Field findField(Class<?> target, String name, String signature) {
-		return findField(
+	public Field getField(Class<?> target, String name, String signature) {
+		return getField(
 			check(target, "Target class is null"),
 			check(name, "Field name is null"),
 			check(signature, "Field signature is null"),
@@ -155,8 +155,8 @@ public class NativeExecutor {
 		);
 	}
 
-	public Field findStaticField(Class<?> target, String name, String signature) {
-		return findField(
+	public Field getStaticField(Class<?> target, String name, String signature) {
+		return getField(
 			check(target, "Target class is null"),
 			check(name, "Field name is null"),
 			check(signature, "Field signature is null"),
@@ -170,6 +170,10 @@ public class NativeExecutor {
 		}
 		return input;
 	}
+
+	public native Object allocateInstance(Class<?> cls);
+
+	public native void throwException(Throwable exc);
 
 	private native Object getObjectFieldValue(Object target, Field field);
 
@@ -238,16 +242,7 @@ public class NativeExecutor {
 
 	private native void setStaticCharacterFieldValue(Class<?> target, Field field, Character value);
 
-	private native Field findField(Class<?> target, String name, String signature, boolean isStatic);
-
-	public native Object allocateInstance(Class<?> cls);
-
-	public native void throwException(Throwable exc);
-
-	//public native void setAccessible(AccessibleObject target, boolean flag);
-
-	//public native void setAllowedModes(MethodHandles.Lookup consulter, int modes);
-
+	private native Field getField(Class<?> target, String name, String signature, boolean isStatic);
 
 }
 

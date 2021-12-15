@@ -39,7 +39,7 @@ on:
       - "**.c"
       - "**.cpp"
       - "**.java"
-      - ".github/workflows/**"
+#      - ".github/workflows/**"
       - "**.properties"
       - "**.xml"
 
@@ -91,7 +91,7 @@ jobs:
 
 
   build-and-test-with-Java-9-and-later:
-    name: Build and test with 7 target (${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.java }})
+    name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }} (build and test with 7 target)
     needs: [elaborate-native-module]
     strategy:
       fail-fast: false

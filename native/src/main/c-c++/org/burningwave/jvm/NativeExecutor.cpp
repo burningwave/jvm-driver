@@ -195,7 +195,7 @@ JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticCharacterFieldV
 	checkAndSetStaticFieldValue(environment, jNIEnv, target,  field, value, environment->jcharFieldAccessor);
 }
 
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(findField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
+JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
     const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
     const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL);
     jfieldID fieldID = jNIEnv->GetFieldID(target, fieldName, fieldSignature);
@@ -206,16 +206,6 @@ JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(findField)(JNIEnv* jN
     }
     return jNIEnv->ToReflectedField(target, fieldID, isStatic ? JNI_TRUE : JNI_FALSE);
 }
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAllowedModes)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject consulter, jint modes) {
-	jNIEnv->SetIntField(consulter, environment->java_lang_invoke_MethodHandles$Lookup_allowedModesFieldId, modes);
-}
-
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setAccessible)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject accessibleObject, jboolean flag) {
-	jNIEnv->SetBooleanField(accessibleObject, environment->java_lang_reflect_AccessibleObject_overrideFieldId, flag);
-}
-
 
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass instanceType) {
 	return jNIEnv->AllocObject(instanceType);

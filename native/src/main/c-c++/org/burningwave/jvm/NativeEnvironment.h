@@ -127,8 +127,6 @@
 			PrimitiveFieldAccessor<jboolean>* jbooleanFieldAccessor;
 			PrimitiveFieldAccessor<jbyte>* jbyteFieldAccessor;
 			PrimitiveFieldAccessor<jchar>* jcharFieldAccessor;
-			jfieldID java_lang_invoke_MethodHandles$Lookup_allowedModesFieldId;
-			jfieldID java_lang_reflect_AccessibleObject_overrideFieldId;
 			jclass java_lang_NullPointerExceptionClass;
 
 			void init(JNIEnv*);

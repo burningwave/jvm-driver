@@ -44,7 +44,7 @@ public interface ConsulterSupplyFunction extends io.github.toolfactory.jvm.funct
 				public ForSemeru(Map<Object, Object> context) throws Throwable {
 					super(context);
 					nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
-					allowedModesField = nativeExecutor.findField(MethodHandles.Lookup.class, "allowedModes", "I");
+					allowedModesField = nativeExecutor.getField(MethodHandles.Lookup.class, "allowedModes", "I");
 				}
 
 				@Override

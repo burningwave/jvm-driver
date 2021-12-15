@@ -31,6 +31,8 @@
 package org.burningwave.jvm.function.catalog;
 
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 
@@ -42,15 +44,20 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 
 			public ForJava7(Map<Object, Object> context) throws NoSuchFieldException {
 				super(context);
-				org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(consulter, -1);
+				org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				Field allowedModesField = nativeExecutor.findField(MethodHandles.Lookup.class, "allowedModes", "I");
+				nativeExecutor.setFieldValue(consulter, allowedModesField, -1);
 			}
 
 			public static class ForSemeru extends Abst implements ConsulterSupplier.Native {
 
 				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException {
 					super(context);
-					org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(
+					org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+					Field allowedModesField = nativeExecutor.findField(MethodHandles.Lookup.class, "accessMode", "I");
+					nativeExecutor.setFieldValue(
 						consulter,
+						allowedModesField,
 						io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.ForJava7.ForSemeru.INTERNAL_PRIVILEGED
 					);
 				}
@@ -63,8 +70,11 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 
 				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 					super(context);
-					org.burningwave.jvm.NativeExecutor.getInstance().setAllowedModes(
+					org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+					Field allowedModesField = nativeExecutor.findField(MethodHandles.Lookup.class, "accessMode", "I");
+					nativeExecutor.setFieldValue(
 						consulter,
+						allowedModesField,
 						io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.ForJava7.ForSemeru.INTERNAL_PRIVILEGED |
 						io.github.toolfactory.jvm.function.catalog.ConsulterSupplier.ForJava9.ForSemeru.MODULE
 					);

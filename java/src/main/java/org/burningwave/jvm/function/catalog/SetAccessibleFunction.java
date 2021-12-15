@@ -32,6 +32,7 @@ package org.burningwave.jvm.function.catalog;
 
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 import io.github.toolfactory.jvm.function.template.ThrowingBiConsumer;
@@ -42,14 +43,14 @@ public interface SetAccessibleFunction extends io.github.toolfactory.jvm.functio
 	public interface Native extends SetAccessibleFunction {
 
 		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.Abst<ThrowingBiConsumer<AccessibleObject, Boolean, Throwable>> {
-			org.burningwave.jvm.NativeExecutor nativeExecutor;
 			public ForJava7(Map<Object, Object> context) {
 				super(context);
-				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				Field overrideField = nativeExecutor.findField(AccessibleObject.class, "override", "Z");
 				setFunction(new ThrowingBiConsumer<AccessibleObject, Boolean, Throwable>() {
 					@Override
 					public void accept(AccessibleObject accessibleObject, Boolean flag) {
-						nativeExecutor.setAccessible(accessibleObject, flag);
+						nativeExecutor.setFieldValue(accessibleObject, overrideField, flag);
 					}
 				});
 

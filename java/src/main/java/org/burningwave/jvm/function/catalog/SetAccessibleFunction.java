@@ -45,8 +45,8 @@ public interface SetAccessibleFunction extends io.github.toolfactory.jvm.functio
 		public static class ForJava7 extends io.github.toolfactory.jvm.function.catalog.SetAccessibleFunction.Abst<ThrowingBiConsumer<AccessibleObject, Boolean, Throwable>> {
 			public ForJava7(Map<Object, Object> context) {
 				super(context);
-				org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
-				Field overrideField = nativeExecutor.getField(AccessibleObject.class, "override", "Z");
+				final org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				final Field overrideField = nativeExecutor.getField(AccessibleObject.class, "override", "Z");
 				setFunction(new ThrowingBiConsumer<AccessibleObject, Boolean, Throwable>() {
 					@Override
 					public void accept(AccessibleObject accessibleObject, Boolean flag) {

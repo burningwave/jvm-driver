@@ -146,8 +146,8 @@ public class NativeExecutor {
 		}
 	}
 
-	public Field getField(Class<?> target, String name, String signature) {
-		return getField(
+	public Field getDeclaredField(Class<?> target, String name, String signature) {
+		return getDeclaredField(
 			check(target, "Target class is null"),
 			check(name, "Field name is null"),
 			check(signature, "Field signature is null"),
@@ -155,8 +155,8 @@ public class NativeExecutor {
 		);
 	}
 
-	public Field getStaticField(Class<?> target, String name, String signature) {
-		return getField(
+	public Field getDeclaredStaticField(Class<?> target, String name, String signature) {
+		return getDeclaredField(
 			check(target, "Target class is null"),
 			check(name, "Field name is null"),
 			check(signature, "Field signature is null"),
@@ -242,7 +242,7 @@ public class NativeExecutor {
 
 	private native void setStaticCharacterFieldValue(Class<?> target, Field field, Character value);
 
-	private native Field getField(Class<?> target, String name, String signature, boolean isStatic);
+	private native Field getDeclaredField(Class<?> target, String name, String signature, boolean isStatic);
 
 }
 

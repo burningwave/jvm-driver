@@ -195,7 +195,7 @@ JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticCharacterFieldV
 	checkAndSetStaticFieldValue(environment, jNIEnv, target,  field, value, environment->jcharFieldAccessor);
 }
 
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
+JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
     const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
     const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL);
     jfieldID fieldID = jNIEnv->GetFieldID(target, fieldName, fieldSignature);

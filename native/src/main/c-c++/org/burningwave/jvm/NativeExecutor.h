@@ -136,7 +136,7 @@
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticCharacterFieldValue)
 	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getField)
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)
 	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)

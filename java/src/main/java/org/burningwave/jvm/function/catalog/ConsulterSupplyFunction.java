@@ -28,7 +28,6 @@ package org.burningwave.jvm.function.catalog;
 
 
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 
@@ -39,15 +38,19 @@ public interface ConsulterSupplyFunction extends io.github.toolfactory.jvm.funct
 		public static interface ForJava17 extends Native {
 
 			public static class ForSemeru extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplyFunction.ForJava17.ForSemeru implements ForJava17 {
-				Field allowedModesField;
 				public ForSemeru(Map<Object, Object> context) throws Throwable {
 					super(context);
-					allowedModesField = org.burningwave.jvm.NativeExecutor.getInstance().getDeclaredField(MethodHandles.Lookup.class, "allowedModes", "I");
+
 				}
 
 				@Override
 				protected void empowerMainConsulter(MethodHandles.Lookup consulter, Map<Object, Object> context) throws Throwable {
-					org.burningwave.jvm.NativeExecutor.getInstance().setFieldValue(consulter, allowedModesField, -1);
+					org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+					nativeExecutor.setFieldValue(
+						consulter,
+						nativeExecutor.getDeclaredField(MethodHandles.Lookup.class, "allowedModes", "I"),
+						-1
+					);
 				}
 
 			}

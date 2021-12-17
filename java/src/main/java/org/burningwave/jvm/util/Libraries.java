@@ -34,6 +34,8 @@ package org.burningwave.jvm.util;
 import java.io.File;
 import java.util.Locale;
 
+import org.burningwave.jvm.NativeExecutor;
+
 import io.github.toolfactory.jvm.function.template.Consumer;
 import io.github.toolfactory.jvm.util.Strings;
 
@@ -91,7 +93,7 @@ public class Libraries {
     	}
     	libName += clazz.getSimpleName() + "-" + conventionedSuffix + "." + extension;
 		Files.extractAndExecute(
-			Libraries.class,
+			NativeExecutor.class,
 			libName,
 			new Consumer<File>() {
 				@Override

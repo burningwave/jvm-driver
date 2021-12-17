@@ -40,16 +40,14 @@ public interface ConsulterSupplyFunction extends io.github.toolfactory.jvm.funct
 
 			public static class ForSemeru extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplyFunction.ForJava17.ForSemeru implements ForJava17 {
 				Field allowedModesField;
-				org.burningwave.jvm.NativeExecutor nativeExecutor;
 				public ForSemeru(Map<Object, Object> context) throws Throwable {
 					super(context);
-					nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
-					allowedModesField = nativeExecutor.getDeclaredField(MethodHandles.Lookup.class, "allowedModes", "I");
+					allowedModesField = org.burningwave.jvm.NativeExecutor.getInstance().getDeclaredField(MethodHandles.Lookup.class, "allowedModes", "I");
 				}
 
 				@Override
 				protected void empowerMainConsulter(MethodHandles.Lookup consulter, Map<Object, Object> context) throws Throwable {
-					nativeExecutor.setFieldValue(consulter, allowedModesField, -1);
+					org.burningwave.jvm.NativeExecutor.getInstance().setFieldValue(consulter, allowedModesField, -1);
 				}
 
 			}

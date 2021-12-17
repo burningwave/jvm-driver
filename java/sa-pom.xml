@@ -310,6 +310,7 @@
 						<addMavenDescriptor>false</addMavenDescriptor>
 						<manifestEntries>
 							<built-by>Burningwave</built-by>
+							<Bundle-Vendor>Burningwave (Alessio Perrotta, Roberto Gentili)</Bundle-Vendor>
 							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>
@@ -353,7 +354,7 @@
 				<version>${nexus-staging-maven-plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+					<stagingProgressTimeoutMinutes>240</stagingProgressTimeoutMinutes>
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>

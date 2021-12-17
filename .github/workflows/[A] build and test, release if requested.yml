@@ -41,7 +41,7 @@ on:
       - "**.c"
       - "**.cpp"
       - "**.java"
-      - ".github/workflows/**"
+#      - ".github/workflows/**"
       - "**.properties"
       - "**.xml"
 
@@ -125,6 +125,7 @@ jobs:
           git pull origin ${{github.ref}}  
       - name: Build and test with Java 7 target
         run: mvn -B clean test -Dproject_jdk_version=7 -DskipTests=false --file ./java/pom.xml
+
 
   build-and-test-with-others-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }} (build and test with 7 target)

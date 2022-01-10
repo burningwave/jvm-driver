@@ -29,12 +29,13 @@ name: Update artifact downloads
 
 on:
   schedule:
-    - cron: "15 0 21 * *"
+    - cron: "0 5 31 2 ?"
+#    - cron: "15 0 21 * *"
 
 jobs:
         
   update-artifact-downloads:
-    name: Update artifacts downloads
+    name: Update artifact downloads
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

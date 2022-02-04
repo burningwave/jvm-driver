@@ -40,7 +40,7 @@
 	</parent>
 
 	<artifactId>jvm-driver</artifactId>
-	<version>6.7.5-SNAPSHOT</version>
+	<version>6.8.0-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 
@@ -286,8 +286,23 @@
 					</excludes>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
-						<manifestEntries>
+						<manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        	<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+ 						<manifestEntries>
 							<built-by>Burningwave</built-by>
+							<Bundle-Category>Framework</Bundle-Category>
+                            <Bundle-License>https://github.com/burningwave/core/blob/master/LICENSE</Bundle-License>
+                            <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                            <Bundle-Name>JVM Driver</Bundle-Name>
+                            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+							<Bundle-Vendor>Burningwave</Bundle-Vendor>
+                            <Bundle-Description>${project.description}</Bundle-Description>
+                            <Bundle-Version>${project.version}</Bundle-Version>
+                            <Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.7))"</Require-Capability>
+                            <Import-Package>io.github.toolfactory.jvm;version="[8.9,1)",io.github.toolfactory.jvm.function.catalog;version="[8.9,1)",io.github.toolfactory.jvm.function.template;version="[8.9,1)",io.github.toolfactory.jvm.util;version="[8.9,1)"</Import-Package>
+                            <Export-Package>org.burningwave.jvm;uses:="io.github.toolfactory.jvm,io.github.toolfactory.jvm.function.catalog,org.burningwave.jvm.function.catalog";version="${project.version}",org.burningwave.jvm.function.catalog;uses:="io.github.toolfactory.jvm.function.catalog,io.github.toolfactory.jvm.function.template,io.github.toolfactory.jvm.util,org.burningwave.jvm";version="${project.version}",org.burningwave.jvm.util;uses:="io.github.toolfactory.jvm.function.template";version="${project.version}"</Export-Package>							
 							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>

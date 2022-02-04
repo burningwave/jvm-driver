@@ -292,8 +292,8 @@
                         </manifest>
  						<manifestEntries>
 							<built-by>Burningwave</built-by>
-							<Bundle-Category>Framework</Bundle-Category>
-                            <Bundle-License>https://github.com/burningwave/core/blob/master/LICENSE</Bundle-License>
+							<Bundle-Category>Utilities</Bundle-Category>
+                            <Bundle-License>https://github.com/burningwave/jvm-driver/blob/master/LICENSE</Bundle-License>
                             <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                             <Bundle-Name>JVM Driver</Bundle-Name>
                             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>

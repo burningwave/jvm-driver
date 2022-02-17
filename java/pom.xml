@@ -28,7 +28,9 @@
 	AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 	OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.burningwave</groupId>
@@ -96,7 +98,7 @@
 		<jacoco-maven-plugin.version>0.7.6.201602180812</jacoco-maven-plugin.version>
 		<junit-jupiter.version>5.8.2</junit-jupiter.version>
 		<junit.version>1.8.2</junit.version>
-		<jvm-driver.version>8.9.4</jvm-driver.version>
+		<jvm-driver.version>8.9.3</jvm-driver.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -219,7 +221,8 @@
                         </phase>
 						<configuration>
 							<target>
-								<copy toDir="${project.build.directory}/classes/org/burningwave/jvm">
+								<copy
+									toDir="${project.build.directory}/classes/org/burningwave/jvm">
 									<fileset dir="${project.basedir}/../native/bin" />
 								</copy>
 							</target>
@@ -233,8 +236,11 @@
 						</goals>
 						<configuration>
 							<target>
-								<jar update="true" destfile="${project.build.directory}/${project.build.finalName}.jar">
-									<zipfileset prefix="META-INF/versions/9" dir="${project.build.directory}/classes" includes="module-info.class" />
+								<jar update="true"
+									destfile="${project.build.directory}/${project.build.finalName}.jar">
+									<zipfileset prefix="META-INF/versions/9"
+										dir="${project.build.directory}/classes"
+										includes="module-info.class" />
 								</jar>
 							</target>
 						</configuration>

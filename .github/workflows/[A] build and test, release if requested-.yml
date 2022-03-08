@@ -60,7 +60,7 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'zulu'
           architecture: 'aarch64'
-      - uses: uraimo/run-on-arch-action@v2
+      - uses: uraimo/run-on-arch-action@v2.1.1
         name: Run commands
         id: runcmd
         with:

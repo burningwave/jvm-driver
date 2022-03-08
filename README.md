@@ -161,7 +161,7 @@ public <T> T throwException(Throwable exception);
 <br />
 
 ## Contributing
-The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is actually compiled for Linux x86/x64, Windows x86/x64, and Mac OS X x64: **feel free to contribute native code builds for other platforms or architectures**.
+The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is currently compiled for Linux x86/x64, Windows x86/x64, and Mac OS X x64: **feel free to contribute native code builds for other platforms or architectures**.
 
 # <a name="Ask-for-assistance"></a>Ask for assistance
 **For assistance you can**:

@@ -54,9 +54,13 @@ public class Libraries {
 		} else if (jVMInfo.is64Bit()) {
 			conventionedSuffix = "x64";
 		}
-	    String operatingSystemName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-	    prefix = "lib";
-		if ((operatingSystemName.indexOf("mac") >= 0) || (operatingSystemName.indexOf("darwin") >= 0)) {
+		String osArch = System.getProperty("os.arch", "generic");
+		String operatingSystemName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+		prefix = "lib";
+		if (osArch.equals("aarch64")) {
+			conventionedSuffix = osArch;
+			extension = "so";
+		} else if ((operatingSystemName.indexOf("mac") >= 0) || (operatingSystemName.indexOf("darwin") >= 0)) {
 			extension = "dylib";
 		} else if (operatingSystemName.indexOf("win") >= 0) {
 			prefix = null;
@@ -66,8 +70,8 @@ public class Libraries {
 		} else {
 			throw new InitializeException(
 				Strings.compile(
-					"Unable to initialize {}: unsupported operating system ('{}')",
-					this, operatingSystemName
+					"Unable to initialize {}: unsupported operating system ('{}-{}')",
+					this, operatingSystemName, osArch
 				)
 			);
 		}

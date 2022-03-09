@@ -79,6 +79,16 @@
 				<packaging.type>so</packaging.type>
 				<org.codehaus.mojo.option.spec-include-dir-two>${java.home}/include/linux/</org.codehaus.mojo.option.spec-include-dir-two>
 			</properties>
+		</profile>
+		<profile>
+			<id>unix-x64</id>
+			<activation>
+				<os>
+					<family>unix</family>
+      				<name>Linux</name>
+      				<arch>x64</arch>
+				</os>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>

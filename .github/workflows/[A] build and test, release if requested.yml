@@ -70,6 +70,11 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'zulu'
           architecture: ${{ matrix.architecture }}
+      - if: startsWith(matrix.os, 'ubuntu')
+        name: Set up C/C++ compiler
+        run: |
+          sudo apt update
+          sudo apt-get -y install g++-aarch64-linux-gnu
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
         run: |

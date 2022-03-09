@@ -58,7 +58,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
         java: [17]
-        architecture: [x64, x86]
+        architecture: [x86, x64]
         exclude:
           - os: macOS-latest
             architecture: x86

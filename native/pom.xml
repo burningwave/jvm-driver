@@ -86,8 +86,11 @@
 				<os>
 					<family>unix</family>
       				<name>Linux</name>
-      				<arch>x64</arch>
 				</os>
+				<property>
+					<name>sun.arch.data.model</name>
+					<value>64</value>
+				</property>
 			</activation>
 			<build>
 				<plugins>

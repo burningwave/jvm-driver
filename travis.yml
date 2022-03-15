@@ -1,0 +1,12 @@
+os: linux
+dist: trusty
+
+language: java
+
+script:
+  - mvn -B clean test -Dproject_jdk_version=7 -DskipTests=false --file ./java/pom.xml
+
+jobs:
+  include:
+    - name: "Linux JDK11 ARM"
+      arch: arm64

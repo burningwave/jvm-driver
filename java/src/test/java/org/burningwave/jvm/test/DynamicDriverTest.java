@@ -119,4 +119,10 @@ public class DynamicDriverTest extends BaseTest {
 	public void convertToBuiltinClassLoader() {
 		super.convertToBuiltinClassLoader();
 	}
+
+	@Override
+	@Test
+	public void stopThread() {
+		super.stopThread();
+	}
 }

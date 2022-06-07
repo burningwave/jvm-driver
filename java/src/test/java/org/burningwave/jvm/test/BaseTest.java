@@ -34,6 +34,7 @@ abstract class BaseTest {
 		getClassByNameTestOne();
 		retrieveResourcesAsStreamsTestOne();
 		convertToBuiltinClassLoader();
+		stopThread();
 	}
 
 
@@ -286,6 +287,34 @@ abstract class BaseTest {
 	public void convertToBuiltinClassLoader() {
 		try {
 			log(getReflection().getDriver().convertToBuiltinClassLoader(new ClassLoader() {}));
+		} catch (Throwable exc) {
+			exc.printStackTrace();
+			getReflection().getDriver().throwException(exc);
+		}
+	}
+
+	public void stopThread() {
+		try {
+			Thread thread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					while (true) {
+						log(Thread.currentThread().getName() + " - " + System.currentTimeMillis());
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+			}, "StopThreadTestThread");
+			thread.start();
+			Thread.sleep(5000);
+			getReflection().getDriver().stop(thread);
+			Thread.sleep(2000);
+			log(thread + " - " + thread.getState());
 		} catch (Throwable exc) {
 			exc.printStackTrace();
 			getReflection().getDriver().throwException(exc);

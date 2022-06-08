@@ -159,7 +159,7 @@
 				<org.codehaus.mojo.option.gcc-linker.final-name>${org.codehaus.mojo.option.gcc-linker.artifact-name}</org.codehaus.mojo.option.gcc-linker.final-name>
 				<packaging.type>dll</packaging.type>
 				<org.codehaus.mojo.option.spec-include-dir-two>${java.home}/include/win32/</org.codehaus.mojo.option.spec-include-dir-two>
-				<org.codehaus.mojo.option.gcc-linker.flags>-Wl,--kill-at -fPIC -shared</org.codehaus.mojo.option.gcc-linker.flags>
+				<org.codehaus.mojo.option.gcc-linker.flags>-Wl,--kill-at -fPIC -shared -static-libgcc</org.codehaus.mojo.option.gcc-linker.flags>
 			</properties>
 		</profile>
 		<profile>

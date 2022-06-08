@@ -174,7 +174,7 @@
 				</property>
 			</activation>
 			<properties>
-				<org.codehaus.mojo.option.gcc-linker.flags>-Wl,--kill-at -fPIC -shared -static</org.codehaus.mojo.option.gcc-linker.flags>
+				<org.codehaus.mojo.option.gcc-linker.flags>-Wl,--kill-at -fPIC -shared -static-libgcc</org.codehaus.mojo.option.gcc-linker.flags>
 			</properties>
 		</profile>
 		<profile>

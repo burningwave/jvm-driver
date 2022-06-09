@@ -81,16 +81,9 @@
 			</properties>
 		</profile>	
 		<profile>
-			<id>unix-x64</id>
+			<id>aarch64-for-unix-x64</id>
 			<activation>
-				<os>
-					<family>unix</family>
-      				<name>Linux</name>
-				</os>
-				<property>
-					<name>sun.arch.data.model</name>
-					<value>64</value>
-				</property>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
@@ -123,59 +116,6 @@
 						</configuration>
 						<executions>
 							<execution>
-					            <id>compile native for aarch64</id>
-					            <phase>compile</phase>
-					            <goals>
-					                <goal>compile</goal>
-					                <goal>link</goal>
-					            </goals>					
-		            			<configuration>
-									<sources>
-										<source>
-											<directory>${basedir}/src/main/c-c++</directory>
-											<fileNames>
-												<fileName>org/burningwave/jvm/NativeEnvironment.cpp</fileName>
-												<fileName>org/burningwave/jvm/NativeExecutor.cpp</fileName>
-											</fileNames>
-										</source>
-									</sources>
-									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-aarch64</linkerFinalName>
-									<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>native-maven-plugin</artifactId>
-						<version>1.0-alpha-11</version>
-						<extensions>true</extensions>
-						<configuration>
-							<compilerProvider>generic</compilerProvider>
-							<compilerExecutable>gcc</compilerExecutable>
-							<linkerExecutable>gcc</linkerExecutable>
-							<compilerStartOptions>
-								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
-								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
-							</compilerStartOptions>
-							<compilerEndOptions>
-								<compilerEndOption>-m${sun.arch.data.model}</compilerEndOption>
-								<compilerEndOption>${org.codehaus.mojo.option.gcc-compiler.flags}</compilerEndOption>
-							</compilerEndOptions>
-							<linkerStartOptions>
-								<linkerStartOption>${org.codehaus.mojo.option.gcc-linker.flags}</linkerStartOption>
-								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</linkerStartOption>
-								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</linkerStartOption>
-								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-three}</linkerStartOption>
-							</linkerStartOptions>
-							<linkerEndOptions>
-								<linkerEndOption>-m${sun.arch.data.model}</linkerEndOption>
-								<linkerEndOption>-lstdc++</linkerEndOption>
-							</linkerEndOptions>
-							<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>
-						</configuration>
-						<executions>
-							<execution>
 					            <id>compile native</id>
 					            <phase>compile</phase>
 					            <goals>
@@ -192,7 +132,7 @@
 											</fileNames>
 										</source>
 									</sources>
-									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-x${sun.arch.data.model}</linkerFinalName>
+									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-aarch64</linkerFinalName>
 									<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
 								</configuration>
 							</execution>

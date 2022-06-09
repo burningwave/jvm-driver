@@ -23,6 +23,7 @@ hs_err_pid*
 /.classpath
 /target/
 
+/java/generate-header.cmd
 /java/.project
 /java/.settings
 /java/.classpath

@@ -135,7 +135,7 @@ public class NativeExecutor {
 			if(!fieldType.isPrimitive()) {
 				setObjectFieldValue(target, field, value);
 			} else if (fieldType == short.class) {
-				setShortFieldValue(target, field, (Short)value);
+				setShortFieldValue(target, field, value);
 			} else if (fieldType == int.class) {
 				setIntegerFieldValue(target, field, (Integer)value);
 			} else if (fieldType == long.class) {
@@ -223,7 +223,7 @@ public class NativeExecutor {
 
 	private native void setObjectFieldValue(Object target, Field field, Object value);
 
-	private native void setShortFieldValue(Object target, Field field, Short value);
+	private native void setShortFieldValue(Object target, Field field, Object value);
 
 	private native void setIntegerFieldValue(Object target, Field field, Integer value);
 
@@ -242,7 +242,7 @@ public class NativeExecutor {
 
 	private native void setStaticObjectFieldValue(Class<?> target, Field field, Object value);
 
-	private native void setStaticShortFieldValue(Class<?> target, Field field, Short value);
+	private native void setStaticShortFieldValue(Class<?> target, Field field, Object value);
 
 	private native void setStaticIntegerFieldValue(Class<?> target, Field field, Integer value);
 

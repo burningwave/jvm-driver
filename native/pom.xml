@@ -25,7 +25,7 @@
 	EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
 	AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 	OR OTHER DEALINGS IN THE SOFTWARE.
--->
+--> 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -99,35 +99,37 @@
 						<artifactId>native-maven-plugin</artifactId>
 						<version>1.0-alpha-11</version>
 						<extensions>true</extensions>
+						<configuration>
+							<compilerProvider>generic</compilerProvider>
+							<compilerExecutable>aarch64-linux-gnu-g++</compilerExecutable>
+							<linkerExecutable>aarch64-linux-gnu-g++</linkerExecutable>
+<!-- 							<compilerStartOptions>
+								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
+								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
+							</compilerStartOptions>
+							<compilerEndOptions>
+								<compilerEndOption>${org.codehaus.mojo.option.gcc-compiler.flags}</compilerEndOption>
+							</compilerEndOptions>
+							<linkerStartOptions>
+								<linkerStartOption>${org.codehaus.mojo.option.gcc-linker.flags}</linkerStartOption>
+								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</linkerStartOption>
+								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</linkerStartOption>
+								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-three}</linkerStartOption>
+							</linkerStartOptions> -->
+							<linkerEndOptions>
+								<linkerEndOption>-lstdc++</linkerEndOption>
+							</linkerEndOptions>
+							<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>
+						</configuration>
 						<executions>
 							<execution>
-					            <id>compile native aarch64</id>
+					            <id>compile native</id>
 					            <phase>compile</phase>
 					            <goals>
 					                <goal>compile</goal>
 					                <goal>link</goal>
 					            </goals>					
 		            			<configuration>
-		            				<compilerProvider>generic</compilerProvider>
-									<compilerExecutable>aarch64-linux-gnu-g++</compilerExecutable>
-									<linkerExecutable>aarch64-linux-gnu-g++</linkerExecutable>
-									<compilerStartOptions>
-										<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
-										<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
-									</compilerStartOptions>
-									<compilerEndOptions>
-										<compilerEndOption>${org.codehaus.mojo.option.gcc-compiler.flags}</compilerEndOption>
-									</compilerEndOptions>
-									<linkerStartOptions>
-										<linkerStartOption>${org.codehaus.mojo.option.gcc-linker.flags}</linkerStartOption>
-										<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</linkerStartOption>
-										<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</linkerStartOption>
-										<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-three}</linkerStartOption>
-									</linkerStartOptions>
-									<linkerEndOptions>
-										<linkerEndOption>-lstdc++</linkerEndOption>
-									</linkerEndOptions>
-									<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>
 									<sources>
 										<source>
 											<directory>${basedir}/src/main/c-c++</directory>
@@ -138,49 +140,6 @@
 										</source>
 									</sources>
 									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-aarch64</linkerFinalName>
-									<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
-								</configuration>
-							</execution>
-							<execution>
-			            		<id>compile native</id>
-					            <phase>compile</phase>
-					            <goals>
-					                <goal>compile</goal>
-					                <goal>link</goal>
-					            </goals>					
-		            			<configuration>
-		            				<compilerProvider>generic</compilerProvider>
-									<compilerExecutable>gcc</compilerExecutable>
-									<linkerExecutable>gcc</linkerExecutable>
-									<compilerStartOptions>
-										<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
-										<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
-									</compilerStartOptions>
-									<compilerEndOptions>
-										<compilerEndOption>-m${sun.arch.data.model}</compilerEndOption>
-										<compilerEndOption>${org.codehaus.mojo.option.gcc-compiler.flags}</compilerEndOption>
-									</compilerEndOptions>
-									<linkerStartOptions>
-										<linkerStartOption>${org.codehaus.mojo.option.gcc-linker.flags}</linkerStartOption>
-										<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</linkerStartOption>
-										<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</linkerStartOption>
-										<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-three}</linkerStartOption>
-									</linkerStartOptions>
-									<linkerEndOptions>
-										<linkerEndOption>-m${sun.arch.data.model}</linkerEndOption>
-										<linkerEndOption>-lstdc++</linkerEndOption>
-									</linkerEndOptions>
-									<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>
-									<sources>
-										<source>
-											<directory>${basedir}/src/main/c-c++</directory>
-											<fileNames>
-												<fileName>org/burningwave/jvm/NativeEnvironment.cpp</fileName>
-												<fileName>org/burningwave/jvm/NativeExecutor.cpp</fileName>
-											</fileNames>
-										</source>
-									</sources>
-									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-x${sun.arch.data.model}</linkerFinalName>
 									<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
 								</configuration>
 							</execution>

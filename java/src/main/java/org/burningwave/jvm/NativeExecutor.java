@@ -185,7 +185,7 @@ public class NativeExecutor {
 
 	private native Object getObjectFieldValue(Object target, Field field);
 
-	private native Integer getShortFieldValue(Object target, Field field);
+	private native Short getShortFieldValue(Object target, Field field);
 
 	private native Integer getIntegerFieldValue(Object target, Field field);
 
@@ -204,7 +204,7 @@ public class NativeExecutor {
 
 	private native Object getStaticObjectFieldValue(Class<?> target, Field field);
 
-	private native Integer getStaticShortFieldValue(Class<?> target, Field field);
+	private native Short getStaticShortFieldValue(Class<?> target, Field field);
 
 	private native Integer getStaticIntegerFieldValue(Class<?> target, Field field);
 

@@ -123,7 +123,7 @@
 						</configuration>
 						<executions>
 							<execution>
-					            <id>compile native</id>
+					            <id>compile native for aarch64</id>
 					            <phase>compile</phase>
 					            <goals>
 					                <goal>compile</goal>

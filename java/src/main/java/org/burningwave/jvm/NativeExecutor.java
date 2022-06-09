@@ -59,7 +59,7 @@ public class NativeExecutor {
 		Class<?> fieldType = field.getType();
 		if (Modifier.isStatic(field.getModifiers())) {
 			target = field.getDeclaringClass();
-			if(!fieldType.isPrimitive()) {
+			if (!fieldType.isPrimitive()) {
 				return getStaticObjectFieldValue((Class<?>)target, field);
 			} else if (fieldType == short.class) {
 				return getStaticShortFieldValue((Class<?>)target, field);
@@ -103,7 +103,7 @@ public class NativeExecutor {
 
 
 	public void setFieldValue(Object origTarget, Field field, Object value) {
-		if(value != null && !Classes.isAssignableFrom(field.getType(), value.getClass())) {
+		if (value != null && !Classes.isAssignableFrom(field.getType(), value.getClass())) {
 			throw new IllegalArgumentException("Value " + value + " is not assignable to " + field.getName());
 		}
 		Class<?> fieldType = field.getType();

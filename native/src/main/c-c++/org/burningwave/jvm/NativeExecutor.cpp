@@ -70,6 +70,24 @@ JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticObjectFieldValu
 }
 
 
+//Get/set short value
+JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
+	return checkAndGetFieldValue(environment, jNIEnv, target, field, environment->jshortFieldAccessor);
+}
+
+JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
+	return checkAndGetStaticFieldValue(environment, jNIEnv, target,  field, environment->jshortFieldAccessor);
+}
+
+JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
+	checkAndSetFieldValue(environment, jNIEnv, target,  field, value, environment->jshortFieldAccessor);
+}
+
+JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
+	checkAndSetStaticFieldValue(environment, jNIEnv, target,  field, value, environment->jshortFieldAccessor);
+}
+
+
 //Get/set int value
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getIntegerFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
 	return checkAndGetFieldValue(environment, jNIEnv, target, field, environment->jintFieldAccessor);

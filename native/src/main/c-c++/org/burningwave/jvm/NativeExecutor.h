@@ -43,6 +43,9 @@
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getObjectFieldValue)
 	  (JNIEnv*, jobject, jobject, jobject);
 
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getShortFieldValue)
+	  (JNIEnv*, jobject, jobject, jobject);
+
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getIntegerFieldValue)
 	  (JNIEnv*, jobject, jobject, jobject);
 
@@ -65,6 +68,9 @@
 	  (JNIEnv*, jobject, jobject, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticObjectFieldValue)
+	  (JNIEnv*, jobject, jclass, jobject);
+
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticShortFieldValue)
 	  (JNIEnv*, jobject, jclass, jobject);
 
 	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticIntegerFieldValue)
@@ -91,6 +97,9 @@
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setObjectFieldValue)
 	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setShortFieldValue)
+	  (JNIEnv*, jobject, jobject, jobject, jobject);
+
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setIntegerFieldValue)
 	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
@@ -113,6 +122,9 @@
 	  (JNIEnv*, jobject, jobject, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticObjectFieldValue)
+	  (JNIEnv*, jobject, jclass, jobject, jobject);
+
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticShortFieldValue)
 	  (JNIEnv*, jobject, jclass, jobject, jobject);
 
 	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticIntegerFieldValue)

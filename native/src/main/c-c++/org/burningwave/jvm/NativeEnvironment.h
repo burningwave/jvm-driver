@@ -120,6 +120,7 @@
 
 		public:
 			ObjectFieldAccessor* objectFieldAccessor;
+			PrimitiveFieldAccessor<jshort>* jshortFieldAccessor;
 			PrimitiveFieldAccessor<jint>* jintFieldAccessor;
 			PrimitiveFieldAccessor<jlong>* jlongFieldAccessor;
 			PrimitiveFieldAccessor<jfloat>* jfloatFieldAccessor;

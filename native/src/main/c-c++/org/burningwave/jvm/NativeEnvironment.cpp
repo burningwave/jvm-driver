@@ -38,6 +38,10 @@ void NativeEnvironment::destroy(JNIEnv* jNIEnv){
 	delete(this->objectFieldAccessor);
 	this->objectFieldAccessor = NULL;
 
+	this->jshortFieldAccessor->destroy(jNIEnv);
+	delete(this->jshortFieldAccessor);
+	this->jshortFieldAccessor = NULL;
+
 	this->jintFieldAccessor->destroy(jNIEnv);
 	delete(this->jintFieldAccessor);
 	this->jintFieldAccessor = NULL;
@@ -72,6 +76,12 @@ void NativeEnvironment::destroy(JNIEnv* jNIEnv){
 void NativeEnvironment::init(JNIEnv* jNIEnv) {
 	this->java_lang_NullPointerExceptionClass = (jclass)jNIEnv->NewGlobalRef(jNIEnv->FindClass("java/lang/NullPointerException"));
 	this->objectFieldAccessor = new ObjectFieldAccessor(jNIEnv);
+	this->jshortFieldAccessor = new PrimitiveFieldAccessor<jshort>(
+		jNIEnv, "java/lang/Short", "(I)Ljava/lang/Short;",
+		&JNIEnv::CallShortMethod, "shortValue", "()S",
+		&JNIEnv::GetShortField, &JNIEnv::GetStaticShortField,
+		&JNIEnv::SetShortField, &JNIEnv::SetStaticShortField
+	);
 	this->jintFieldAccessor = new PrimitiveFieldAccessor<jint>(
 		jNIEnv, "java/lang/Integer", "(I)Ljava/lang/Integer;",
 		&JNIEnv::CallIntMethod, "intValue", "()I",

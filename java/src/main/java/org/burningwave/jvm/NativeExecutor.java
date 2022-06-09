@@ -61,6 +61,8 @@ public class NativeExecutor {
 			target = field.getDeclaringClass();
 			if(!fieldType.isPrimitive()) {
 				return getStaticObjectFieldValue((Class<?>)target, field);
+			} else if (fieldType == short.class) {
+				return getStaticShortFieldValue((Class<?>)target, field);
 			} else if (fieldType == int.class) {
 				return getStaticIntegerFieldValue((Class<?>)target, field);
 			} else if (fieldType == long.class) {
@@ -79,6 +81,8 @@ public class NativeExecutor {
 		} else {
 			if(!fieldType.isPrimitive()) {
 				return getObjectFieldValue(target, field);
+			} else if (fieldType == short.class) {
+				return getShortFieldValue(target, field);
 			} else if (fieldType == int.class) {
 				return getIntegerFieldValue(target, field);
 			} else if (fieldType == long.class) {
@@ -110,6 +114,8 @@ public class NativeExecutor {
 			target = field.getDeclaringClass();
 			if(!fieldType.isPrimitive()) {
 				setStaticObjectFieldValue((Class<?>)target, field, value);
+			} else if (fieldType == short.class) {
+				setStaticShortFieldValue((Class<?>)target, field, (Short)value);
 			} else if (fieldType == int.class) {
 				setStaticIntegerFieldValue((Class<?>)target, field, (Integer)value);
 			} else if (fieldType == long.class) {
@@ -128,6 +134,8 @@ public class NativeExecutor {
 		} else {
 			if(!fieldType.isPrimitive()) {
 				setObjectFieldValue(target, field, value);
+			} else if (fieldType == short.class) {
+				setShortFieldValue(target, field, (Short)value);
 			} else if (fieldType == int.class) {
 				setIntegerFieldValue(target, field, (Integer)value);
 			} else if (fieldType == long.class) {
@@ -177,6 +185,8 @@ public class NativeExecutor {
 
 	private native Object getObjectFieldValue(Object target, Field field);
 
+	private native Integer getShortFieldValue(Object target, Field field);
+
 	private native Integer getIntegerFieldValue(Object target, Field field);
 
 	private native Long getLongFieldValue(Object target, Field field);
@@ -193,6 +203,8 @@ public class NativeExecutor {
 
 
 	private native Object getStaticObjectFieldValue(Class<?> target, Field field);
+
+	private native Integer getStaticShortFieldValue(Class<?> target, Field field);
 
 	private native Integer getStaticIntegerFieldValue(Class<?> target, Field field);
 
@@ -211,6 +223,8 @@ public class NativeExecutor {
 
 	private native void setObjectFieldValue(Object target, Field field, Object value);
 
+	private native void setShortFieldValue(Object target, Field field, Short value);
+
 	private native void setIntegerFieldValue(Object target, Field field, Integer value);
 
 	private native void setLongFieldValue(Object target, Field field, Long value);
@@ -227,6 +241,8 @@ public class NativeExecutor {
 
 
 	private native void setStaticObjectFieldValue(Class<?> target, Field field, Object value);
+
+	private native void setStaticShortFieldValue(Class<?> target, Field field, Short value);
 
 	private native void setStaticIntegerFieldValue(Class<?> target, Field field, Integer value);
 

@@ -79,7 +79,7 @@ public class NativeExecutor {
 				return getStaticCharacterFieldValue((Class<?>)target, field);
 			}
 		} else {
-			if(!fieldType.isPrimitive()) {
+			if (!fieldType.isPrimitive()) {
 				return getObjectFieldValue(target, field);
 			} else if (fieldType == short.class) {
 				return getShortFieldValue(target, field);
@@ -132,7 +132,7 @@ public class NativeExecutor {
 				setStaticCharacterFieldValue((Class<?>)target, field, (Character)value);
 			}
 		} else {
-			if(!fieldType.isPrimitive()) {
+			if (!fieldType.isPrimitive()) {
 				setObjectFieldValue(target, field, value);
 			} else if (fieldType == short.class) {
 				setShortFieldValue(target, field, (Short)value);

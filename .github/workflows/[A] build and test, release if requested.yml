@@ -56,9 +56,11 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
+#        os: [windows-latest, ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest]
         java: [18]
-        architecture: [x86, x64]
+#        architecture: [x86, x64]
+        architecture: [x64]
         exclude:
           - os: macOS-latest
             architecture: x86

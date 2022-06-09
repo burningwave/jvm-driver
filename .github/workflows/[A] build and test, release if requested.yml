@@ -91,6 +91,9 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build native library
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml
+      - if: startsWith(matrix.os, 'ubuntu-latest') && startsWith(matrix.architecture, 'x64')
+        name: Build native library for aarch64
+        run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Paarch64-for-unix-x64 -DskipTests=true --file ./native/pom.xml
       - if: github.event_name == 'push' && (endsWith(github.event.head_commit.message, 'Releasing new version') || contains(github.event.head_commit.message, 'Generating external artifacts'))
         name: Push native library
         run: |

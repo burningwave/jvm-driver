@@ -112,7 +112,7 @@ public class NativeExecutor {
 			origTarget;
 		if (Modifier.isStatic(field.getModifiers())) {
 			target = field.getDeclaringClass();
-			if(!fieldType.isPrimitive()) {
+			if (!fieldType.isPrimitive()) {
 				setStaticObjectFieldValue((Class<?>)target, field, value);
 			} else if (fieldType == short.class) {
 				setStaticShortFieldValue((Class<?>)target, field, (Short)value);

@@ -45,6 +45,7 @@ abstract class BaseTest {
 		try {
 			Object obj = new Object() {
 				volatile List<Object> objectValue;
+				volatile short shortValue;
 				volatile int intValue;
 				volatile long longValue;
 				volatile float floatValue;

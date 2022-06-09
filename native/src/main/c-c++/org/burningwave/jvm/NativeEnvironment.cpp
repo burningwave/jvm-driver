@@ -77,7 +77,7 @@ void NativeEnvironment::init(JNIEnv* jNIEnv) {
 	this->java_lang_NullPointerExceptionClass = (jclass)jNIEnv->NewGlobalRef(jNIEnv->FindClass("java/lang/NullPointerException"));
 	this->objectFieldAccessor = new ObjectFieldAccessor(jNIEnv);
 	this->jshortFieldAccessor = new PrimitiveFieldAccessor<jshort>(
-		jNIEnv, "java/lang/Short", "(I)Ljava/lang/Short;",
+		jNIEnv, "java/lang/Short", "(S)Ljava/lang/Short;",
 		&JNIEnv::CallShortMethod, "shortValue", "()S",
 		&JNIEnv::GetShortField, &JNIEnv::GetStaticShortField,
 		&JNIEnv::SetShortField, &JNIEnv::SetStaticShortField

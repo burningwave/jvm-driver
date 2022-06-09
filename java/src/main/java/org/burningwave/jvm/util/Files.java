@@ -47,16 +47,16 @@ public class Files {
 	public static void extractAndExecute(Class<?> callerClass, String resourcePath, Consumer<File> extractedFileConsumer) {
 
         try (
-        	InputStream inputSream = callerClass.getResourceAsStream(resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath);
+        	InputStream inputStream = callerClass.getResourceAsStream(resourcePath.startsWith("/") ? resourcePath : "/" + resourcePath);
         ) {
-            if (inputSream == null) {
+            if (inputStream == null) {
                 throw new FileNotFoundException("Could not find file: " + resourcePath);
             }
             String filename = resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
             try (TempFileHolder tempFileHandler = new TempFileHolder(filename)) {
 	            byte[] buffer = new byte[1024];
 	            try (OutputStream os = new FileOutputStream(tempFileHandler.getFile())) {
-	                for (int readBytes; (readBytes = inputSream.read(buffer)) != -1;) {
+	                for (int readBytes; (readBytes = inputStream.read(buffer)) != -1;) {
 	                    os.write(buffer, 0, readBytes);
 	                }
 	            }

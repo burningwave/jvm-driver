@@ -113,7 +113,6 @@ public class NativeExecutor {
 		Object target = Modifier.isStatic(field.getModifiers())?
 			field.getDeclaringClass() :
 			origTarget;
-		check(target, "Target is null");
 		if (Modifier.isStatic(field.getModifiers())) {
 			target = field.getDeclaringClass();
 			if (!fieldType.isPrimitive()) {
@@ -136,6 +135,7 @@ public class NativeExecutor {
 				setStaticCharacterFieldValue((Class<?>)target, field, (Character)value);
 			}
 		} else {
+			check(target, "Target is null");
 			if (!fieldType.isPrimitive()) {
 				setObjectFieldValue(target, field, value);
 			} else if (fieldType == short.class) {

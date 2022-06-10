@@ -80,7 +80,12 @@ public class NativeExecutor {
 				return getStaticCharacterFieldValue((Class<?>)target, field);
 			}
 		} else {
-			check(target, "Target is null");
+			check(target, "Target object is null");
+			Class<?> fieldDeclaringClass = field.getDeclaringClass();
+			Class<?> targetObjectClass = target.getClass();
+ 			if (!Classes.isAssignableFrom(fieldDeclaringClass, targetObjectClass)) {
+				throw new IllegalArgumentException("Target object class " + targetObjectClass + " is not assignable to " + fieldDeclaringClass);
+			}
 			if (!fieldType.isPrimitive()) {
 				return getObjectFieldValue(target, field);
 			} else if (fieldType == short.class) {
@@ -135,7 +140,12 @@ public class NativeExecutor {
 				setStaticCharacterFieldValue((Class<?>)target, field, (Character)value);
 			}
 		} else {
-			check(target, "Target is null");
+			check(target, "Target object is null");
+			Class<?> fieldDeclaringClass = field.getDeclaringClass();
+			Class<?> targetObjectClass = target.getClass();
+ 			if (!Classes.isAssignableFrom(fieldDeclaringClass, targetObjectClass)) {
+				throw new IllegalArgumentException("Target object class " + targetObjectClass + " is not assignable to " + fieldDeclaringClass);
+			}
 			if (!fieldType.isPrimitive()) {
 				setObjectFieldValue(target, field, value);
 			} else if (fieldType == short.class) {

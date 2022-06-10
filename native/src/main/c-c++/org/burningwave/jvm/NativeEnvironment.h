@@ -128,7 +128,6 @@
 			PrimitiveFieldAccessor<jboolean>* jbooleanFieldAccessor;
 			PrimitiveFieldAccessor<jbyte>* jbyteFieldAccessor;
 			PrimitiveFieldAccessor<jchar>* jcharFieldAccessor;
-			jclass java_lang_NullPointerExceptionClass;
 
 			void init(JNIEnv*);
 	};

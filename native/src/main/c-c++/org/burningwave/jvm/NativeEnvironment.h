@@ -133,19 +133,4 @@
 			void init(JNIEnv*);
 	};
 
-
-	int throwNullPointerExceptionIfNull(NativeEnvironment*, JNIEnv*, jobject, const char[]);
-
-
-	jobject checkAndGetFieldValue(NativeEnvironment*, JNIEnv* jNIEnv, jobject, jobject,	FieldAccessor*);
-
-
-	jobject checkAndGetStaticFieldValue(NativeEnvironment*, JNIEnv*, jclass, jobject, FieldAccessor*);
-
-
-	void checkAndSetFieldValue(NativeEnvironment*, JNIEnv*, jobject, jobject, jobject, FieldAccessor*);
-
-
-	void checkAndSetStaticFieldValue(NativeEnvironment*, JNIEnv*, jclass, jobject, jobject,	FieldAccessor*);
-
 #endif

@@ -29,6 +29,19 @@
 #include "NativeExecutor.h"
 #include "NativeEnvironment.h"
 
+#define FIELD_ACCESSOR_FUNCTIONS(typeName, fieldAccessorNamePrefix) \
+JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) { \
+	return environment->fieldAccessorNamePrefix ## FieldAccessor->getValue(jNIEnv, target, field); \
+} \
+JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) { \
+	return environment->fieldAccessorNamePrefix ## FieldAccessor->getStaticValue(jNIEnv, target, field); \
+} \
+JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) { \
+	environment->fieldAccessorNamePrefix ## FieldAccessor->setValue(jNIEnv, target, field, value); \
+} \
+JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) { \
+	environment->fieldAccessorNamePrefix ## FieldAccessor->setStaticValue(jNIEnv, target, field, value); \
+}
 
 NativeEnvironment* environment;
 
@@ -54,167 +67,16 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 	environment = NULL;
 }
 
+FIELD_ACCESSOR_FUNCTIONS(Object, jobject)
+FIELD_ACCESSOR_FUNCTIONS(Short, jshort)
+FIELD_ACCESSOR_FUNCTIONS(Integer, jint)
+FIELD_ACCESSOR_FUNCTIONS(Long, jlong)
+FIELD_ACCESSOR_FUNCTIONS(Float, jfloat)
+FIELD_ACCESSOR_FUNCTIONS(Double, jdouble)
+FIELD_ACCESSOR_FUNCTIONS(Boolean, jboolean)
+FIELD_ACCESSOR_FUNCTIONS(Byte, jbyte)
+FIELD_ACCESSOR_FUNCTIONS(Character, jchar)
 
-//Get/Set object value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getObjectFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->objectFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticObjectFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->objectFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setObjectFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->objectFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticObjectFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->objectFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set short value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jshortFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jshortFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jshortFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticShortFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jshortFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set int value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getIntegerFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jintFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticIntegerFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jintFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setIntegerFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jintFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticIntegerFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jintFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set long value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getLongFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jlongFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticLongFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jlongFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setLongFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jlongFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticLongFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jlongFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set float value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getFloatFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jfloatFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticFloatFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jfloatFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setFloatFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jfloatFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticFloatFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jfloatFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set double value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDoubleFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jdoubleFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticDoubleFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jdoubleFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setDoubleFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jdoubleFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticDoubleFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jdoubleFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set boolean value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getBooleanFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jbooleanFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticBooleanFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jbooleanFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setBooleanFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jbooleanFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticBooleanFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jbooleanFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set byte value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getByteFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jbyteFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticByteFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jbyteFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setByteFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jbyteFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticByteFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jbyteFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
-
-
-//Get/set char value
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getCharacterFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) {
-	return environment->jcharFieldAccessor->getValue(jNIEnv, target, field);
-}
-
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStaticCharacterFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) {
-	return environment->jcharFieldAccessor->getStaticValue(jNIEnv, target, field);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setCharacterFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) {
-	environment->jcharFieldAccessor->setValue(jNIEnv, target, field, value);
-}
-
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStaticCharacterFieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) {
-	environment->jcharFieldAccessor->setStaticValue(jNIEnv, target, field, value);
-}
 
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
     const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);

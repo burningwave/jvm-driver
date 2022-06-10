@@ -119,7 +119,7 @@
 			void destroy(JNIEnv* env);
 
 		public:
-			ObjectFieldAccessor* objectFieldAccessor;
+			ObjectFieldAccessor* jobjectFieldAccessor;
 			PrimitiveFieldAccessor<jshort>* jshortFieldAccessor;
 			PrimitiveFieldAccessor<jint>* jintFieldAccessor;
 			PrimitiveFieldAccessor<jlong>* jlongFieldAccessor;

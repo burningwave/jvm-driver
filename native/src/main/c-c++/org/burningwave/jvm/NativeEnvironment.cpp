@@ -166,31 +166,28 @@ void PrimitiveFieldAccessor<Type>::destroy(JNIEnv* jNIEnv) {
 
 template<typename Type>
 jobject PrimitiveFieldAccessor<Type>::getValue(JNIEnv* jNIEnv, jobject target, jobject field) {
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
 	return (jNIEnv->*callStaticObjectMethod)(
 		this->wrapperClass,
 		this->valueOfMethodId,
-		(jNIEnv->*getFieldValueFunction)(target, fieldId)
+		(jNIEnv->*getFieldValueFunction)(target, jNIEnv->FromReflectedField(field))
 	);
 }
 
 
 template<typename Type>
 jobject PrimitiveFieldAccessor<Type>::getStaticValue(JNIEnv* jNIEnv, jclass target, jobject field) {
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
 	return (jNIEnv->*callStaticObjectMethod)(
 		this->wrapperClass,
 		this->valueOfMethodId,
-		(jNIEnv->*getStaticFieldValueFunction)(target, fieldId)
+		(jNIEnv->*getStaticFieldValueFunction)(target, jNIEnv->FromReflectedField(field))
 	);
 }
 
 
 template<typename Type>
-void PrimitiveFieldAccessor<Type>::setValue(JNIEnv* jNIEnv, jobject target, jobject field, jobject value){
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
+void PrimitiveFieldAccessor<Type>::setValue(JNIEnv* jNIEnv, jobject target, jobject field, jobject value) {
 	(jNIEnv->*setValueFunction)(
-		target, fieldId,
+		target, jNIEnv->FromReflectedField(field),
 		//(*env)->Call<Type>Method
 		(jNIEnv->*callTypeMethodFunction)(
 			//java/lang/<Type>.<type>Value method
@@ -201,10 +198,9 @@ void PrimitiveFieldAccessor<Type>::setValue(JNIEnv* jNIEnv, jobject target, jobj
 
 
 template<typename Type>
-void PrimitiveFieldAccessor<Type>::setStaticValue(JNIEnv* jNIEnv, jclass target, jobject field, jobject value){
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
+void PrimitiveFieldAccessor<Type>::setStaticValue(JNIEnv* jNIEnv, jclass target, jobject field, jobject value) {
 	(jNIEnv->*setStaticValueFunction)(
-		target, fieldId,
+		target, jNIEnv->FromReflectedField(field),
 		//(*env)->Call<Type>Method
 		(jNIEnv->*callTypeMethodFunction)(
 			//java/lang/<Type>.<type>Value method
@@ -224,24 +220,20 @@ void ObjectFieldAccessor::destroy(JNIEnv* jNIEnv) {}
 
 
 jobject ObjectFieldAccessor::getValue(JNIEnv* jNIEnv, jobject target, jobject field) {
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
-	return jNIEnv->GetObjectField(target, fieldId);
+	return jNIEnv->GetObjectField(target, jNIEnv->FromReflectedField(field));
 }
 
 
 jobject ObjectFieldAccessor::getStaticValue(JNIEnv* jNIEnv, jclass target, jobject field) {
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
-	return jNIEnv->GetStaticObjectField(target, fieldId);
+	return jNIEnv->GetStaticObjectField(target, jNIEnv->FromReflectedField(field));
 }
 
 
 void ObjectFieldAccessor::setValue(JNIEnv* jNIEnv, jobject target, jobject field, jobject value){
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
-	jNIEnv->SetObjectField(target, fieldId, value);
+	jNIEnv->SetObjectField(target, jNIEnv->FromReflectedField(field), value);
 }
 
 
 void ObjectFieldAccessor::setStaticValue(JNIEnv* jNIEnv, jclass target, jobject field, jobject value){
-	jfieldID fieldId = jNIEnv->FromReflectedField(field);
-	jNIEnv->SetStaticObjectField(target, fieldId, value);
+	jNIEnv->SetStaticObjectField(target, jNIEnv->FromReflectedField(field), value);
 }

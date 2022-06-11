@@ -29,7 +29,7 @@
 #include "NativeExecutor.h"
 #include "NativeEnvironment.h"
 
-#define FIELD_ACCESSOR_FUNCTIONS(typeName, fieldAccessorNamePrefix) \
+#define GENERATE_FIELD_ACCESSOR_FUNCTIONS(typeName, fieldAccessorNamePrefix) \
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) { \
 	return environment->fieldAccessorNamePrefix ## FieldAccessor->getValue(jNIEnv, target, field); \
 } \
@@ -67,15 +67,15 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 	environment = NULL;
 }
 
-FIELD_ACCESSOR_FUNCTIONS(Object, jobject)
-FIELD_ACCESSOR_FUNCTIONS(Short, jshort)
-FIELD_ACCESSOR_FUNCTIONS(Integer, jint)
-FIELD_ACCESSOR_FUNCTIONS(Long, jlong)
-FIELD_ACCESSOR_FUNCTIONS(Float, jfloat)
-FIELD_ACCESSOR_FUNCTIONS(Double, jdouble)
-FIELD_ACCESSOR_FUNCTIONS(Boolean, jboolean)
-FIELD_ACCESSOR_FUNCTIONS(Byte, jbyte)
-FIELD_ACCESSOR_FUNCTIONS(Character, jchar)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Object, jobject)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Short, jshort)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Integer, jint)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Long, jlong)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Float, jfloat)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Double, jdouble)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Boolean, jboolean)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Byte, jbyte)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Character, jchar)
 
 
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {

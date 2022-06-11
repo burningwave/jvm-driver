@@ -67,16 +67,6 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 	environment = NULL;
 }
 
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Object, jobject)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Short, jshort)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Integer, jint)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Long, jlong)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Float, jfloat)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Double, jdouble)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Boolean, jboolean)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Byte, jbyte)
-GENERATE_FIELD_ACCESSOR_FUNCTIONS(Character, jchar)
-
 
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
     const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
@@ -90,10 +80,23 @@ JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)(JNI
     return jNIEnv->ToReflectedField(target, fieldID, isStatic ? JNI_TRUE : JNI_FALSE);
 }
 
+
 JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass instanceType) {
 	return jNIEnv->AllocObject(instanceType);
 }
 
+
 JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)(JNIEnv* jNIEnv, jclass ignored, jthrowable throwable) {
 	jNIEnv->Throw(throwable);
 }
+
+
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Object, jobject)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Short, jshort)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Integer, jint)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Long, jlong)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Float, jfloat)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Double, jdouble)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Boolean, jboolean)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Byte, jbyte)
+GENERATE_FIELD_ACCESSOR_FUNCTIONS(Character, jchar)

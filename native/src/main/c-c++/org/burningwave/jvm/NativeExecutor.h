@@ -46,6 +46,15 @@
 		extern "C" {
 	#endif
 
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)
+	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
+
+	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
+	  (JNIEnv*, jobject, jclass);
+
+	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)
+	  (JNIEnv* , jclass, jthrowable);
+
 	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Object)
 	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Short)
 	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Integer)
@@ -55,15 +64,6 @@
 	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Boolean)
 	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Byte)
 	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Character)
-
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)
-	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
-
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
-	  (JNIEnv*, jobject, jclass);
-
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)
-	  (JNIEnv* , jclass, jthrowable);
 
 	#ifdef __cplusplus
 		}

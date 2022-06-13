@@ -37,6 +37,7 @@ import org.burningwave.jvm.util.Libraries;
 import io.github.toolfactory.jvm.util.Classes;
 
 
+@SuppressWarnings("all")
 public class NativeExecutor {
 	private final static NativeExecutor INSTANCE;
 
@@ -192,7 +193,7 @@ public class NativeExecutor {
 		}
 		return input;
 	}
-	
+
 	private static void checkGet0(Class<?> returnType, Field field) {
 		check(field, "Field is null");
 		Class<?> fieldType = field.getType();
@@ -209,7 +210,7 @@ public class NativeExecutor {
 			throw new IllegalArgumentException("Target " + targetObjectClass + " is not assignable to " + fieldDeclaringClass);
 		}
 	}
-	
+
 	private static void checkGet(Class<?> returnType, Object target, Field field) {
 		checkGet0(returnType, field);
 		checkTargetAndField(target, field);
@@ -312,8 +313,8 @@ public class NativeExecutor {
 		checkStaticGet(char.class, field);
 		return getStaticCharacterFieldValue0(field.getDeclaringClass(), field);
 	}
-	
-	
+
+
 	private static void checkSet0(Class<?> valueType, Field field) {
 		check(field, "Field is null");
 		Class<?> fieldType = field.getType();
@@ -321,7 +322,7 @@ public class NativeExecutor {
 			throw new IllegalArgumentException("Field type " + fieldType + " is not assignable from " + valueType);
 		}
 	}
-	
+
 	private static void checkSet(Class<?> valueType, Object target, Field field) {
 		checkGet0(valueType, field);
 		checkTargetAndField(target, field);
@@ -380,7 +381,7 @@ public class NativeExecutor {
 		setCharacterFieldValue0(target, field, value);
 	}
 
-	
+
 	private static void checkStaticSet(Class<?> valueType, Field field) {
 		if (!Modifier.isStatic(field.getModifiers())) {
 			throw new IllegalArgumentException("Field " + field + " is not static");

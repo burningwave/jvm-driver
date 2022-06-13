@@ -29,18 +29,18 @@
 #include "NativeExecutor.h"
 #include "NativeEnvironment.h"
 
-#define GENERATE_FIELD_ACCESSOR_FUNCTIONS(typeName, fieldAccessorNamePrefix) \
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) { \
-	return environment->fieldAccessorNamePrefix ## FieldAccessor->getValue(jNIEnv, target, field); \
+#define GENERATE_FIELD_ACCESSOR_FUNCTIONS(typeName, jtype) \
+JNIEXPORT jtype JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) { \
+	return environment->jtype ## FieldAccessor->getValue(jNIEnv, target, field); \
 } \
-JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) { \
-	return environment->fieldAccessorNamePrefix ## FieldAccessor->getStaticValue(jNIEnv, target, field); \
+JNIEXPORT jtype JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) { \
+	return environment->jtype ## FieldAccessor->getStaticValue(jNIEnv, target, field); \
 } \
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jobject value) { \
-	environment->fieldAccessorNamePrefix ## FieldAccessor->setValue(jNIEnv, target, field, value); \
+JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jtype value) { \
+	environment->jtype ## FieldAccessor->setValue(jNIEnv, target, field, value); \
 } \
-JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jobject value) { \
-	environment->fieldAccessorNamePrefix ## FieldAccessor->setStaticValue(jNIEnv, target, field, value); \
+JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jtype value) { \
+	environment->jtype ## FieldAccessor->setStaticValue(jNIEnv, target, field, value); \
 }
 
 NativeEnvironment* environment;

@@ -72,168 +72,62 @@ void NativeEnvironment::destroy(JNIEnv* jNIEnv){
 }
 
 void NativeEnvironment::init(JNIEnv* jNIEnv) {
-	this->jobjectFieldAccessor = new ObjectFieldAccessor(jNIEnv);
-	this->jshortFieldAccessor = new PrimitiveFieldAccessor<jshort>(
-		jNIEnv, "java/lang/Short", "(S)Ljava/lang/Short;",
-		&JNIEnv::CallShortMethod, "shortValue", "()S",
+	this->jobjectFieldAccessor = new FieldAccessor<jobject>(
+		&JNIEnv::GetObjectField, &JNIEnv::GetStaticObjectField,
+		&JNIEnv::SetObjectField, &JNIEnv::SetStaticObjectField
+	);
+	this->jshortFieldAccessor = new FieldAccessor<jshort>(
 		&JNIEnv::GetShortField, &JNIEnv::GetStaticShortField,
 		&JNIEnv::SetShortField, &JNIEnv::SetStaticShortField
 	);
-	this->jintFieldAccessor = new PrimitiveFieldAccessor<jint>(
-		jNIEnv, "java/lang/Integer", "(I)Ljava/lang/Integer;",
-		&JNIEnv::CallIntMethod, "intValue", "()I",
+	this->jintFieldAccessor = new FieldAccessor<jint>(
 		&JNIEnv::GetIntField, &JNIEnv::GetStaticIntField,
 		&JNIEnv::SetIntField, &JNIEnv::SetStaticIntField
 	);
-	this->jlongFieldAccessor = new PrimitiveFieldAccessor<jlong>(
-		jNIEnv, "java/lang/Long", "(J)Ljava/lang/Long;",
-		&JNIEnv::CallLongMethod, "longValue", "()J",
+	this->jlongFieldAccessor = new FieldAccessor<jlong>(
 		&JNIEnv::GetLongField, &JNIEnv::GetStaticLongField,
 		&JNIEnv::SetLongField, &JNIEnv::SetStaticLongField
 	);
-	this->jfloatFieldAccessor = new PrimitiveFieldAccessor<jfloat>(
-		jNIEnv, "java/lang/Float", "(F)Ljava/lang/Float;",
-		&JNIEnv::CallFloatMethod, "floatValue", "()F",
+	this->jfloatFieldAccessor = new FieldAccessor<jfloat>(
 		&JNIEnv::GetFloatField, &JNIEnv::GetStaticFloatField,
 		&JNIEnv::SetFloatField, &JNIEnv::SetStaticFloatField
 	);
-	this->jdoubleFieldAccessor = new PrimitiveFieldAccessor<jdouble>(
-		jNIEnv, "java/lang/Double", "(D)Ljava/lang/Double;",
-		&JNIEnv::CallDoubleMethod, "doubleValue", "()D",
+	this->jdoubleFieldAccessor = new FieldAccessor<jdouble>(
 		&JNIEnv::GetDoubleField, &JNIEnv::GetStaticDoubleField,
 		&JNIEnv::SetDoubleField, &JNIEnv::SetStaticDoubleField
 	);
-	this->jbooleanFieldAccessor = new PrimitiveFieldAccessor<jboolean>(
-		jNIEnv, "java/lang/Boolean", "(Z)Ljava/lang/Boolean;",
-		&JNIEnv::CallBooleanMethod, "booleanValue", "()Z",
+	this->jbooleanFieldAccessor = new FieldAccessor<jboolean>(
 		&JNIEnv::GetBooleanField, &JNIEnv::GetStaticBooleanField,
 		&JNIEnv::SetBooleanField, &JNIEnv::SetStaticBooleanField
 	);
-	this->jbyteFieldAccessor = new PrimitiveFieldAccessor<jbyte>(
-		jNIEnv, "java/lang/Byte", "(B)Ljava/lang/Byte;",
-		&JNIEnv::CallByteMethod, "byteValue", "()B",
+	this->jbyteFieldAccessor = new FieldAccessor<jbyte>(
 		&JNIEnv::GetByteField, &JNIEnv::GetStaticByteField,
 		&JNIEnv::SetByteField, &JNIEnv::SetStaticByteField
 	);
-	this->jcharFieldAccessor = new PrimitiveFieldAccessor<jchar>(
-		jNIEnv, "java/lang/Character", "(C)Ljava/lang/Character;",
-		&JNIEnv::CallCharMethod, "charValue", "()C",
+	this->jcharFieldAccessor = new FieldAccessor<jchar>(
 		&JNIEnv::GetCharField, &JNIEnv::GetStaticCharField,
 		&JNIEnv::SetCharField, &JNIEnv::SetStaticCharField
 	);
 }
 
 
-FieldAccessor::FieldAccessor(JNIEnv* env) {}
-
-
-FieldAccessor::~FieldAccessor() {}
-
-
-void FieldAccessor::destroy(JNIEnv* jNIEnv) {}
-
-
 template<typename Type>
-PrimitiveFieldAccessor<Type>::PrimitiveFieldAccessor (
-	JNIEnv* jNIEnv, const char name[],
-	const char valueOfMethodSig[],
-	Type (JNIEnv::*callTypeMethodFunction) (jobject, jmethodID, ...),
-	const char callTypeMethodName[], const char callTypeMethodSig[],
+FieldAccessor<Type>::FieldAccessor(
 	Type (JNIEnv::*getFieldValueFunction) (jobject, jfieldID),
 	Type (JNIEnv::*getStaticFieldValueFunction) (jclass, jfieldID),
 	void (JNIEnv::*setValueFunction) (jobject, jfieldID, Type),
 	void (JNIEnv::*setStaticValueFunction) (jclass , jfieldID, Type)
-) : FieldAccessor(jNIEnv) {
-	this->wrapperClass = (jclass)jNIEnv->NewGlobalRef(jNIEnv->FindClass(name));
-	this->callStaticObjectMethod = &JNIEnv::CallStaticObjectMethod;
-	this->callTypeMethodFunction = callTypeMethodFunction;
-	this->valueOfMethodId = jNIEnv->GetStaticMethodID(this->wrapperClass, "valueOf", valueOfMethodSig);
-	this->callTypeMethodId = jNIEnv->GetMethodID(this->wrapperClass, callTypeMethodName, callTypeMethodSig);
+) {
 	this->getFieldValueFunction = getFieldValueFunction;
 	this->getStaticFieldValueFunction = getStaticFieldValueFunction;
 	this->setValueFunction = setValueFunction;
 	this->setStaticValueFunction = setStaticValueFunction;
 }
 
-template<typename Type>
-PrimitiveFieldAccessor<Type>::~PrimitiveFieldAccessor() {}
 
 template<typename Type>
-void PrimitiveFieldAccessor<Type>::destroy(JNIEnv* jNIEnv) {
-	jNIEnv->DeleteGlobalRef(this->wrapperClass);
-}
+FieldAccessor<Type>::~FieldAccessor() {}
 
 
 template<typename Type>
-jobject PrimitiveFieldAccessor<Type>::getValue(JNIEnv* jNIEnv, jobject target, jobject field) {
-	return (jNIEnv->*callStaticObjectMethod)(
-		this->wrapperClass,
-		this->valueOfMethodId,
-		(jNIEnv->*getFieldValueFunction)(target, jNIEnv->FromReflectedField(field))
-	);
-}
-
-
-template<typename Type>
-jobject PrimitiveFieldAccessor<Type>::getStaticValue(JNIEnv* jNIEnv, jclass target, jobject field) {
-	return (jNIEnv->*callStaticObjectMethod)(
-		this->wrapperClass,
-		this->valueOfMethodId,
-		(jNIEnv->*getStaticFieldValueFunction)(target, jNIEnv->FromReflectedField(field))
-	);
-}
-
-
-template<typename Type>
-void PrimitiveFieldAccessor<Type>::setValue(JNIEnv* jNIEnv, jobject target, jobject field, jobject value) {
-	(jNIEnv->*setValueFunction)(
-		target, jNIEnv->FromReflectedField(field),
-		//(*env)->Call<Type>Method
-		(jNIEnv->*callTypeMethodFunction)(
-			//java/lang/<Type>.<type>Value method
-			value, this->callTypeMethodId
-		)
-	);
-}
-
-
-template<typename Type>
-void PrimitiveFieldAccessor<Type>::setStaticValue(JNIEnv* jNIEnv, jclass target, jobject field, jobject value) {
-	(jNIEnv->*setStaticValueFunction)(
-		target, jNIEnv->FromReflectedField(field),
-		//(*env)->Call<Type>Method
-		(jNIEnv->*callTypeMethodFunction)(
-			//java/lang/<Type>.<type>Value method
-			value, this->callTypeMethodId
-		)
-	);
-}
-
-
-ObjectFieldAccessor::ObjectFieldAccessor(JNIEnv* env) : FieldAccessor(env)  {}
-
-
-ObjectFieldAccessor::~ObjectFieldAccessor(){}
-
-
-void ObjectFieldAccessor::destroy(JNIEnv* jNIEnv) {}
-
-
-jobject ObjectFieldAccessor::getValue(JNIEnv* jNIEnv, jobject target, jobject field) {
-	return jNIEnv->GetObjectField(target, jNIEnv->FromReflectedField(field));
-}
-
-
-jobject ObjectFieldAccessor::getStaticValue(JNIEnv* jNIEnv, jclass target, jobject field) {
-	return jNIEnv->GetStaticObjectField(target, jNIEnv->FromReflectedField(field));
-}
-
-
-void ObjectFieldAccessor::setValue(JNIEnv* jNIEnv, jobject target, jobject field, jobject value){
-	jNIEnv->SetObjectField(target, jNIEnv->FromReflectedField(field), value);
-}
-
-
-void ObjectFieldAccessor::setStaticValue(JNIEnv* jNIEnv, jclass target, jobject field, jobject value){
-	jNIEnv->SetStaticObjectField(target, jNIEnv->FromReflectedField(field), value);
-}
+void FieldAccessor<Type>::destroy(JNIEnv* jNIEnv) {}

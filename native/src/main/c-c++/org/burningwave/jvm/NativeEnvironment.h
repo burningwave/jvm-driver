@@ -34,84 +34,37 @@
 		#define CLASS_00002_NAME org_burningwave_jvm_Environment
 	#endif
 
-
+	template<typename Type>
 	class FieldAccessor {
 
 		public:
-			FieldAccessor(JNIEnv* env);
-
-			virtual ~FieldAccessor();
-
-			virtual void destroy(JNIEnv* env);
-
-			virtual jobject getValue(JNIEnv* env, jobject, jobject) = 0;
-
-			virtual jobject getStaticValue(JNIEnv* env, jclass, jobject) = 0;
-
-			virtual void setValue(JNIEnv* env, jobject, jobject, jobject) = 0;
-
-			virtual void setStaticValue(JNIEnv* env, jclass, jobject, jobject) = 0;
-
-	};
-
-
-	template<typename Type>
-	class PrimitiveFieldAccessor : public FieldAccessor {
-		public :
-			PrimitiveFieldAccessor (
-				JNIEnv* env, const char name[], const char valueOfMethodSig[],
-				Type (JNIEnv::*callTypeMethodFunction) (jobject, jmethodID, ...),
-				const char callTypeMethodName[], const char callTypeMethodSig[],
+			FieldAccessor(
 				Type (JNIEnv::*getFieldValueFunction) (jobject, jfieldID),
 				Type (JNIEnv::*getStaticFieldValueFunction) (jclass, jfieldID),
 				void (JNIEnv::*setValueFunction) (jobject, jfieldID, Type),
 				void (JNIEnv::*setStaticValueFunction) (jclass , jfieldID, Type)
 			);
 
-			~PrimitiveFieldAccessor();
+			~FieldAccessor();
 
 			void destroy(JNIEnv* env);
 
-			jobject getValue(JNIEnv* env, jobject, jobject);
+			Type getValue(JNIEnv* env, jobject target, jobject field);
 
-			jobject getStaticValue(JNIEnv* env, jclass, jobject);
+			Type getStaticValue(JNIEnv* env, jclass target, jobject field);
 
-			void setValue(JNIEnv* env, jobject, jobject, jobject);
+			void setValue(JNIEnv* env, jobject target, jobject field, Type value);
 
-			void setStaticValue(JNIEnv* env, jclass, jobject, jobject);
+			void setStaticValue(JNIEnv* env, jclass target, jobject field, Type value);
 
 		private:
-			jclass wrapperClass;
-			jmethodID valueOfMethodId;
-			jmethodID callTypeMethodId;
-			jobject (JNIEnv::*callStaticObjectMethod) (jclass, jmethodID, ...);
-			Type (JNIEnv::*callTypeMethodFunction) (jobject, jmethodID, ...);
 			Type (JNIEnv::*getFieldValueFunction) (jobject, jfieldID);
 			Type (JNIEnv::*getStaticFieldValueFunction) (jclass, jfieldID);
 			void (JNIEnv::*setValueFunction) (jobject, jfieldID, Type);
 			void (JNIEnv::*setStaticValueFunction) (jclass, jfieldID, Type);
-	};
-
-
-	class ObjectFieldAccessor : public FieldAccessor {
-		public :
-			ObjectFieldAccessor (JNIEnv* env);
-
-			~ObjectFieldAccessor();
-
-			void destroy(JNIEnv* env);
-
-			jobject getValue(JNIEnv* env, jobject, jobject);
-
-			jobject getStaticValue(JNIEnv* env, jclass, jobject);
-
-			void setValue(JNIEnv* env, jobject, jobject, jobject);
-
-			void setStaticValue(JNIEnv* env, jclass, jobject, jobject);
 
 	};
-
-
+	
 	class NativeEnvironment {
 		public:
 			NativeEnvironment(JNIEnv* env);
@@ -119,17 +72,41 @@
 			void destroy(JNIEnv* env);
 
 		public:
-			ObjectFieldAccessor* jobjectFieldAccessor;
-			PrimitiveFieldAccessor<jshort>* jshortFieldAccessor;
-			PrimitiveFieldAccessor<jint>* jintFieldAccessor;
-			PrimitiveFieldAccessor<jlong>* jlongFieldAccessor;
-			PrimitiveFieldAccessor<jfloat>* jfloatFieldAccessor;
-			PrimitiveFieldAccessor<jdouble>* jdoubleFieldAccessor;
-			PrimitiveFieldAccessor<jboolean>* jbooleanFieldAccessor;
-			PrimitiveFieldAccessor<jbyte>* jbyteFieldAccessor;
-			PrimitiveFieldAccessor<jchar>* jcharFieldAccessor;
+			FieldAccessor<jobject>* jobjectFieldAccessor;
+			FieldAccessor<jshort>* jshortFieldAccessor;
+			FieldAccessor<jint>* jintFieldAccessor;
+			FieldAccessor<jlong>* jlongFieldAccessor;
+			FieldAccessor<jfloat>* jfloatFieldAccessor;
+			FieldAccessor<jdouble>* jdoubleFieldAccessor;
+			FieldAccessor<jboolean>* jbooleanFieldAccessor;
+			FieldAccessor<jbyte>* jbyteFieldAccessor;
+			FieldAccessor<jchar>* jcharFieldAccessor;
 
 			void init(JNIEnv*);
 	};
+
+	
+	template<typename Type>
+	Type FieldAccessor<Type>::getValue(JNIEnv* jNIEnv, jobject target, jobject field) {
+		return (jNIEnv->*getFieldValueFunction)(target, jNIEnv->FromReflectedField(field));
+	}
+
+
+	template<typename Type>
+	Type FieldAccessor<Type>::getStaticValue(JNIEnv* jNIEnv, jclass target, jobject field) {
+		return (jNIEnv->*getStaticFieldValueFunction)(target, jNIEnv->FromReflectedField(field));
+	}
+
+
+	template<typename Type>
+	void FieldAccessor<Type>::setValue(JNIEnv* jNIEnv, jobject target, jobject field, Type value) {
+		(jNIEnv->*setValueFunction)(target, jNIEnv->FromReflectedField(field), value);
+	}
+
+
+	template<typename Type>
+	void FieldAccessor<Type>::setStaticValue(JNIEnv* jNIEnv, jclass target, jobject field, Type value) {
+		(jNIEnv->*setStaticValueFunction)(target, jNIEnv->FromReflectedField(field), value);
+	}
 
 #endif

@@ -32,8 +32,8 @@
 #ifndef org_burningwave_Common_H
 	#define org_burningwave_Common_H
 
-	#define PASTER(x,y) x ## _ ## y
-	#define EVALUATOR(x,y)  PASTER(x,y)
-	#define JNI_FUNCTION_NAME_OF(className, functionName) EVALUATOR(Java, EVALUATOR(className, functionName))
+	#define org_burningwave_Common_PASTER(x,y) x ## _ ## y
+	#define org_burningwave_Common_EVALUATOR(x,y) org_burningwave_Common_PASTER(x,y)
+	#define org_burningwave_Common_JNI_FUNCTION_NAME_OF(className, functionName) org_burningwave_Common_EVALUATOR(Java, org_burningwave_Common_EVALUATOR(className, functionName))
 
 #endif

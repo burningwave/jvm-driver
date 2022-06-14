@@ -30,40 +30,40 @@
 
 #ifndef org_burningwave_jvm_NativeExecutor_H
 	#define org_burningwave_jvm_NativeExecutor_H
-	#ifndef CLASS_00001_NAME
-		#define CLASS_00001_NAME org_burningwave_jvm_NativeExecutor
+	#ifndef org_burningwave_jvm_NativeExecutor_CLASS_00001_NAME
+		#define org_burningwave_jvm_NativeExecutor_CLASS_00001_NAME org_burningwave_jvm_NativeExecutor
 	#endif
 
-	#define JNI_FUNCTION_NAME_OF_CLASS_00001(functionName) JNI_FUNCTION_NAME_OF(CLASS_00001_NAME, functionName)
+	#define org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(functionName) org_burningwave_Common_JNI_FUNCTION_NAME_OF(org_burningwave_jvm_NativeExecutor_CLASS_00001_NAME, functionName)
 
-	#define GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(typeName, jtype) \
-	JNIEXPORT jtype JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject); \
-	JNIEXPORT jtype JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject); \
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject, jtype); \
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject, jtype);
+	#define org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(typeName, jtype) \
+	JNIEXPORT jtype JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject); \
+	JNIEXPORT jtype JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject); \
+	JNIEXPORT void JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject, jtype); \
+	JNIEXPORT void JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject, jtype);
 
 	#ifdef __cplusplus
 		extern "C" {
 	#endif
 
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)
+	JNIEXPORT jobject JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)
 	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
 
-	JNIEXPORT jobject JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
+	JNIEXPORT jobject JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
 	  (JNIEnv*, jobject, jclass);
 
-	JNIEXPORT void JNICALL JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)
+	JNIEXPORT void JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(throwException)
 	  (JNIEnv* , jclass, jthrowable);
 
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Object, jobject)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Short, jshort)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Integer, jint)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Long, jlong)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Float, jfloat)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Double, jdouble)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Boolean, jboolean)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Byte, jbyte)
-	GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Character, jchar)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Object, jobject)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Short, jshort)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Integer, jint)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Long, jlong)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Float, jfloat)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Double, jdouble)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Boolean, jboolean)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Byte, jbyte)
+	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Character, jchar)
 
 	#ifdef __cplusplus
 		}

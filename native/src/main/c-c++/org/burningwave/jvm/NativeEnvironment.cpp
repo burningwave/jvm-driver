@@ -28,6 +28,25 @@
  */
 #include "NativeEnvironment.h"
 
+#ifndef org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR
+
+	#define org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(typeName, jtype) \
+	this->jtype ## FieldAccessor = new FieldAccessor<jtype>( \
+		&JNIEnv::Get ## typeName ## Field, &JNIEnv::GetStatic ## typeName ## Field, \
+		&JNIEnv::Set ## typeName ## Field, &JNIEnv::SetStatic ## typeName ## Field \
+	);
+
+#endif
+
+
+#ifndef org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR
+
+	#define org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jtype) \
+	delete(this->jtype ## FieldAccessor); \
+	this->jtype ## FieldAccessor = NULL;
+
+#endif
+
 
 NativeEnvironment::NativeEnvironment(JNIEnv* env) {
 	this->init(env);
@@ -35,79 +54,28 @@ NativeEnvironment::NativeEnvironment(JNIEnv* env) {
 
 
 void NativeEnvironment::destroy(JNIEnv* jNIEnv){
-	delete(this->jobjectFieldAccessor);
-	this->jobjectFieldAccessor = NULL;
-
-	this->jshortFieldAccessor->destroy(jNIEnv);
-	delete(this->jshortFieldAccessor);
-	this->jshortFieldAccessor = NULL;
-
-	this->jintFieldAccessor->destroy(jNIEnv);
-	delete(this->jintFieldAccessor);
-	this->jintFieldAccessor = NULL;
-
-	this->jlongFieldAccessor->destroy(jNIEnv);
-	delete(this->jlongFieldAccessor);
-	this->jlongFieldAccessor = NULL;
-
-	this->jfloatFieldAccessor->destroy(jNIEnv);
-	delete(this->jfloatFieldAccessor);
-	this->jfloatFieldAccessor = NULL;
-
-	this->jdoubleFieldAccessor->destroy(jNIEnv);
-	delete(this->jdoubleFieldAccessor);
-	this->jdoubleFieldAccessor = NULL;
-
-	this->jbooleanFieldAccessor->destroy(jNIEnv);
-	delete(this->jbooleanFieldAccessor);
-	this->jbooleanFieldAccessor = NULL;
-
-	this->jbyteFieldAccessor->destroy(jNIEnv);
-	delete(this->jbyteFieldAccessor);
-	this->jbyteFieldAccessor = NULL;
-
-	this->jcharFieldAccessor->destroy(jNIEnv);
-	delete(this->jcharFieldAccessor);
-	this->jcharFieldAccessor = NULL;
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jobject)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jshort)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jint)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jlong)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jfloat)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jdouble)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jboolean)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jbyte)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_DESTRUCTOR(jchar)
 }
 
+
 void NativeEnvironment::init(JNIEnv* jNIEnv) {
-	this->jobjectFieldAccessor = new FieldAccessor<jobject>(
-		&JNIEnv::GetObjectField, &JNIEnv::GetStaticObjectField,
-		&JNIEnv::SetObjectField, &JNIEnv::SetStaticObjectField
-	);
-	this->jshortFieldAccessor = new FieldAccessor<jshort>(
-		&JNIEnv::GetShortField, &JNIEnv::GetStaticShortField,
-		&JNIEnv::SetShortField, &JNIEnv::SetStaticShortField
-	);
-	this->jintFieldAccessor = new FieldAccessor<jint>(
-		&JNIEnv::GetIntField, &JNIEnv::GetStaticIntField,
-		&JNIEnv::SetIntField, &JNIEnv::SetStaticIntField
-	);
-	this->jlongFieldAccessor = new FieldAccessor<jlong>(
-		&JNIEnv::GetLongField, &JNIEnv::GetStaticLongField,
-		&JNIEnv::SetLongField, &JNIEnv::SetStaticLongField
-	);
-	this->jfloatFieldAccessor = new FieldAccessor<jfloat>(
-		&JNIEnv::GetFloatField, &JNIEnv::GetStaticFloatField,
-		&JNIEnv::SetFloatField, &JNIEnv::SetStaticFloatField
-	);
-	this->jdoubleFieldAccessor = new FieldAccessor<jdouble>(
-		&JNIEnv::GetDoubleField, &JNIEnv::GetStaticDoubleField,
-		&JNIEnv::SetDoubleField, &JNIEnv::SetStaticDoubleField
-	);
-	this->jbooleanFieldAccessor = new FieldAccessor<jboolean>(
-		&JNIEnv::GetBooleanField, &JNIEnv::GetStaticBooleanField,
-		&JNIEnv::SetBooleanField, &JNIEnv::SetStaticBooleanField
-	);
-	this->jbyteFieldAccessor = new FieldAccessor<jbyte>(
-		&JNIEnv::GetByteField, &JNIEnv::GetStaticByteField,
-		&JNIEnv::SetByteField, &JNIEnv::SetStaticByteField
-	);
-	this->jcharFieldAccessor = new FieldAccessor<jchar>(
-		&JNIEnv::GetCharField, &JNIEnv::GetStaticCharField,
-		&JNIEnv::SetCharField, &JNIEnv::SetStaticCharField
-	);
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Object, jobject)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Short, jshort)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Int, jint)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Long, jlong)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Float, jfloat)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Double, jdouble)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Boolean, jboolean)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Byte, jbyte)
+	org_burningwave_jvm_NativeEnvironment_GENERATE_FIELD_ACCESSOR_INITIALIZATOR(Char, jchar)
 }
 
 
@@ -127,7 +95,3 @@ FieldAccessor<Type>::FieldAccessor(
 
 template<typename Type>
 FieldAccessor<Type>::~FieldAccessor() {}
-
-
-template<typename Type>
-void FieldAccessor<Type>::destroy(JNIEnv* jNIEnv) {}

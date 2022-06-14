@@ -28,11 +28,8 @@
  */
 #include "./../common.h"
 
-#ifndef org_burningwave_jvm_Environment_H
-	#define org_burningwave_jvm_Environment_H
-	#ifndef CLASS_00002_NAME
-		#define CLASS_00002_NAME org_burningwave_jvm_Environment
-	#endif
+#ifndef org_burningwave_jvm_NativeEnvironment_H
+	#define org_burningwave_jvm_NativeEnvironment_H
 
 	template<typename Type>
 	class FieldAccessor {
@@ -46,8 +43,6 @@
 			);
 
 			~FieldAccessor();
-
-			void destroy(JNIEnv* env);
 
 			Type getValue(JNIEnv* env, jobject target, jobject field);
 

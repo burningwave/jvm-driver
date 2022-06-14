@@ -32,16 +32,16 @@
 #ifndef org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS
 
 	#define org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS(typeName, jtype) \
-	JNIEXPORT jtype JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) { \
+	JNIEXPORT jtype JNICALL org_burningwave_jvm_NativeExecutor_FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field) { \
 		return environment->jtype ## FieldAccessor->getValue(jNIEnv, target, field); \
 	} \
-	JNIEXPORT jtype JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) { \
+	JNIEXPORT jtype JNICALL org_burningwave_jvm_NativeExecutor_FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field) { \
 		return environment->jtype ## FieldAccessor->getStaticValue(jNIEnv, target, field); \
 	} \
-	JNIEXPORT void JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jtype value) { \
+	JNIEXPORT void JNICALL org_burningwave_jvm_NativeExecutor_FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jobject target, jobject field, jtype value) { \
 		environment->jtype ## FieldAccessor->setValue(jNIEnv, target, field, value); \
 	} \
-	JNIEXPORT void JNICALL org_burningwave_jvm_NativeExecutor_JNI_FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jtype value) { \
+	JNIEXPORT void JNICALL org_burningwave_jvm_NativeExecutor_FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jobject field, jtype value) { \
 		environment->jtype ## FieldAccessor->setStaticValue(jNIEnv, target, field, value); \
 	}
 

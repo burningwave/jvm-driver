@@ -42,3 +42,6 @@ hs_err_pid*
 /native/Debug/
 /native/Release/
 *.bwc
+
+.vscode
+.idea

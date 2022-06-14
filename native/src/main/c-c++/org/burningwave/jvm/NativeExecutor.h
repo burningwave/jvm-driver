@@ -30,29 +30,28 @@
 
 #ifndef org_burningwave_jvm_NativeExecutor_H
 	#define org_burningwave_jvm_NativeExecutor_H
+
 	#ifndef CLASS_00001_NAME
 		#define CLASS_00001_NAME org_burningwave_jvm_NativeExecutor
 	#endif
 
-	#define FUNCTION_NAME_OF_CLASS_00001(functionName) org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, functionName)
-
 	#define org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(typeName, jtype) \
-	JNIEXPORT jtype JNICALL FUNCTION_NAME_OF_CLASS_00001(get ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject); \
-	JNIEXPORT jtype JNICALL FUNCTION_NAME_OF_CLASS_00001(getStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject); \
-	JNIEXPORT void JNICALL FUNCTION_NAME_OF_CLASS_00001(set ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject, jtype); \
-	JNIEXPORT void JNICALL FUNCTION_NAME_OF_CLASS_00001(setStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject, jtype);
+	JNIEXPORT jtype JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, get ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject); \
+	JNIEXPORT jtype JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject); \
+	JNIEXPORT void JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, set ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject, jtype); \
+	JNIEXPORT void JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, setStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject, jtype);
 
 	#ifdef __cplusplus
 		extern "C" {
 	#endif
 
-	JNIEXPORT jobject JNICALL FUNCTION_NAME_OF_CLASS_00001(getDeclaredField)
+	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField)
 	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
 
-	JNIEXPORT jobject JNICALL FUNCTION_NAME_OF_CLASS_00001(allocateInstance)
+	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, allocateInstance)
 	  (JNIEnv*, jobject, jclass);
 
-	JNIEXPORT void JNICALL FUNCTION_NAME_OF_CLASS_00001(throwException)
+	JNIEXPORT void JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, throwException)
 	  (JNIEnv* , jclass, jthrowable);
 
 	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Object, jobject)

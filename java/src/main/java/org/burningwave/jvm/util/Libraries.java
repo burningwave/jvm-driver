@@ -36,6 +36,7 @@ import java.util.Locale;
 
 import org.burningwave.jvm.NativeExecutor;
 
+import io.github.toolfactory.jvm.InfoImpl;
 import io.github.toolfactory.jvm.function.template.Consumer;
 import io.github.toolfactory.jvm.util.Strings;
 
@@ -48,14 +49,14 @@ public class Libraries {
 
 
 	private Libraries() {
-		io.github.toolfactory.jvm.Info jVMInfo = io.github.toolfactory.jvm.Info.Provider.getInfoInstance();
+		io.github.toolfactory.jvm.InfoImpl jVMInfo = (InfoImpl)io.github.toolfactory.jvm.Info.Provider.getInfoInstance();
 		if (jVMInfo.is32Bit()) {
 			conventionedSuffix = "x32";
 		} else if (jVMInfo.is64Bit()) {
 			conventionedSuffix = "x64";
 		}
-		String osArch = System.getProperty("os.arch", "generic");
-		String operatingSystemName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+		String osArch = jVMInfo.osArch != null ? jVMInfo.osArch : "generic";
+		String operatingSystemName = jVMInfo.operatingSystemName != null ? jVMInfo.operatingSystemName.toLowerCase(Locale.ENGLISH) : "generic";
 		prefix = "lib";
 		if (osArch.equals("aarch64")) {
 			conventionedSuffix = osArch;

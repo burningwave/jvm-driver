@@ -36,7 +36,6 @@ import org.burningwave.jvm.function.catalog.GetLoadedClassesRetrieverFunction;
 import org.burningwave.jvm.function.catalog.GetLoadedPackagesFunction;
 import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
-import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
 import io.github.toolfactory.jvm.DefaultDriver;
 import io.github.toolfactory.jvm.util.ObjectProvider;
@@ -56,9 +55,6 @@ public class DynamicDriver extends DefaultDriver {
 						BuildingException exc) {
 					if (clazz.equals(ConsulterSupplier.class)) {
 						return objectProvider.getOrBuildObject(ConsulterSupplier.Native.class, context);
-					}
-					if (clazz.equals(ThrowExceptionFunction.class)) {
-						return objectProvider.getOrBuildObject(ThrowExceptionFunction.Native.class, context);
 					}
 					if (clazz.equals(SetFieldValueFunction.class)) {
 						return objectProvider.getOrBuildObject(SetFieldValueFunction.Native.class, context);

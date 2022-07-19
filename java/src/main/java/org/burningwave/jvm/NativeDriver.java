@@ -39,7 +39,6 @@ import org.burningwave.jvm.function.catalog.GetLoadedClassesRetrieverFunction;
 import org.burningwave.jvm.function.catalog.GetLoadedPackagesFunction;
 import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
-import org.burningwave.jvm.function.catalog.ThrowExceptionFunction;
 
 
 public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
@@ -52,12 +51,6 @@ public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
 	@Override
 	protected Class<? extends io.github.toolfactory.jvm.function.catalog.ConsulterSupplyFunction> getConsulterSupplyFunctionClass() {
 		return ConsulterSupplyFunction.Native.class;
-	}
-
-
-	@Override
-	protected Class<? extends ThrowExceptionFunction> getThrowExceptionFunctionClass() {
-		return ThrowExceptionFunction.Native.class;
 	}
 
 

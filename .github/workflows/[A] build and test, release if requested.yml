@@ -56,9 +56,11 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        os: [windows-latest, ubuntu-latest, macOS-latest]
+#        os: [windows-latest, ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest]
         java: [18]
-        architecture: [x86, x64]
+#        architecture: [x86, x64]
+        architecture: [x64]
         exclude:
           - os: macOS-latest
             architecture: x86
@@ -74,7 +76,7 @@ jobs:
         name: Set up C/C++ compiler
         run: |
           sudo apt update
-          sudo apt-get -y install g++-aarch64-linux-gnu
+          sudo apt-get -y install g++-aarch64-linux-gnu gcc-arm-linux-androideabi
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
         run: |
@@ -91,7 +93,9 @@ jobs:
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml
       - if: startsWith(matrix.os, 'ubuntu-latest') && startsWith(matrix.architecture, 'x64')
         name: Build native library for aarch64
-        run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Paarch64-for-unix-x64 -DskipTests=true --file ./native/pom.xml
+        run: |
+           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Paarch64-for-unix-x64 -DskipTests=true --file ./native/pom.xml
+           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Parm-eabi-for-unix-x64 -DskipTests=true --file ./native/pom.xml
       - if: github.event_name == 'push' && (endsWith(github.event.head_commit.message, 'Releasing new version') || contains(github.event.head_commit.message, 'Generating external artifacts'))
         name: Push native library
         run: |

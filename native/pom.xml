@@ -155,8 +155,8 @@
 						<extensions>true</extensions>
 						<configuration>
 							<compilerProvider>generic</compilerProvider>
-							<compilerExecutable>arm-linux-androideabi-g++</compilerExecutable>
-							<linkerExecutable>arm-linux-androideabi-g++</linkerExecutable>
+							<compilerExecutable>arm-linux-gnueabi-g++</compilerExecutable>
+							<linkerExecutable>arm-linux-gnueabi-g++</linkerExecutable>
 							<compilerStartOptions>
 								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
 								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>

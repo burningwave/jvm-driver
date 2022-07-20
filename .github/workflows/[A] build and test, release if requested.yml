@@ -57,7 +57,6 @@ jobs:
       max-parallel: 2
       matrix:
 #        os: [windows-latest, ubuntu-latest, macOS-latest]
-        os: [ubuntu-latest]
         java: [18]
 #        architecture: [x86, x64]
         architecture: [x64]
@@ -76,7 +75,7 @@ jobs:
         name: Set up C/C++ compiler
         run: |
           sudo apt update
-          sudo apt-get -y install g++-aarch64-linux-gnu arm-linux-androideabi-gcc
+          sudo apt-get -y install g++-aarch64-linux-gnu arm-linux-androideabi
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
         run: |

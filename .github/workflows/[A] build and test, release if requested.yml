@@ -90,7 +90,7 @@ jobs:
       - name: Build native library
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml
       - if: startsWith(matrix.os, 'ubuntu-latest') && startsWith(matrix.architecture, 'x64')
-        name: Build native library for aarch64
+        name: Build native library for aarch64 and arm-eabi
         run: |
            mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Paarch64-for-unix-x64 -DskipTests=true --file ./native/pom.xml
            mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Parm-eabi-for-unix-x64 -DskipTests=true --file ./native/pom.xml

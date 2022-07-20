@@ -81,7 +81,7 @@
 			</properties>
 		</profile>	
 		<profile>
-			<id>aarch64-for-unix-x64</id>
+			<id>extra-compilation-one</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -94,8 +94,8 @@
 						<extensions>true</extensions>
 						<configuration>
 							<compilerProvider>generic</compilerProvider>
-							<compilerExecutable>aarch64-linux-gnu-g++</compilerExecutable>
-							<linkerExecutable>aarch64-linux-gnu-g++</linkerExecutable>
+							<compilerExecutable>${extra-compilation-one-executable}</compilerExecutable>
+							<linkerExecutable>${extra-compilation-one-executable}</linkerExecutable>
 							<compilerStartOptions>
 								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
 								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
@@ -132,68 +132,7 @@
 											</fileNames>
 										</source>
 									</sources>
-									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-aarch64</linkerFinalName>
-									<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>arm-eabi-for-unix-x64</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>native-maven-plugin</artifactId>
-						<version>1.0-alpha-11</version>
-						<extensions>true</extensions>
-						<configuration>
-							<compilerProvider>generic</compilerProvider>
-							<compilerExecutable>arm-linux-gnueabi-g++</compilerExecutable>
-							<linkerExecutable>arm-linux-gnueabi-g++</linkerExecutable>
-							<compilerStartOptions>
-								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
-								<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
-							</compilerStartOptions>
-							<compilerEndOptions>
-								<compilerEndOption>${org.codehaus.mojo.option.gcc-compiler.flags}</compilerEndOption>
-							</compilerEndOptions>
-							<linkerStartOptions>
-								<linkerStartOption>${org.codehaus.mojo.option.gcc-linker.flags}</linkerStartOption>
-								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</linkerStartOption>
-								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</linkerStartOption>
-								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-three}</linkerStartOption>
-							</linkerStartOptions>
-							<linkerEndOptions>
-								<linkerEndOption>-lstdc++</linkerEndOption>
-							</linkerEndOptions>
-							<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>
-						</configuration>
-						<executions>
-							<execution>
-					            <id>compile native</id>
-					            <phase>compile</phase>
-					            <goals>
-					                <goal>compile</goal>
-					                <goal>link</goal>
-					            </goals>					
-		            			<configuration>
-									<sources>
-										<source>
-											<directory>${basedir}/src/main/c-c++</directory>
-											<fileNames>
-												<fileName>org/burningwave/jvm/NativeEnvironment.cpp</fileName>
-												<fileName>org/burningwave/jvm/NativeExecutor.cpp</fileName>
-											</fileNames>
-										</source>
-									</sources>
-									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-arm-eabi</linkerFinalName>
+									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-${extra-compilation-one-artifact-name-suffix}</linkerFinalName>
 									<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
 								</configuration>
 							</execution>

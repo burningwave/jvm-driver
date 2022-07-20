@@ -193,7 +193,7 @@
 											</fileNames>
 										</source>
 									</sources>
-									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-aarch64</linkerFinalName>
+									<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-arm-eabi</linkerFinalName>
 									<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
 								</configuration>
 							</execution>

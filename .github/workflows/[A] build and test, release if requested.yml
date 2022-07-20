@@ -76,7 +76,7 @@ jobs:
         name: Set up C/C++ compiler
         run: |
           sudo apt update
-          sudo apt-get -y install g++-aarch64-linux-gnu gcc-arm-linux-androideabi
+          sudo apt-get -y install g++-aarch64-linux-gnu arm-linux-androideabi-gcc
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
         run: |

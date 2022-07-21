@@ -45,10 +45,10 @@ public class NativeExecutor {
 
 	static {
 		try {
-			if (Initializer.nativeLibraryName == null) {
-				Initializer.setNativeLibraryName(Libraries.getInstance().loadFor(NativeExecutor.class));
+			if (Initializer.nativeLibraryPath == null) {
+				Initializer.setNativeLibraryPath(Libraries.getInstance().loadFor(NativeExecutor.class));
 			} else {
-				System.loadLibrary(Initializer.nativeLibraryName);
+				System.load(Initializer.nativeLibraryPath);
 			}
 		} catch (Throwable exc) {
 			throw new ExceptionInInitializerError(exc);
@@ -530,17 +530,17 @@ public class NativeExecutor {
 
 	public static class Initializer {
 
-		private static String nativeLibraryName;
+		private static String nativeLibraryPath;
 
-		private static void setNativeLibraryName(String name) {
-			if (nativeLibraryName != null) {
+		private static void setNativeLibraryPath(String name) {
+			if (nativeLibraryPath != null) {
 				throw new IllegalStateException("NativeExecutor is already initialized");
 			}
-			nativeLibraryName = name;
+			nativeLibraryPath = name;
 		}
 
-		public static NativeExecutor setNativeLibraryNameAndInit(String name) {
-			setNativeLibraryName(name);
+		public static NativeExecutor setNativeLibraryPathAndInit(String name) {
+			setNativeLibraryPath(name);
 			return NativeExecutor.getInstance();
 		}
 	}

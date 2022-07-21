@@ -33,7 +33,6 @@ package org.burningwave.jvm.util;
 
 import java.io.File;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.burningwave.jvm.NativeExecutor;
 
@@ -98,20 +97,18 @@ public class Libraries {
     		libName += prefix;
     	}
     	libName += clazz.getSimpleName() + "-" + conventionedSuffix + "." + extension;
-    	AtomicReference<String> libraryFileAbsolutePath = new AtomicReference<>();
 		Files.extractAndExecute(
 			NativeExecutor.class,
 			libName,
 			new Consumer<File>() {
 				@Override
 				public void accept(File libraryFile) {
-					libraryFileAbsolutePath.set(libraryFile.getAbsolutePath());
-					System.load(libraryFileAbsolutePath.get());
+					System.load(libraryFile.getAbsolutePath());
 				}
 			}
 
 		);
-		return libraryFileAbsolutePath.get();
+		return clazz.getSimpleName() + "-" + conventionedSuffix;
 	}
 
 	private static class Holder {

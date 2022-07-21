@@ -45,7 +45,11 @@ public class NativeExecutor {
 
 	static {
 		try {
-			Libraries.getInstance().loadFor(NativeExecutor.class);
+			if (Initializer.nativeLibraryName == null) {
+				Initializer.setNativeLibraryName(Libraries.getInstance().loadFor(NativeExecutor.class));
+			} else {
+				System.load(Initializer.nativeLibraryName);
+			}
 		} catch (Throwable exc) {
 			throw new ExceptionInInitializerError(exc);
 		}
@@ -523,5 +527,22 @@ public class NativeExecutor {
 
 	private native Field getDeclaredField(Class<?> target, String name, String signature, boolean isStatic);
 
+
+	public static class Initializer {
+
+		private static String nativeLibraryName;
+
+		private static void setNativeLibraryName(String name) {
+			if (nativeLibraryName != null) {
+				throw new IllegalStateException("NativeExecutor is already initialized");
+			}
+			nativeLibraryName = name;
+		}
+
+		public static NativeExecutor setNativeLibraryNameAndInit(String name) {
+			setNativeLibraryName(name);
+			return NativeExecutor.getInstance();
+		}
+	}
 }
 

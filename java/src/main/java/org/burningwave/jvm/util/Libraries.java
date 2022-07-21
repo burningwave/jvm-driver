@@ -86,7 +86,7 @@ public class Libraries {
     	return new Libraries();
     }
 
-    public void loadFor(Class<?> clazz) {
+    public String loadFor(Class<?> clazz) {
     	String libName = clazz.getPackage().getName();
     	if (libName != null) {
     		libName = libName.replace(".", "/") + "/";
@@ -108,6 +108,7 @@ public class Libraries {
 			}
 
 		);
+		return clazz.getSimpleName() + "-" + conventionedSuffix;
 	}
 
 	private static class Holder {

@@ -48,7 +48,7 @@ public class NativeExecutor {
 			if (Initializer.nativeLibraryName == null) {
 				Initializer.setNativeLibraryName(Libraries.getInstance().loadFor(NativeExecutor.class));
 			} else {
-				System.load(Initializer.nativeLibraryName);
+				System.loadLibrary(Initializer.nativeLibraryName);
 			}
 		} catch (Throwable exc) {
 			throw new ExceptionInInitializerError(exc);

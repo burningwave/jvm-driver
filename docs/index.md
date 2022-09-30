@@ -16,6 +16,7 @@
 
 [![Artifact downloads](https://www.burningwave.org/generators/generate-burningwave-artifact-downloads-badge.php?artifactId=jvm-driver)](https://www.burningwave.org/artifact-downloads/?show-monthly-trend-chart=false)
 [![Repository dependents](https://badgen.net/github/dependents-repo/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/network/dependents)
+[![HitCount](https://hits.dwyl.com/burningwave/all.svg?style=flat&show=unique)](http://hits.dwyl.com)
 
 A driver derived from [**ToolFactory JVM Driver**](https://toolfactory.github.io/jvm-driver/) with a fully extensible architecture and with a custom JNI engine to allow deep interaction with the JVM **without any restrictions**.
 

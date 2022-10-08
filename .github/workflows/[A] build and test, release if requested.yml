@@ -125,8 +125,6 @@ jobs:
             java: 10
           - distribution: liberica
             java: 18
-          - distribution: liberica
-            java: 19
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -158,11 +156,15 @@ jobs:
         java: [11, 16, 17, 18-ea]
         exclude:
           - distribution: adopt-openj9
-            java: 18-ea
+            java: 18
+          - distribution: adopt-openj9
+            java: 19
           - distribution: adopt
             java: 17
           - distribution: adopt
-            java: 18-ea
+            java: 18
+          - distribution: adopt
+            java: 19
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2

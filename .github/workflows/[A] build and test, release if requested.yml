@@ -70,6 +70,7 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'zulu'
           architecture: ${{ matrix.architecture }}
+          cache: 'maven'
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x64')
         name: Set up C/C++ compiler
         run: |
@@ -86,7 +87,7 @@ jobs:
         uses: egor-tensin/setup-mingw@v2
         with:
           platform: ${{ matrix.architecture }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build native library
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml
       - if: startsWith(matrix.os, 'ubuntu-latest') && startsWith(matrix.architecture, 'x64')
@@ -127,13 +128,14 @@ jobs:
             java: 18
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
+          cache: 'maven'
       - name: Update repositories
         run: |
           git config user.name "${{ github.event.head_commit.committer.name }}"
@@ -159,13 +161,14 @@ jobs:
             architecture: x86        
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
+          cache: 'maven'
       - name: Update repositories
         run: |
           git config user.name "${{ github.event.head_commit.committer.name }}"
@@ -199,13 +202,14 @@ jobs:
             java: 19
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
+          cache: 'maven'
       - name: Update repositories
         run: |
           git config user.name "${{ github.event.head_commit.committer.name }}"
@@ -221,7 +225,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 19
         uses: actions/setup-java@v3
         with:

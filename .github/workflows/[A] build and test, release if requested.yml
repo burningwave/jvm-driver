@@ -122,6 +122,9 @@ jobs:
           - os: ubuntu-latest
             architecture: x86
             java: 19
+          - os: windows-latest
+            architecture: x86
+            java: 19
           - distribution: liberica
             java: 9
           - distribution: liberica

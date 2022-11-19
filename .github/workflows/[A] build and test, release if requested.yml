@@ -41,7 +41,7 @@ on:
       - "**.c"
       - "**.cpp"
       - "**.java"
-#      - ".github/workflows/**"
+      - ".github/workflows/**"
       - "**.properties"
       - "**.xml"
 
@@ -93,7 +93,7 @@ jobs:
         name: Build native library for platform group one
         run: |
            mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=aarch64-linux-gnu-g++ -Dextra-compilation-one-artifact-name-suffix=aarch64 -DskipTests=true --file ./native/pom.xml
-           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=arm-linux-gnueabi-g++ -Dextra-compilation-one-artifact-name-suffix=armeabi-x32 -DskipTests=true --file ./native/pom.xml
+#           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=arm-linux-gnueabi-g++ -Dextra-compilation-one-artifact-name-suffix=armeabi-x32 -DskipTests=true --file ./native/pom.xml
       - if: github.event_name == 'push' && (endsWith(github.event.head_commit.message, 'Releasing new version') || contains(github.event.head_commit.message, 'Generating external artifacts'))
         name: Push native library
         run: |

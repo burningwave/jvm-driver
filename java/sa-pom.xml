@@ -33,7 +33,7 @@
 
 	<groupId>org.burningwave</groupId>
 	<artifactId>jvm-driver</artifactId>
-	<version>8.13.1-SNAPSHOT</version>
+	<version>8.14.0-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 
@@ -84,7 +84,7 @@
 		<copyright.holder>Roberto Gentili</copyright.holder>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project_jdk_version>8</project_jdk_version>
+		<project_jdk_version>7</project_jdk_version>
 		<javadocExecutable.relativePath>bin/javadoc</javadocExecutable.relativePath>
 		<skipTests>true</skipTests>
 		<project.test.testSuite>AllTestsSuite</project.test.testSuite>

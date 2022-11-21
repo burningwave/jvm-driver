@@ -94,15 +94,15 @@ jobs:
         run: |
            mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=aarch64-linux-gnu-g++ -Dextra-compilation-one-artifact-name-suffix=aarch64 -DskipTests=true --file ./native/pom.xml
 #           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=arm-linux-gnueabi-g++ -Dextra-compilation-one-artifact-name-suffix=armeabi-x32 -DskipTests=true --file ./native/pom.xml
-      - if: github.event_name == 'push' && (endsWith(github.event.head_commit.message, 'Releasing new version') || contains(github.event.head_commit.message, 'Generating external artifacts'))
-        name: Push native library
-        run: |
-          git config user.name "${{ github.event.head_commit.committer.name }}"
-          git config user.email "${{ github.event.head_commit.committer.email }}"
-          git pull origin ${{github.ref}}
-          git add .
-          git commit -am "Generated native libraries on ${{ matrix.os }} ${{ matrix.architecture }}" --allow-empty
-          git push
+#      - if: github.event_name == 'push' && (endsWith(github.event.head_commit.message, 'Releasing new version') || contains(github.event.head_commit.message, 'Generating external artifacts'))
+#        name: Push native library
+#        run: |
+#          git config user.name "${{ github.event.head_commit.committer.name }}"
+#          git config user.email "${{ github.event.head_commit.committer.email }}"
+#          git pull origin ${{github.ref}}
+#          git add .
+#          git commit -am "Generated native libraries on ${{ matrix.os }} ${{ matrix.architecture }}" --allow-empty
+#          git push
 
 
   build-and-test-with-JDK-group-1:
@@ -222,7 +222,7 @@ jobs:
         
           
   release:
-    needs: [build-and-test-with-JDK-group-1, build-and-test-with-JDK-group-2, build-and-test-with-JDK-group-3]
+#    needs: [build-and-test-with-JDK-group-1, build-and-test-with-JDK-group-2, build-and-test-with-JDK-group-3]
     name: Release if requested
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')
@@ -248,7 +248,7 @@ jobs:
           mv ./java/temp-pom.xml ./java/sa-pom.xml
           git commit -am "Swithcing pom for releasing"
           git push        
-          mvn -B release:prepare release:perform -Dproject_jdk_version=8 -DskipTests=true -Dgpg.passphrase=${{ secrets.gpg_passphrase }} -Dgpg.keyname=${{ secrets.gpg_key_id }} -Drepository.url=https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git --file ./java/pom.xml
+          mvn -B release:prepare release:perform -DskipTests=true -Dgpg.passphrase=${{ secrets.gpg_passphrase }} -Dgpg.keyname=${{ secrets.gpg_key_id }} -Drepository.url=https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git --file ./java/pom.xml
           mv ./java/pom.xml ./java/temp-pom.xml
           mv ./java/sa-pom.xml ./java/pom.xml
           mv ./java/temp-pom.xml ./java/sa-pom.xml

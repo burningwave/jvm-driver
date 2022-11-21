@@ -178,7 +178,7 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
       - name: Build and test with Java 8 target
-        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false -Dproject_jdk_version=8 --file ./java/pom.xml
 
 
   build-and-test-with-JDK-group-3:

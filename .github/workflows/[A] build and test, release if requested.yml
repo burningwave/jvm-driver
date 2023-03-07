@@ -122,6 +122,10 @@ jobs:
           - os: ubuntu-latest
             architecture: x86
             java: 19
+          - os: ubuntu-latest
+            architecture: x64
+            distribution: zulu
+            java: 10
           - os: windows-latest
             architecture: x86
             java: 19

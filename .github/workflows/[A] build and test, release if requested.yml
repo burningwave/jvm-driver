@@ -55,8 +55,7 @@ jobs:
       max-parallel: 2
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
-        java: [21]
-        distribution: [zulu]
+        java: [19]
         architecture: [x86, x64]
         exclude:
           - os: macOS-latest
@@ -67,7 +66,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
-          distribution: ${{ matrix.distribution }}
+          distribution: 'zulu'
           architecture: ${{ matrix.architecture }}
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x64')
         name: Set up C/C++ compiler

@@ -116,6 +116,29 @@ jobs:
         distribution: [liberica, zulu]
         os: [ubuntu-latest, macOS-latest, windows-latest]
         java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+        exclude:
+          - os: macOS-latest
+            architecture: x86
+          - os: ubuntu-latest
+            architecture: x86
+            java: 19
+          - os: ubuntu-latest
+            architecture: x64
+            distribution: zulu
+            java: 10
+          - os: windows-latest
+            architecture: x86
+            java: 19
+          - distribution: liberica
+            java: 9
+          - distribution: liberica
+            java: 10
+          - distribution: liberica
+            java: 18
+          - distribution: liberica
+            java: 20
+          - distribution: liberica
+            java: 21
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3

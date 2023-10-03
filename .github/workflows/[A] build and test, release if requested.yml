@@ -106,7 +106,7 @@ jobs:
 
   build-and-test-with-zulu-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -148,7 +148,7 @@ jobs:
    
   build-and-test-with-liberica-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -192,7 +192,7 @@ jobs:
 
   build-and-test-with-adopt-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -225,7 +225,7 @@ jobs:
   
   build-and-test-with-adopt-openj9-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -258,7 +258,7 @@ jobs:
   
   build-and-test-with-temurin-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -292,7 +292,7 @@ jobs:
   build-and-test-with-ea-JDK:
     if: ${{ false }}
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15

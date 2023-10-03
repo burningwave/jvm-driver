@@ -51,7 +51,7 @@ jobs:
 
 
   elaborate-native-module:
-    if: ${{ true }}
+    - if: ${{ true }}
       name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
       strategy:
         fail-fast: false

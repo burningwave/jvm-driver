@@ -140,7 +140,11 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
       - name: Build and test with Java 7 target
+        if: ${{ fromJSON(matrix.java) <= 19 }}
         run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+      - name: Build and test with Java 8 target
+        if: ${{ fromJSON(matrix.java) > 19}}
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
  
    
   build-and-test-with-liberica-JDK:

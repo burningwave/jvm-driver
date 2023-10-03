@@ -107,7 +107,7 @@ jobs:
 
   build-and-test-with-JDK-group-1:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-    needs: [elaborate-native-module]
+#    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -115,7 +115,7 @@ jobs:
         architecture: [x86, x64]
         distribution: [liberica, zulu]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
         exclude:
           - os: macOS-latest
             architecture: x86
@@ -232,10 +232,10 @@ jobs:
     if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 19
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: 19
+          java-version: 21
           distribution: 'zulu'
           server-id: ossrh
           server-username: MAVEN_USERNAME

@@ -121,7 +121,7 @@ jobs:
             architecture: x86
           - os: ubuntu-latest
             architecture: x86
-            java: 19
+            java: [20,21]
           - os: ubuntu-latest
             architecture: x64
             distribution: zulu

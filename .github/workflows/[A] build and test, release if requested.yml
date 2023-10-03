@@ -56,6 +56,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
         java: [21]
+        distribution: [zulu]
         architecture: [x86, x64]
         exclude:
           - os: macOS-latest

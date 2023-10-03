@@ -55,7 +55,7 @@ jobs:
       max-parallel: 2
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
-        java: [18]
+        java: [21]
         architecture: [x86, x64]
         exclude:
           - os: macOS-latest
@@ -84,7 +84,7 @@ jobs:
         uses: egor-tensin/setup-mingw@v2
         with:
           platform: ${{ matrix.architecture }}
-          version: 11.0.1
+          version: 8.1.0
       - uses: actions/checkout@v3
       - name: Build native library
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml

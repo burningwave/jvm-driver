@@ -29,7 +29,7 @@
 #
 name: Build and release if requested
 env:
-  - BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED: false
+  BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED: false
 
 
 on:

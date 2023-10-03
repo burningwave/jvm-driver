@@ -67,7 +67,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'zulu'
+          distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x64')
         name: Set up C/C++ compiler

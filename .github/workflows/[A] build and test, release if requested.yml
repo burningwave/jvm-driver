@@ -28,7 +28,8 @@
 #	OR OTHER DEALINGS IN THE SOFTWARE.
 #
 name: Build and release if requested
-
+env:
+  - BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED: false
 
 
 on:
@@ -50,8 +51,8 @@ on:
 jobs:
 
 
-  elaborate-native-module:
-    if: ${{ false }} 
+  build-and-push-native-module:
+    if: ${{ env.BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED }} 
     name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
     strategy:
       fail-fast: false
@@ -108,7 +109,7 @@ jobs:
 
   build-and-test-with-zulu-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+#    needs: [build-and-push-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -150,7 +151,7 @@ jobs:
    
   build-and-test-with-liberica-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+#    needs: [build-and-push-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -194,7 +195,7 @@ jobs:
 
   build-and-test-with-adopt-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+#    needs: [build-and-push-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -227,7 +228,7 @@ jobs:
   
   build-and-test-with-adopt-openj9-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+#    needs: [build-and-push-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -260,7 +261,7 @@ jobs:
   
   build-and-test-with-temurin-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+#    needs: [build-and-push-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -293,7 +294,7 @@ jobs:
    
   build-and-test-with-ea-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+#    needs: [build-and-push-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15

@@ -28,6 +28,7 @@
 #	OR OTHER DEALINGS IN THE SOFTWARE.
 #
 name: Build and release if requested
+
 env:
   BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED: false
 
@@ -52,7 +53,7 @@ jobs:
 
 
   build-and-push-native-module:
-    if: ${{ fromJSON($BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED) }} 
+    if: BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED
     name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
     strategy:
       fail-fast: false

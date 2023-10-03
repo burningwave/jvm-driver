@@ -116,6 +116,15 @@ jobs:
         distribution: [zulu]
         os: [ubuntu-latest, macOS-latest, windows-latest]
         java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+        exclude:
+          - os: macOS-latest
+            architecture: x86
+          - architecture: x64
+            java: 10
+          - architecture: x86
+            java: 20
+          - architecture: x86
+            java: 21
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -131,7 +140,7 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
       - name: Build and test with Java 7 target
-        run: mvn -B clean test -Dproject_jdk_version=7 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
  
    
   build-and-test-with-liberica-JDK:
@@ -160,7 +169,7 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
       - name: Build and test with Java 7 target
-        run: mvn -B clean test -Dproject_jdk_version=7 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
 
 
   build-and-test-with-adopt-JDK:
@@ -189,7 +198,7 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
       - name: Build and test with Java 7 target
-        run: mvn -B clean test -Dproject_jdk_version=7 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
   
   
   build-and-test-with-adopt-openj9-JDK:
@@ -218,7 +227,7 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
       - name: Build and test with Java 7 target
-        run: mvn -B clean test -Dproject_jdk_version=7 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
   
   
   build-and-test-with-temurin-JDK:
@@ -247,10 +256,10 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
       - name: Build and test with Java 7 target
-        if: ${{ matrix.java }} <= 19
-        run: mvn -B clean test -Dproject_jdk_version=7 -DskipTests=false --file ./java/pom.xml
+        if: ${{ fromJSON(matrix.java) }} < 20
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
       - name: Build and test with Java 8 target
-        if: ${{ matrix.java }} > 19
+        if: ${{ fromJSON(matrix.java) }} > 19
         run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
    
    

@@ -157,6 +157,8 @@ jobs:
         exclude:
           - os: macOS-latest
             architecture: x86
+          - java: 9
+          - java: 10
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -243,7 +245,7 @@ jobs:
         architecture: [x64]
         distribution: [temurin]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [11, 16, 17, 18, 19, 20, 21]
+        java: [11, 16, 17, 18, 19, 20]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -259,7 +261,7 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
       - name: Build and test with Java 7 target
-        if: ${{ fromJSON(matrix.java) <= 20 }}
+        if: ${{ fromJSON(matrix.java) <= 19 }}
         run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}

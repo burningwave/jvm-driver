@@ -53,7 +53,7 @@ jobs:
 
 
   build-and-push-native-module:
-    if: ${{ $BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED }}
+    if: env.BUILD_AND_PUSH_NATIVE_MODULE_JOB_ENABLED == 'true'
     name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
     strategy:
       fail-fast: false

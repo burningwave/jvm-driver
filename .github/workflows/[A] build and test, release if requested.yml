@@ -163,6 +163,12 @@ jobs:
             architecture: x86
           - java: 9
           - java: 10
+          - architecture: x86
+            os: ubuntu-latest
+            java: 20
+          - architecture: x86
+            os: ubuntu-latest
+            java: 21
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -294,7 +300,7 @@ jobs:
         architecture: [x86, x64]
         distribution: [zulu]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [21-ea]      
+        java: [22-ea]      
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3

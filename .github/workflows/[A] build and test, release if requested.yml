@@ -40,7 +40,7 @@ on:
       - "**.c"
       - "**.cpp"
       - "**.java"
-      - ".github/workflows/**"
+#      - ".github/workflows/**"
       - "**.properties"
       - "**.xml"
 

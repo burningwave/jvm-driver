@@ -96,7 +96,7 @@
 		<jacoco-maven-plugin.version>0.7.6.201602180812</jacoco-maven-plugin.version>
 		<junit-jupiter.version>5.8.2</junit-jupiter.version>
 		<junit.version>1.8.2</junit.version>
-		<jvm-driver.version>9.4.7</jvm-driver.version>
+		<jvm-driver.version>9.4.8</jvm-driver.version>
 		<maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
 		<maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -324,8 +324,8 @@
 							<Bundle-Description>${project.description}</Bundle-Description>
 							<Bundle-Version>${project.version}</Bundle-Version>
 							<Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.7))"</Require-Capability>
-							<Import-Package>io.github.toolfactory.jvm;version="${jvm-driver.version}",io.github.toolfactory.jvm.function.catalog;version="${jvm-driver.version}",io.github.toolfactory.jvm.function.template;version="${jvm-driver.version}",io.github.toolfactory.jvm.util;version="${jvm-driver.version}"</Import-Package>
-							<Export-Package>org.burningwave.jvm;uses:="io.github.toolfactory.jvm,io.github.toolfactory.jvm.function.catalog,org.burningwave.jvm.function.catalog";version="${project.version}",org.burningwave.jvm.function.catalog;uses:="io.github.toolfactory.jvm.function.catalog,io.github.toolfactory.jvm.function.template,io.github.toolfactory.jvm.util,org.burningwave.jvm";version="${project.version}",org.burningwave.jvm.util;uses:="io.github.toolfactory.jvm.function.template";version="${project.version}"</Export-Package>
+							<Import-Package>io.github.toolfactory.jvm;version="8.9.4",io.github.toolfactory.jvm.function.catalog;version="8.9.4",io.github.toolfactory.jvm.function.template;version="8.9.4",io.github.toolfactory.jvm.util;version="8.9.4"</Import-Package>
+							<Export-Package>org.burningwave.jvm;uses:="io.github.toolfactory.jvm,io.github.toolfactory.jvm.function.catalog,org.burningwave.jvm.function.catalog";version="6.8.4",org.burningwave.jvm.function.catalog;uses:="io.github.toolfactory.jvm.function.catalog,io.github.toolfactory.jvm.function.template,io.github.toolfactory.jvm.util,org.burningwave.jvm";version="6.8.4",org.burningwave.jvm.util;uses:="io.github.toolfactory.jvm.function.template";version="6.8.4"</Export-Package>
 							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>

@@ -1,0 +1,305 @@
+name: Build and release
+
+
+on:
+  watch:
+    types: [started]
+
+
+jobs:
+
+  ask-for-authorization:
+    name: Ask for authorization
+    runs-on: ubuntu-latest
+    steps:
+    - uses: octokit/request-action@v2.0.0
+      with:
+        route: GET /repos/:repository/collaborators/${{ github.actor }}
+        repository: ${{ github.repository }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Send push notification
+      if: ${{ failure() }}
+      uses: techulus/push-github-action@1.0.0
+      env:
+        API_KEY: ${{ secrets.PUSH_NOTIFICATION_API_KEY }}
+        MESSAGE: ${{ format('New star for {0}!', github.repository) }}
+
+  elaborate-native-module:
+    name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
+    needs: [ask-for-authorization]
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        os: [windows-latest, ubuntu-latest, macOS-latest]
+        java: [19]
+        architecture: [x86, x64]
+        exclude:
+          - os: macOS-latest
+            architecture: x86
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'zulu'
+          architecture: ${{ matrix.architecture }}
+      - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x64')
+        name: Set up C/C++ compiler
+        run: |
+          sudo apt update
+          sudo apt-get -y install g++-aarch64-linux-gnu g++-arm-linux-gnueabi
+      - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x86')
+        name: Set up C/C++ compiler
+        run: |
+          sudo apt update
+          sudo apt-get -y install doxygen vera++ zlib1g-dev libsnappy-dev \
+            g++-multilib
+      - if: startsWith(matrix.os, 'windows-latest') && startsWith(matrix.architecture, 'x86')
+        name: Set up C/C++ compiler
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: ${{ matrix.architecture }}
+          version: 12.2.0
+      - uses: actions/checkout@v3
+      - name: Build native library
+        run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml
+      - if: startsWith(matrix.os, 'ubuntu-latest') && startsWith(matrix.architecture, 'x64')
+        name: Build native library for platform group one
+        run: |
+           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=aarch64-linux-gnu-g++ -Dextra-compilation-one-artifact-name-suffix=aarch64 -DskipTests=true --file ./native/pom.xml
+#           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=arm-linux-gnueabi-g++ -Dextra-compilation-one-artifact-name-suffix=armeabi-x32 -DskipTests=true --file ./native/pom.xml
+      - name: Push native library
+        run: |
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git pull origin ${{github.ref}}
+          git add .
+          git commit -am "Generated native libraries on ${{ matrix.os }} ${{ matrix.architecture }}" --allow-empty
+          git push
+
+
+  build-and-test-with-zulu-JDK:
+    name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
+    needs: [elaborate-native-module]
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        architecture: [x86, x64]
+        distribution: [zulu]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+        exclude:
+          - os: macOS-latest
+            architecture: x86
+          - architecture: x64
+            java: 10
+          - architecture: x86
+            java: 20
+          - architecture: x86
+            java: 21
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+          architecture: ${{ matrix.architecture }}
+      - name: Update repositories
+        run: |
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git pull origin ${{github.ref}}  
+      - name: Build and test with Java 7 target
+        if: ${{ fromJSON(matrix.java) <= 19 }}
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+      - name: Build and test with Java 8 target
+        if: ${{ fromJSON(matrix.java) > 19}}
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+ 
+   
+  build-and-test-with-liberica-JDK:
+    name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
+    needs: [elaborate-native-module]
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        architecture: [x86, x64]
+        distribution: [liberica]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+        exclude:
+          - os: macOS-latest
+            architecture: x86
+          - java: 9
+          - java: 10
+          - architecture: x86
+            os: ubuntu-latest
+            java: 20
+          - architecture: x86
+            os: ubuntu-latest
+            java: 21
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+          architecture: ${{ matrix.architecture }}
+      - name: Update repositories
+        run: |
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git pull origin ${{github.ref}}  
+      - name: Build and test with Java 7 target
+        if: ${{ fromJSON(matrix.java) <= 19 }}
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+      - name: Build and test with Java 8 target
+        if: ${{ fromJSON(matrix.java) > 19}}
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+  
+  
+  build-and-test-with-semeru-JDK:
+    name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
+    needs: [elaborate-native-module]
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        architecture: [x64]
+        distribution: [semeru]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        java: [11, 16, 17, 18, 19, 20]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+          architecture: ${{ matrix.architecture }}
+      - name: Update repositories
+        run: |
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git pull origin ${{github.ref}}  
+      - name: Build and test with Java 7 target
+        if: ${{ fromJSON(matrix.java) <= 19 }}
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+      - name: Build and test with Java 8 target
+        if: ${{ fromJSON(matrix.java) > 19}}
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+  
+  
+  build-and-test-with-temurin-JDK:
+    name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
+    needs: [elaborate-native-module]
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        architecture: [x64]
+        distribution: [temurin]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        java: [11, 16, 17, 18, 19, 20]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+          architecture: ${{ matrix.architecture }}
+      - name: Update repositories
+        run: |
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git pull origin ${{github.ref}}
+      - name: Build and test with Java 7 target
+        if: ${{ fromJSON(matrix.java) <= 19 }}
+        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+      - name: Build and test with Java 8 target
+        if: ${{ fromJSON(matrix.java) > 19}}
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+   
+   
+  build-and-test-with-ea-JDK:
+    if: ${{ false }}
+    name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
+    needs: [elaborate-native-module]
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        architecture: [x86, x64]
+        distribution: [zulu]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        java: [22-ea]      
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+          architecture: ${{ matrix.architecture }}
+      - name: Update repositories
+        run: |
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git pull origin ${{github.ref}}  
+      - name: Build and test with Java 8 target
+        run: mvn -B clean test -DskipTests=false -Dproject_jdk_version=8 --file ./java/pom.xml
+        
+
+#To ensure compatibility with the Java 7 version the build must never be run with a JDK version higher than 19
+  release:
+    needs: [build-and-test-with-zulu-JDK, build-and-test-with-liberica-JDK, build-and-test-with-semeru-JDK, build-and-test-with-temurin-JDK]
+    if: ${{ fromJSON(vars.MANUAL_RELEASE_ENABLED) }}
+    name: Release if requested
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 19
+        uses: actions/setup-java@v3
+        with:
+          java-version: 19
+          distribution: 'zulu'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Publish to the Maven central repository
+        run: |
+          export GPG_TTY=$(tty)
+          echo "${{ secrets.gpg_private_key }}" | gpg --batch --import
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git pull origin ${{github.ref}}
+          mv ./java/pom.xml ./java/temp-pom.xml
+          mv ./java/sa-pom.xml ./java/pom.xml
+          mv ./java/temp-pom.xml ./java/sa-pom.xml
+          git commit -am "Swithcing pom for releasing"
+          git push        
+          mvn -B release:prepare release:perform -DskipTests=true -Dgpg.passphrase=${{ secrets.gpg_passphrase }} -Dgpg.keyname=${{ secrets.gpg_key_id }} -Drepository.url=https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git --file ./java/pom.xml
+          mv ./java/pom.xml ./java/temp-pom.xml
+          mv ./java/sa-pom.xml ./java/pom.xml
+          mv ./java/temp-pom.xml ./java/sa-pom.xml
+          newVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./java/sa-pom.xml)
+          sed -r -i "s%<version>[[:space:]]*(.*-SNAPSHOT)</version>%<version>${newVersion}</version>%" ./java/pom.xml
+          git commit -am "Prepare for next development iteration"
+          git push    
+        env:
+          MAVEN_USERNAME: ${{ secrets.nexus_username }}
+          MAVEN_PASSWORD: ${{ secrets.nexus_password }}

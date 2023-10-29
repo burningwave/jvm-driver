@@ -269,7 +269,6 @@ jobs:
     if: ${{ fromJSON(vars.MANUAL_RELEASE_ENABLED) }}
     name: Release if requested
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 19

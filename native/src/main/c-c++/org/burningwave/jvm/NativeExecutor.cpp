@@ -75,7 +75,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
     const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
     const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL);
-    jfieldID fieldID = jNIEnv->GetFieldID(target, fieldName, fieldSignature);
+    jfieldID fieldID = isStatic ? jNIEnv->GetStaticFieldID(target, fieldName, fieldSignature) : jNIEnv->GetFieldID(target, fieldName, fieldSignature);
     jNIEnv->ReleaseStringUTFChars(signature, fieldSignature);
     jNIEnv->ReleaseStringUTFChars(name, fieldName);
     if (!fieldID) {

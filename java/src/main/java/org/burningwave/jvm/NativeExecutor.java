@@ -267,7 +267,7 @@ public class NativeExecutor {
 
 
 	private static void checkStaticGet(Class<?> returnType, Field field) {
-		if (Modifier.isStatic(field.getModifiers())) {
+		if (!Modifier.isStatic(field.getModifiers())) {
 			throw new IllegalArgumentException("Field " + field + " is not static");
 		}
 		checkGet0(returnType, field);
@@ -328,7 +328,7 @@ public class NativeExecutor {
 	}
 
 	private static void checkSet(Class<?> valueType, Object target, Field field) {
-		checkGet0(valueType, field);
+		checkSet0(valueType, field);
 		checkTargetAndField(target, field);
 	}
 
@@ -390,7 +390,7 @@ public class NativeExecutor {
 		if (!Modifier.isStatic(field.getModifiers())) {
 			throw new IllegalArgumentException("Field " + field + " is not static");
 		}
-		checkGet0(valueType, field);
+		checkSet0(valueType, field);
 	}
 
 	public void setStaticObjectFieldValue(Field field, Object value) {

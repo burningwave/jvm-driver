@@ -77,7 +77,7 @@ jobs:
 
   build-and-test-with-zulu-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
-#    needs: [elaborate-native-module]
+    needs: [elaborate-native-module]
     strategy:
       fail-fast: false
       max-parallel: 15
@@ -85,7 +85,7 @@ jobs:
         architecture: [x64]
         distribution: [zulu]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [20, 21, 22, 23, 24]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
         exclude:
           - architecture: x64
             java: 10
@@ -154,7 +154,7 @@ jobs:
         architecture: [x64]
         distribution: [temurin]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [20, 21, 22, 23, 24]
+        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3

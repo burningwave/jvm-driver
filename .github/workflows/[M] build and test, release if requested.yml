@@ -26,6 +26,7 @@ jobs:
         MESSAGE: ${{ format('New star for {0}!', github.repository) }}
 
   elaborate-native-module:
+    needs: [ask-for-authorization]
     name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
     strategy:
       fail-fast: false

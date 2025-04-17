@@ -127,9 +127,24 @@ public class NativeExecutorTest {
         Field f_ins_boolean = nativeExecutor.getDeclaredField(cls, "ins_boolean", "Z");
         Assertions.assertNotNull(f_ins_boolean);
 
-        Assertions.assertThrows(NoSuchFieldError.class, () -> nativeExecutor.getDeclaredField(cls, "ins_int", "Ljava/lang/Object;"));
-        Assertions.assertThrows(NoSuchFieldError.class, () -> nativeExecutor.getDeclaredField(cls, "ins_i", "I"));
-        Assertions.assertThrows(NoSuchFieldError.class, () -> nativeExecutor.getDeclaredField(cls, "ins_i", "Ljava/lang/Object;"));
+        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        	@Override
+			public void execute() throws Throwable {
+        		nativeExecutor.getDeclaredField(cls, "ins_int", "Ljava/lang/Object;");
+        	};
+        });
+        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        	@Override
+			public void execute() throws Throwable {
+        		nativeExecutor.getDeclaredField(cls, "ins_i", "I");
+        	};
+        });
+        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        	@Override
+			public void execute() throws Throwable {
+        		nativeExecutor.getDeclaredField(cls, "ins_i", "Ljava/lang/Object;");
+        	};
+        });
 
         nativeExecutor.setStaticObjectFieldValue(f_sta_obj, "test");
         Assertions.assertEquals("test", TestBean.sta_obj);

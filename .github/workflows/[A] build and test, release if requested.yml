@@ -85,7 +85,7 @@ jobs:
         architecture: [x64]
         distribution: [zulu]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [19, 20, 21, 22, 23, 24]
+        java: [20, 21, 22, 23, 24]
         exclude:
           - architecture: x64
             java: 10
@@ -121,7 +121,7 @@ jobs:
         architecture: [x64]
         distribution: [semeru]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [20, 21, 22, 23]
+        java: [11, 16, 17, 18, 19, 20, 21, 22, 23]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3

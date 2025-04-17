@@ -26,7 +26,7 @@ jobs:
       max-parallel: 2
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
-        java: [17]
+        java: [19]
         architecture: [x86, x64]
         exclude:
           - os: macOS-latest
@@ -46,10 +46,10 @@ jobs:
           sudo apt-get -y install g++-aarch64-linux-gnu g++-arm-linux-gnueabi
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
-        run: |
-          sudo apt update
-          sudo apt-get -y install doxygen vera++ zlib1g-dev libsnappy-dev \
-            g++-multilib
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: ${{ matrix.architecture }}
+          version: 12.2.0
       - if: startsWith(matrix.os, 'windows-latest') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
         uses: egor-tensin/setup-mingw@v2

@@ -11,7 +11,7 @@ on:
       - "**.c"
       - "**.cpp"
       - "**.java"
-#      - ".github/workflows/**"
+      - ".github/workflows/**"
       - "**.properties"
       - "**.xml"
 
@@ -27,7 +27,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
         java: [19]
-        distribution: [semeru]
+        distribution: [zulu]
         architecture: [x86, x64]
         exclude:
           - os: macOS-latest
@@ -50,7 +50,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get -y install doxygen vera++ zlib1g-dev libsnappy-dev \
-            g++-multilib
+            g++-multilib install zlib.i386
       - if: startsWith(matrix.os, 'windows-latest') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
         uses: egor-tensin/setup-mingw@v2

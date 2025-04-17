@@ -62,7 +62,7 @@ public class NativeExecutorTest {
     }
 
 
-    // The commented code was disabled because is not compatible with Java 7
+    /** The commented code was disabled because is not compatible with Java 7 */
     @Test
     public void test() {
         NativeExecutor nativeExecutor = NativeExecutor.getInstance();

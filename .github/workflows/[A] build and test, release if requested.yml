@@ -26,7 +26,7 @@ jobs:
       max-parallel: 2
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
-        java: [19]
+        java: [17]
         architecture: [x86, x64]
         exclude:
           - os: macOS-latest

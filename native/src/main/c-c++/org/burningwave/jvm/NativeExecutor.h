@@ -45,7 +45,10 @@
 		extern "C" {
 	#endif
 
-	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField)
+	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField0)
+	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
+	  
+  	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredStaticField0)
 	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
 
 	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, allocateInstance)

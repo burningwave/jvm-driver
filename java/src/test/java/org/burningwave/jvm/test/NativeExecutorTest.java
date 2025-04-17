@@ -3,11 +3,13 @@ package org.burningwave.jvm.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 
 import org.burningwave.jvm.NativeExecutor;
+import org.junit.function.ThrowingRunnable;
 import org.junit.jupiter.api.Test;
 
 public class NativeExecutorTest {
@@ -73,14 +75,12 @@ public class NativeExecutorTest {
         TestBean bean = (TestBean) nativeExecutor.allocateInstance(cls);
         printBean(bean);
 
-        /* Disabled: code not compatible with Java 7:
-        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        assertThrows(NoSuchFieldError.class, new ThrowingRunnable () {
         	@Override
-        	public void execute() throws Throwable {
+        	public void run() {
         		nativeExecutor.throwException(new TestException());
         	}
         });
-        */
 
         Field f_sta_obj = nativeExecutor.getDeclaredStaticField(cls, "sta_obj", "Ljava/lang/Object;");
         assertNotNull(f_sta_obj);
@@ -101,26 +101,26 @@ public class NativeExecutorTest {
         Field f_sta_boolean = nativeExecutor.getDeclaredStaticField(cls, "sta_boolean", "Z");
         assertNotNull(f_sta_boolean);
 
-        /*
-        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+
+        assertThrows(NoSuchFieldError.class, new ThrowingRunnable () {
         	@Override
-        	public void execute() throws Throwable {
+        	public void run() throws Throwable {
         		nativeExecutor.getDeclaredStaticField(cls, "sta_int", "Ljava/lang/Object;");
         	}
         });
-        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        assertThrows(NoSuchFieldError.class, new ThrowingRunnable () {
         	@Override
-        	public void execute() throws Throwable {
+        	public void run() throws Throwable {
         		nativeExecutor.getDeclaredStaticField(cls, "sta_i", "I");
         	}
         });
-        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        assertThrows(NoSuchFieldError.class, new ThrowingRunnable () {
         	@Override
-        	public void execute() throws Throwable {
+        	public void run() throws Throwable {
         		nativeExecutor.getDeclaredStaticField(cls, "sta_i", "Ljava/lang/Object;");
         	}
         });
-        */
+
 
         Field f_ins_obj = nativeExecutor.getDeclaredField(cls, "ins_obj", "Ljava/lang/Object;");
         assertNotNull(f_ins_obj);
@@ -141,26 +141,24 @@ public class NativeExecutorTest {
         Field f_ins_boolean = nativeExecutor.getDeclaredField(cls, "ins_boolean", "Z");
         assertNotNull(f_ins_boolean);
 
-        /*
-        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        assertThrows(NoSuchFieldError.class, new ThrowingRunnable () {
         	@Override
-			public void execute() throws Throwable {
+			public void run() throws Throwable {
         		nativeExecutor.getDeclaredField(cls, "ins_int", "Ljava/lang/Object;");
         	};
         });
-        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        assertThrows(NoSuchFieldError.class, new ThrowingRunnable () {
         	@Override
-			public void execute() throws Throwable {
+			public void run() throws Throwable {
         		nativeExecutor.getDeclaredField(cls, "ins_i", "I");
         	};
         });
-        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        assertThrows(NoSuchFieldError.class, new ThrowingRunnable () {
         	@Override
-			public void execute() throws Throwable {
+			public void run() throws Throwable {
         		nativeExecutor.getDeclaredField(cls, "ins_i", "Ljava/lang/Object;");
         	};
         });
-        */
 
         nativeExecutor.setStaticObjectFieldValue(f_sta_obj, "test");
         assertEquals("test", TestBean.sta_obj);

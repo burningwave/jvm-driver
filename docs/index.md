@@ -1,4 +1,4 @@
-# Burningwave JVM Driver [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=%40burningwave_org%20JVM%20driver%2C%20a%20%23driver%20to%20allow%20deep%20interaction%20with%20the%20JVM%20without%20any%20restrictions%20%28works%20on%20%23Java7%20%23Java8%20%23Java9%20%23Java10%20%23Java11%20%23Java12%20%23Java13%20%23Java14%20%23Java15%20%23Java16%20%23Java17%20%23Java18%20%23Java19%20%23Java20%20%23Java21%20%23Java22%29&url=https://burningwave.github.io/jvm-driver/)
+# Burningwave JVM Driver [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=%40burningwave_org%20JVM%20driver%2C%20a%20%23Java%20driver%20to%20allow%20deep%20interaction%20with%20the%20JVM%20without%20any%20restrictions&url=https://burningwave.github.io/jvm-driver/)
 
 <a href="https://www.burningwave.org">
 <img src="https://raw.githubusercontent.com/burningwave/burningwave.github.io/main/logo.png" alt="Burningwave-logo.png" height="180px" align="right"/>
@@ -7,9 +7,9 @@
 [![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.burningwave/jvm-driver/8)](https://maven-badges.herokuapp.com/maven-central/org.burningwave/jvm-driver/)
 [![GitHub](https://img.shields.io/github/license/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/blob/main/LICENSE)
 
-[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/8919904997)
+[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/14512149541)
 
-[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(22)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/8919904997)
+[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(24)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/14512149541)
 
 [![GitHub open issues](https://img.shields.io/github/issues/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues?q=is%3Aissue+is%3Aclosed)
@@ -27,7 +27,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>8.16.1</version>
+    <version>8.17.0</version>
 </dependency>	
 ```
 ### Requiring the Burningwave JVM Driver module

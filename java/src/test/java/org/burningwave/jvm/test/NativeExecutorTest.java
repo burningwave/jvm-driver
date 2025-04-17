@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import org.burningwave.jvm.NativeExecutor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 public class NativeExecutorTest {
 
@@ -89,10 +90,24 @@ public class NativeExecutorTest {
         Field f_sta_boolean = nativeExecutor.getDeclaredStaticField(cls, "sta_boolean", "Z");
         Assertions.assertNotNull(f_sta_boolean);
 
-        Assertions.assertThrows(NoSuchFieldError.class, () -> nativeExecutor.getDeclaredStaticField(cls, "sta_int", "Ljava/lang/Object;"));
-        Assertions.assertThrows(NoSuchFieldError.class, () -> nativeExecutor.getDeclaredStaticField(cls, "sta_i", "I"));
-        Assertions.assertThrows(NoSuchFieldError.class, () -> nativeExecutor.getDeclaredStaticField(cls, "sta_i", "Ljava/lang/Object;"));
-
+        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        	@Override
+        	public void execute() throws Throwable {
+        		nativeExecutor.getDeclaredStaticField(cls, "sta_int", "Ljava/lang/Object;");
+        	}
+        });
+        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        	@Override
+        	public void execute() throws Throwable {
+        		nativeExecutor.getDeclaredStaticField(cls, "sta_i", "I");
+        	}
+        });
+        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        	@Override
+        	public void execute() throws Throwable {
+        		nativeExecutor.getDeclaredStaticField(cls, "sta_i", "Ljava/lang/Object;");
+        	}
+        });
         Field f_ins_obj = nativeExecutor.getDeclaredField(cls, "ins_obj", "Ljava/lang/Object;");
         Assertions.assertNotNull(f_ins_obj);
         Field f_ins_byte = nativeExecutor.getDeclaredField(cls, "ins_byte", "B");

@@ -46,10 +46,10 @@
 	#endif
 
 	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField0)
-	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
+	  (JNIEnv*, jobject, jclass, jstring, jstring);
 	  
   	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredStaticField0)
-	  (JNIEnv*, jobject, jclass, jstring, jstring, jboolean);
+	  (JNIEnv*, jobject, jclass, jstring, jstring);
 
 	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, allocateInstance)
 	  (JNIEnv*, jobject, jclass);

@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import org.burningwave.jvm.NativeExecutor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 public class NativeExecutorTest {
 
@@ -69,12 +68,14 @@ public class NativeExecutorTest {
         TestBean bean = (TestBean) nativeExecutor.allocateInstance(cls);
         printBean(bean);
 
+        /* Disabled: code not compatible with JDK 7:
         Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
         	@Override
         	public void execute() throws Throwable {
         		nativeExecutor.throwException(new TestException());
         	}
         });
+        */
 
         Field f_sta_obj = nativeExecutor.getDeclaredStaticField(cls, "sta_obj", "Ljava/lang/Object;");
         Assertions.assertNotNull(f_sta_obj);
@@ -95,6 +96,7 @@ public class NativeExecutorTest {
         Field f_sta_boolean = nativeExecutor.getDeclaredStaticField(cls, "sta_boolean", "Z");
         Assertions.assertNotNull(f_sta_boolean);
 
+        /* Disabled: code not compatible with JDK 7:
         Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
         	@Override
         	public void execute() throws Throwable {
@@ -113,6 +115,8 @@ public class NativeExecutorTest {
         		nativeExecutor.getDeclaredStaticField(cls, "sta_i", "Ljava/lang/Object;");
         	}
         });
+        */
+
         Field f_ins_obj = nativeExecutor.getDeclaredField(cls, "ins_obj", "Ljava/lang/Object;");
         Assertions.assertNotNull(f_ins_obj);
         Field f_ins_byte = nativeExecutor.getDeclaredField(cls, "ins_byte", "B");
@@ -132,6 +136,7 @@ public class NativeExecutorTest {
         Field f_ins_boolean = nativeExecutor.getDeclaredField(cls, "ins_boolean", "Z");
         Assertions.assertNotNull(f_ins_boolean);
 
+        /* Disabled: code not compatible with JDK 7:
         Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
         	@Override
 			public void execute() throws Throwable {
@@ -150,6 +155,7 @@ public class NativeExecutorTest {
         		nativeExecutor.getDeclaredField(cls, "ins_i", "Ljava/lang/Object;");
         	};
         });
+        */
 
         nativeExecutor.setStaticObjectFieldValue(f_sta_obj, "test");
         Assertions.assertEquals("test", TestBean.sta_obj);

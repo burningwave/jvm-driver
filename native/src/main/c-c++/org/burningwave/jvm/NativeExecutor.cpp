@@ -81,7 +81,7 @@ JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NA
     if (!fieldID) {
         return NULL;
     }
-    return jNIEnv->ToReflectedField(target, JNI_FALSE);
+    return jNIEnv->ToReflectedField(target, fieldID, JNI_FALSE);
 }
 
 JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredStaticField0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature) {

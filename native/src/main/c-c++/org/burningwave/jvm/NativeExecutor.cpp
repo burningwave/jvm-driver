@@ -72,16 +72,28 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
 }
 
 
-JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature, jboolean isStatic) {
+JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature) {
     const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
     const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL);
-    jfieldID fieldID = isStatic ? jNIEnv->GetStaticFieldID(target, fieldName, fieldSignature) : jNIEnv->GetFieldID(target, fieldName, fieldSignature);
+    jfieldID fieldID = jNIEnv->GetFieldID(target, fieldName, fieldSignature);
     jNIEnv->ReleaseStringUTFChars(signature, fieldSignature);
     jNIEnv->ReleaseStringUTFChars(name, fieldName);
     if (!fieldID) {
         return NULL;
     }
-    return jNIEnv->ToReflectedField(target, fieldID, isStatic ? JNI_TRUE : JNI_FALSE);
+    return jNIEnv->ToReflectedField(target, JNI_FALSE);
+}
+
+JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredStaticField0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature) {
+    const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
+    const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL);
+    jfieldID fieldID = jNIEnv->GetStaticFieldID(target, fieldName, fieldSignature);
+    jNIEnv->ReleaseStringUTFChars(signature, fieldSignature);
+    jNIEnv->ReleaseStringUTFChars(name, fieldName);
+    if (!fieldID) {
+        return NULL;
+    }
+    return jNIEnv->ToReflectedField(target, fieldID, JNI_TRUE);
 }
 
 

@@ -47,6 +47,23 @@
 
 #endif
 
+#ifndef org_burningwave_jvm_NativeExecutor_GENERATE_DECLARED_FIELD_FUNCTION
+	
+	#define org_burningwave_jvm_NativeExecutor_GENERATE_DECLARED_FIELD_FUNCTION(functionName, fieldIdRetriever, staticFlag) \
+	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, functionName)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature) { \
+		const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL); \
+		const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL); \
+		jfieldID fieldID = jNIEnv->fieldIdRetriever(target, fieldName, fieldSignature); \
+		jNIEnv->ReleaseStringUTFChars(signature, fieldSignature); \
+		jNIEnv->ReleaseStringUTFChars(name, fieldName); \
+		if (!fieldID) { \
+			return NULL; \
+		} \
+		return jNIEnv->ToReflectedField(target, fieldID, staticFlag); \
+	}
+
+#endif
+
 NativeEnvironment* environment;
 
 
@@ -61,41 +78,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 	}
 	return JNI_VERSION_1_6;
 }
-
-
-JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void* reserved) {
-	JNIEnv* jNIEnv = NULL;
-	vm->GetEnv((void**)&jNIEnv, JNI_VERSION_1_6);
-	environment->destroy(jNIEnv);
-	delete(environment);
-	environment = NULL;
-}
-
-
-JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredField0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature) {
-    const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
-    const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL);
-    jfieldID fieldID = jNIEnv->GetFieldID(target, fieldName, fieldSignature);
-    jNIEnv->ReleaseStringUTFChars(signature, fieldSignature);
-    jNIEnv->ReleaseStringUTFChars(name, fieldName);
-    if (!fieldID) {
-        return NULL;
-    }
-    return jNIEnv->ToReflectedField(target, fieldID, JNI_FALSE);
-}
-
-JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getDeclaredStaticField0)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature) {
-    const char* fieldName = jNIEnv->GetStringUTFChars(name, NULL);
-    const char* fieldSignature = jNIEnv->GetStringUTFChars(signature, NULL);
-    jfieldID fieldID = jNIEnv->GetStaticFieldID(target, fieldName, fieldSignature);
-    jNIEnv->ReleaseStringUTFChars(signature, fieldSignature);
-    jNIEnv->ReleaseStringUTFChars(name, fieldName);
-    if (!fieldID) {
-        return NULL;
-    }
-    return jNIEnv->ToReflectedField(target, fieldID, JNI_TRUE);
-}
-
 
 JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, allocateInstance)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass instanceType) {
 	return jNIEnv->AllocObject(instanceType);
@@ -116,3 +98,6 @@ org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS(Double, jdo
 org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS(Boolean, jboolean)
 org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS(Byte, jbyte)
 org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS(Character, jchar)
+
+org_burningwave_jvm_NativeExecutor_GENERATE_DECLARED_FIELD_FUNCTION(getDeclaredField0, GetFieldID, JNI_FALSE)
+org_burningwave_jvm_NativeExecutor_GENERATE_DECLARED_FIELD_FUNCTION(getDeclaredStaticField0, GetStaticFieldID, JNI_TRUE)

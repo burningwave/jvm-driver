@@ -71,7 +71,7 @@ public class NativeExecutorTest {
     @Test
     public void test() {
         final NativeExecutor nativeExecutor = NativeExecutor.getInstance();
-        Class<?> cls = TestBean.class;
+        final Class<?> cls = TestBean.class;
         TestBean bean = (TestBean) nativeExecutor.allocateInstance(cls);
         printBean(bean);
 

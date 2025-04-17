@@ -25,7 +25,7 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-22.04, windows-2022, macos-14]
         java: [19]
         distribution: [zulu]
         architecture: [x86, x64]
@@ -50,7 +50,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get -y install doxygen vera++ zlib1g-dev libsnappy-dev \
-            g++-multilib zlib1g
+            g++-multilib
       - if: startsWith(matrix.os, 'windows-latest') && startsWith(matrix.architecture, 'x86')
         name: Set up C/C++ compiler
         uses: egor-tensin/setup-mingw@v2

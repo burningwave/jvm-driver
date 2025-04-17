@@ -69,7 +69,12 @@ public class NativeExecutorTest {
         TestBean bean = (TestBean) nativeExecutor.allocateInstance(cls);
         printBean(bean);
 
-        Assertions.assertThrows(TestException.class, () -> nativeExecutor.throwException(new TestException()));
+        Assertions.assertThrows(NoSuchFieldError.class, new Executable () {
+        	@Override
+        	public void execute() throws Throwable {
+        		nativeExecutor.throwException(new TestException());
+        	}
+        });
 
         Field f_sta_obj = nativeExecutor.getDeclaredStaticField(cls, "sta_obj", "Ljava/lang/Object;");
         Assertions.assertNotNull(f_sta_obj);

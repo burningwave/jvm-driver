@@ -15,7 +15,7 @@ on:
       - "**.properties"
       - "**.xml"
 
-#Test
+
 jobs:
 
 

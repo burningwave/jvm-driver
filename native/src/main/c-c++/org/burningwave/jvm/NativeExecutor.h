@@ -40,9 +40,6 @@
 	JNIEXPORT jtype JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, getStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject); \
 	JNIEXPORT void JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, set ## typeName ## FieldValue0)(JNIEnv*, jobject, jobject, jobject, jtype); \
 	JNIEXPORT void JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, setStatic ## typeName ## FieldValue0)(JNIEnv*, jobject, jclass, jobject, jtype);
-	
-	#define org_burningwave_jvm_NativeExecutor_GENERATE_DECLARED_FIELD_FUNCTION_DECLARATION(functionName) \
-	JNIEXPORT jobject JNICALL org_burningwave_Common_FUNCTION_NAME_OF(CLASS_00001_NAME, functionName)(JNIEnv* jNIEnv, jobject nativeExecutorInstance, jclass target, jstring name, jstring signature);
 
 	#ifdef __cplusplus
 		extern "C" {
@@ -69,9 +66,6 @@
 	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Boolean, jboolean)
 	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Byte, jbyte)
 	org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(Character, jchar)
-	
-	org_burningwave_jvm_NativeExecutor_GENERATE_DECLARED_FIELD_FUNCTION_DECLARATION(getDeclaredField0)
-	org_burningwave_jvm_NativeExecutor_GENERATE_DECLARED_FIELD_FUNCTION_DECLARATION(getDeclaredStaticField0)
 
 	#ifdef __cplusplus
 		}

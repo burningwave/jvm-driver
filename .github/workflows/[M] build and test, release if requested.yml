@@ -67,7 +67,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build native library
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml
-      - if: startsWith(matrix.os, 'ubuntu-latest') && startsWith(matrix.architecture, 'x64')
+      - if: startsWith(matrix.os, 'ubuntu-22.04') && startsWith(matrix.architecture, 'x64')
         name: Build native library for platform group one
         run: |
            mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=aarch64-linux-gnu-g++ -Dextra-compilation-one-artifact-name-suffix=aarch64 -DskipTests=true --file ./native/pom.xml

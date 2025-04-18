@@ -74,7 +74,7 @@ jobs:
 #           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=arm-linux-gnueabi-g++ -Dextra-compilation-one-artifact-name-suffix=armeabi-x32 -DskipTests=true --file ./native/pom.xml
       - name: Push native library
         run: |
-          git config user.name "${GITHUB_ACTOR}"
+          git config user.name "burningwave"
           git config user.email "info@burningwave.org"
           git pull origin ${{github.ref}}
           git add .
@@ -203,7 +203,7 @@ jobs:
         run: |
           export GPG_TTY=$(tty)
           echo "${{ secrets.gpg_private_key }}" | gpg --batch --import
-          git config user.name "burningwave"
+          git config user.name "${GITHUB_ACTOR}"
           git config user.email "info@burningwave.org"
           git pull origin ${{github.ref}}
           mv ./java/pom.xml ./java/temp-pom.xml

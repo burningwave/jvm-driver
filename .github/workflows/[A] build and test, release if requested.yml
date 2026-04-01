@@ -85,7 +85,7 @@ jobs:
         architecture: [x64]
         distribution: [zulu]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
         exclude:
           - architecture: x64
             java: 10
@@ -121,7 +121,7 @@ jobs:
         architecture: [x64]
         distribution: [semeru]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [11, 16, 17, 18, 19, 20, 21, 22, 23]
+        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -154,7 +154,7 @@ jobs:
         architecture: [x64]
         distribution: [temurin]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -193,10 +193,10 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.gpg_private_key }}
+          gpg-passphrase: GPG_PASSPHRASE
       - name: Publish to the Maven central repository
         run: |
-          export GPG_TTY=$(tty)
-          echo "${{ secrets.gpg_private_key }}" | gpg --batch --import
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
@@ -205,7 +205,12 @@ jobs:
           mv ./java/temp-pom.xml ./java/sa-pom.xml
           git commit -am "Swithcing pom for releasing"
           git push        
-          mvn -B release:prepare release:perform -DskipTests=true -Dgpg.passphrase=${{ secrets.gpg_passphrase }} -Dgpg.keyname=${{ secrets.gpg_key_id }} -Drepository.url=https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git --file ./java/pom.xml
+          mvn -B release:prepare release:perform -DskipTests=true \
+            -Prelease-sign-artifacts \
+            -Dgpg.passphrase="${GPG_PASSPHRASE}" \
+            -Darguments="-Dgpg.passphrase='${GPG_PASSPHRASE}' -Dgpg.loopback=true" \
+            -Drepository.url=https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git \
+            --file ./java/pom.xml
           mv ./java/pom.xml ./java/temp-pom.xml
           mv ./java/sa-pom.xml ./java/pom.xml
           mv ./java/temp-pom.xml ./java/sa-pom.xml
@@ -216,3 +221,4 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.nexus_username }}
           MAVEN_PASSWORD: ${{ secrets.nexus_password }}
+          GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}

@@ -50,6 +50,10 @@
 		<org.codehaus.mojo.option.gcc-compiler.flags>-O3 -fPIC</org.codehaus.mojo.option.gcc-compiler.flags>
 		<org.codehaus.mojo.option.gcc-linker.flags>-fPIC -shared</org.codehaus.mojo.option.gcc-linker.flags>
 		<org.codehaus.mojo.option.gcc-linker.artifact-name>NativeExecutor</org.codehaus.mojo.option.gcc-linker.artifact-name>
+		<!-- Filename arch suffix for the produced native artifact. Defaults to x32/x64 based on
+		     sun.arch.data.model. Profiles below override this for non-x86 architectures
+		     (e.g. mac-aarch64 sets it to "aarch64"). -->
+		<linker.arch.suffix>x${sun.arch.data.model}</linker.arch.suffix>
 	</properties>
 	
 	<profiles>
@@ -63,7 +67,25 @@
 			<properties>
 				<org.codehaus.mojo.option.gcc-linker.final-name>lib${org.codehaus.mojo.option.gcc-linker.artifact-name}</org.codehaus.mojo.option.gcc-linker.final-name>
 				<packaging.type>dylib</packaging.type>
-				<org.codehaus.mojo.option.spec-include-dir-two>${java.home}/include/darwin/</org.codehaus.mojo.option.spec-include-dir-two>	
+				<org.codehaus.mojo.option.spec-include-dir-two>${java.home}/include/darwin/</org.codehaus.mojo.option.spec-include-dir-two>
+			</properties>
+		</profile>
+		<profile>
+			<!-- Apple Silicon (arm64) macOS. Activated when the build runs on a native arm64 JVM
+			     on macOS. Overrides the artifact filename suffix from "x64" to "aarch64" so
+			     the resulting binary is named libNativeExecutor-aarch64.dylib instead of
+			     libNativeExecutor-x64.dylib. The compile flags inherit from the `mac` profile;
+			     Apple clang++ targets arm64-apple-darwin natively, no extra -arch flag needed
+			     when running on a native arm64 JVM. -->
+			<id>mac-aarch64</id>
+			<activation>
+				<os>
+					<family>mac</family>
+					<arch>aarch64</arch>
+				</os>
+			</activation>
+			<properties>
+				<linker.arch.suffix>aarch64</linker.arch.suffix>
 			</properties>
 		</profile>
 		<profile>
@@ -251,7 +273,7 @@
 									</fileNames>
 								</source>
 							</sources>
-							<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-x${sun.arch.data.model}</linkerFinalName>
+							<linkerFinalName>${org.codehaus.mojo.option.gcc-linker.final-name}-${linker.arch.suffix}</linkerFinalName>
 							<linkerFinalNameExt>${packaging.type}</linkerFinalNameExt>
 						</configuration>
 					</execution>

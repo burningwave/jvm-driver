@@ -120,7 +120,7 @@
 		<connection>scm:git:${repository.url}</connection>
 		<developerConnection>scm:git:${repository.url}</developerConnection>
 		<url>https://github.com/burningwave/jvm-driver</url>
-		<tag>jvm-driver-8.20.0</tag>
+		<tag>jvm-driver-8.20.1</tag>
   	</scm>
 
 	<dependencies>

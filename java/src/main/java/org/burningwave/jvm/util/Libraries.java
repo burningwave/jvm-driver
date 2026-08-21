@@ -57,11 +57,15 @@ public class Libraries {
 		}
 		String osArch = jVMInfo.osArch != null ? jVMInfo.osArch : "generic";
 		String operatingSystemName = jVMInfo.operatingSystemName != null ? jVMInfo.operatingSystemName.toLowerCase(Locale.ENGLISH) : "generic";
+		boolean isMac = (operatingSystemName.indexOf("mac") >= 0) || (operatingSystemName.indexOf("darwin") >= 0);
 		prefix = "lib";
 		if (osArch.equals("aarch64")) {
 			conventionedSuffix = osArch;
-			extension = "so";
-		} else if ((operatingSystemName.indexOf("mac") >= 0) || (operatingSystemName.indexOf("darwin") >= 0)) {
+			// On macOS the loader still needs the platform-correct extension; previously
+			// this branch hardcoded "so" which made aarch64 macOS fail with
+			// "slice is not valid mach-o file" when dlopen tried to parse a Linux ELF.
+			extension = isMac ? "dylib" : "so";
+		} else if (isMac) {
 			extension = "dylib";
 		} else if (operatingSystemName.indexOf("win") >= 0) {
 			prefix = null;

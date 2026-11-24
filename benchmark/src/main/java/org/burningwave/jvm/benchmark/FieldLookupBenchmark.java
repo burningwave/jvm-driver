@@ -45,34 +45,35 @@ import io.github.toolfactory.narcissus.Narcissus;
 
 
 /**
- * Finds a private field of {@link Target} by name.
+ * Finds the private instance {@code String} field of {@link Target} by name.
  * <p>
- * Burningwave also needs the JNI signature of the field and finds it with {@code GetFieldID} and
- * {@code ToReflectedField}; Narcissus needs only the name and scans the fields declared by the class and by its
- * superclasses, which it reads by invoking {@code Class.getDeclaredFields0} through JNI.
+ * The names of the benchmarks follow the ones of {@link InstanceStringFieldBenchmark}. Burningwave also needs the JNI
+ * signature of the field and finds it with {@code GetFieldID} and {@code ToReflectedField}; Narcissus needs only the
+ * name and scans the fields declared by the class and by its superclasses, which it reads by invoking
+ * {@code Class.getDeclaredFields0} through JNI; the reflection reads the cached fields of the class.
  */
-@BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Mode.Throughput)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(3)
 public class FieldLookupBenchmark {
-	private static final String FIELD_NAME = "objectValue";
-	private static final String FIELD_SIGNATURE = "Ljava/lang/Object;";
+	private static final String FIELD_NAME = "stringValue";
+	private static final String FIELD_SIGNATURE = "Ljava/lang/String;";
 
 	@Benchmark
-	public void findField_burningwave(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().getDeclaredField(Target.class, FIELD_NAME, FIELD_SIGNATURE));
+	public void findField03_java_reflect_field(Blackhole blackhole) throws NoSuchFieldException {
+		blackhole.consume(Target.class.getDeclaredField(FIELD_NAME));
 	}
 
 	@Benchmark
-	public void findField_narcissus(NarcissusEngine engine, Blackhole blackhole) throws NoSuchFieldException {
+	public void findField17_narcissus(NarcissusEngine engine, Blackhole blackhole) throws NoSuchFieldException {
 		blackhole.consume(Narcissus.findField(Target.class, FIELD_NAME));
 	}
 
 	@Benchmark
-	public void findField_reflection(Blackhole blackhole) throws NoSuchFieldException {
-		blackhole.consume(Target.class.getDeclaredField(FIELD_NAME));
+	public void findField20_burningwave_native_executor(BurningwaveEngine engine, Blackhole blackhole) {
+		blackhole.consume(NativeExecutor.getInstance().getDeclaredField(Target.class, FIELD_NAME, FIELD_SIGNATURE));
 	}
 
 }

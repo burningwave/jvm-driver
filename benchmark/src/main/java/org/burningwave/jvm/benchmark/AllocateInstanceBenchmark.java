@@ -46,22 +46,29 @@ import io.github.toolfactory.narcissus.Narcissus;
 
 /**
  * Allocates instances of {@link Target} without calling its constructor.
+ * <p>
+ * The names of the benchmarks follow the ones of {@link InstanceStringFieldBenchmark}.
  */
-@BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Mode.Throughput)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(3)
 public class AllocateInstanceBenchmark {
 
 	@Benchmark
-	public void allocateInstance_burningwave(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().allocateInstance(Target.class));
+	public void allocateInstance02_java_unsafe(Blackhole blackhole) throws InstantiationException {
+		blackhole.consume(Fields.UNSAFE.allocateInstance(Target.class));
 	}
 
 	@Benchmark
-	public void allocateInstance_narcissus(NarcissusEngine engine, Blackhole blackhole) {
+	public void allocateInstance17_narcissus(NarcissusEngine engine, Blackhole blackhole) {
 		blackhole.consume(Narcissus.allocateInstance(Target.class));
+	}
+
+	@Benchmark
+	public void allocateInstance20_burningwave_native_executor(BurningwaveEngine engine, Blackhole blackhole) {
+		blackhole.consume(NativeExecutor.getInstance().allocateInstance(Target.class));
 	}
 
 }

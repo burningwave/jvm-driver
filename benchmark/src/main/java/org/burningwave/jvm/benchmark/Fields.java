@@ -33,12 +33,15 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 
+import sun.misc.Unsafe;
+
 
 /**
- * Retrieves the fields of {@link Target} with the standard reflection API only, so that loading this class never
- * loads the native library of an engine.
+ * Retrieves the fields of {@link Target}, their {@link VarHandle}s and {@link Unsafe} with the standard Java API only,
+ * so that loading this class never loads the native library of an engine.
  */
 final class Fields {
+	static final Unsafe UNSAFE = unsafe();
 
 	private Fields() {}
 
@@ -62,6 +65,16 @@ final class Fields {
 		try {
 			return MethodHandles.privateLookupIn(Target.class, MethodHandles.lookup()).unreflectVarHandle(field);
 		} catch (IllegalAccessException exc) {
+			throw new IllegalStateException(exc);
+		}
+	}
+
+	private static Unsafe unsafe() {
+		try {
+			Field field = Unsafe.class.getDeclaredField("theUnsafe");
+			field.setAccessible(true);
+			return (Unsafe)field.get(null);
+		} catch (ReflectiveOperationException exc) {
 			throw new IllegalStateException(exc);
 		}
 	}

@@ -33,17 +33,19 @@ package org.burningwave.jvm.benchmark;
  * The class whose private fields are read, written and looked up by the benchmarks, and whose instances are
  * allocated by {@link AllocateInstanceBenchmark}.
  * <p>
- * The {@code int} values stay between -128 and 127, so the methods that return or accept them boxed use the
- * {@link Integer} cache instead of allocating.
+ * The {@code String} fields correspond to the {@code name} field of the benchmark published in 2022 in
+ * <a href="https://github.com/toolfactory/narcissus/discussions/11">toolfactory/narcissus#11</a>. The {@code int}
+ * values stay between -128 and 127, so the methods that return or accept them boxed use the {@link Integer} cache
+ * instead of allocating.
  */
 public class Target {
 	static final int INITIAL_INT_VALUE = 42;
-	static final String INITIAL_OBJECT_VALUE = "initial value";
+	static final String INITIAL_STRING_VALUE = "initial value";
 
-	private static Object staticObjectValue = INITIAL_OBJECT_VALUE;
+	private static String staticStringValue = INITIAL_STRING_VALUE;
 	private static int staticIntValue = INITIAL_INT_VALUE;
 
-	private Object objectValue = INITIAL_OBJECT_VALUE;
+	private String stringValue = INITIAL_STRING_VALUE;
 	private int intValue = INITIAL_INT_VALUE;
 
 }

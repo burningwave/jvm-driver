@@ -27,8 +27,9 @@
 #	OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # Compares the JNI engine of Burningwave JVM Driver with Narcissus by running the JMH benchmark of the benchmark
-# directory. Both engines are measured in the same job, so on each platform they are compared on the same machine at
-# the same time, even if the absolute times of the shared runners vary from one run to another.
+# directory, first in throughput mode, as the benchmark published in 2022 in toolfactory/narcissus#11, and then in
+# average time mode. Both engines are measured in the same job, so on each platform they are compared on the same
+# machine at the same time, even if the absolute times of the shared runners vary from one run to another.
 #
 name: Benchmark the JNI engines
 
@@ -36,7 +37,7 @@ on:
   workflow_dispatch:
     inputs:
       benchmarks:
-        description: Regular expression of the benchmarks to run (all if empty), for example InstanceFieldBenchmark.getInt
+        description: Regular expression of the benchmarks to run (all if empty), for example InstanceStringFieldBenchmark.get
         required: false
         default: ''
   pull_request:
@@ -60,7 +61,8 @@ jobs:
     # The Apple Silicon runners have little capacity and may stay queued for a long time: a failure of that job
     # does not fail the run
     continue-on-error: ${{ matrix.experimental }}
-    timeout-minutes: 120
+    # About 90 benchmarks in two modes, 3 forks of 10 seconds each: about 100 minutes
+    timeout-minutes: 240
     strategy:
       fail-fast: false
       matrix:
@@ -163,7 +165,9 @@ jobs:
           # Without arguments JMH runs all the benchmarks
           set -- ${BENCHMARKS:+"$BENCHMARKS"}
           java -jar benchmark/target/benchmarks.jar -l "$@" > "$RESULTS_DIRECTORY/benchmark-list.txt"
-          java -jar benchmark/target/benchmarks.jar -rf json -rff "$RESULTS_DIRECTORY/jmh-result.json" "$@" 2>&1 | tee "$RESULTS_DIRECTORY/jmh-output.txt"
+          # Throughput in ops/ms, as in the benchmark published in 2022, then average time in ns/op
+          java -jar benchmark/target/benchmarks.jar -bm thrpt -tu ms -rf json -rff "$RESULTS_DIRECTORY/jmh-result-thrpt.json" "$@" 2>&1 | tee "$RESULTS_DIRECTORY/jmh-output-thrpt.txt"
+          java -jar benchmark/target/benchmarks.jar -bm avgt -tu ns -rf json -rff "$RESULTS_DIRECTORY/jmh-result-avgt.json" "$@" 2>&1 | tee "$RESULTS_DIRECTORY/jmh-output-avgt.txt"
       # Fails if a benchmark has no result: JMH reports the error and goes on with the next benchmark
       - name: Write the summary
         if: ${{ !cancelled() && steps.run.outcome != 'skipped' }}

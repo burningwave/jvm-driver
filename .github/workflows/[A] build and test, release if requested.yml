@@ -42,11 +42,6 @@ jobs:
         exclude:
           - os: macos-26-intel
             architecture: x86
-        include:
-          - os: macos-latest
-            java: 19
-            distribution: zulu
-            architecture: aarch64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Set up JDK ${{ matrix.java }}
@@ -80,6 +75,9 @@ jobs:
         run: |
            mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=aarch64-linux-gnu-g++ -Dextra-compilation-one-artifact-name-suffix=aarch64 -DskipTests=true --file ./native/pom.xml
 #           mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=arm-linux-gnueabi-g++ -Dextra-compilation-one-artifact-name-suffix=armeabi-x32 -DskipTests=true --file ./native/pom.xml
+      - if: startsWith(matrix.os, 'macos') && startsWith(matrix.architecture, 'x64')
+        name: Build native library for macOS aarch64
+        run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=gcc -Dextra-compilation-one-artifact-name-suffix=aarch64 "-Dorg.codehaus.mojo.option.gcc-compiler.flags=-O3 -fPIC -arch arm64" "-Dorg.codehaus.mojo.option.gcc-linker.flags=-fPIC -shared -arch arm64" -DskipTests=true --file ./native/pom.xml
       - name: Collect the native libraries built by this job
         shell: bash
         run: |

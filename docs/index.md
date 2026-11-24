@@ -54,9 +54,8 @@ There are four kinds of driver:
 
 All JNI methods used by the dynamic, hybrid and native driver are supplied by a **custom and highly optimized JNI engine written in C++** that works on the following system configurations:
 * Windows x86/x64
-* Linux x86/x64
-* MacOs x64
-* aarch64 (**needs testing**)
+* Linux x86/x64/aarch64
+* macOS x64/aarch64 (Apple Silicon)
 
 <br/>
 
@@ -165,7 +164,7 @@ public <T> T throwException(Throwable exception);
 <br />
 
 ## Contributing
-The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is currently compiled for Linux x86/x64, Windows x86/x64, and Mac OS X x64: **feel free to contribute native code builds for other platforms or architectures**. Once the native code is compiled you need to add a few lines of code in the [native library loader](https://github.com/burningwave/jvm-driver/blob/main/java/src/main/java/org/burningwave/jvm/util/Libraries.java).
+The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is currently compiled for Linux x86/x64/aarch64, Windows x86/x64 and macOS x64/aarch64: **feel free to contribute native code builds for other platforms or architectures**. Once compiled, the library must be added to the [native/bin](https://github.com/burningwave/jvm-driver/tree/main/native/bin) folder with the name expected by the [native library loader](https://github.com/burningwave/jvm-driver/blob/main/java/src/main/java/org/burningwave/jvm/util/Libraries.java).
 
 <br />
 

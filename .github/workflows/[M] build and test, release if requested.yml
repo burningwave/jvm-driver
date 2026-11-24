@@ -137,7 +137,7 @@ jobs:
       matrix:
         architecture: [x64]
         distribution: [semeru]
-        os: [ubuntu-latest, macos-26-intel, windows-latest]
+        os: [ubuntu-24.04, macos-26-intel, windows-latest]
         java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
     runs-on: ${{ matrix.os }}
     steps:

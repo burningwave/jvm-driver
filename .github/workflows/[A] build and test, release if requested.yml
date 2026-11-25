@@ -78,6 +78,26 @@ jobs:
       - if: startsWith(matrix.os, 'macos') && startsWith(matrix.architecture, 'x64')
         name: Build native library for macOS aarch64
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -Pextra-compilation-one -Dextra-compilation-one-executable=gcc -Dextra-compilation-one-artifact-name-suffix=aarch64 "-Dorg.codehaus.mojo.option.gcc-compiler.flags=-O3 -fPIC -arch arm64" "-Dorg.codehaus.mojo.option.gcc-linker.flags=-fPIC -shared -arch arm64" -DskipTests=true --file ./native/pom.xml
+      - if: startsWith(matrix.os, 'ubuntu')
+        name: Check that the Linux libraries do not require the C++ runtime
+        shell: bash
+        run: |
+          # libstdc++ and libgcc are linked statically, so the libraries built by this job must not require them
+          libraries=$(find native/bin -name 'lib*.so' -newer native/pom.xml)
+          if [ -z "$libraries" ]; then
+            echo "::error::This job has not built any Linux library"
+            exit 1
+          fi
+          status=0
+          for library in $libraries; do
+            echo "Shared libraries required by $library:"
+            readelf -d "$library" | grep NEEDED || true
+            if readelf -d "$library" | grep NEEDED | grep -E -q 'libstdc\+\+|libgcc_s'; then
+              echo "::error::$library requires the C++ runtime"
+              status=1
+            fi
+          done
+          exit $status
       - name: Collect the native libraries built by this job
         shell: bash
         run: |
@@ -128,12 +148,18 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
+      - name: Use the native libraries built in this run
+        uses: actions/download-artifact@v4
+        with:
+          pattern: native-libraries-*
+          path: native/bin
+          merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
  
   build-and-test-with-semeru-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
@@ -161,12 +187,18 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}  
+      - name: Use the native libraries built in this run
+        uses: actions/download-artifact@v4
+        with:
+          pattern: native-libraries-*
+          path: native/bin
+          merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
   
   build-and-test-with-temurin-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
@@ -194,12 +226,18 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
+      - name: Use the native libraries built in this run
+        uses: actions/download-artifact@v4
+        with:
+          pattern: native-libraries-*
+          path: native/bin
+          merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
 
 
   build-and-test-on-linux-arm:
@@ -239,10 +277,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
 
 # The release does not wait for these tests: the GitHub hosted Apple Silicon runners have limited capacity
   build-and-test-on-macos-arm:
@@ -279,10 +317,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false --file ./java/pom.xml
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
 
 
 #To ensure compatibility with the Java 7 version the build must never be run with a JDK version higher than 19
@@ -291,6 +329,10 @@ jobs:
     name: Release if requested
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')
+    env:
+      MAVEN_USERNAME: ${{ secrets.nexus_username }}
+      MAVEN_PASSWORD: ${{ secrets.nexus_password }}
+      GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 19
@@ -304,16 +346,34 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.gpg_private_key }}
           gpg-passphrase: GPG_PASSPHRASE
-      - name: Publish to the Maven central repository
+      - name: Update repository
         run: |
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
+# jni-executor is released first, because Burningwave JVM Driver depends on it. Its POM has no parent, so the release
+# uses it as it is
+      - name: Publish jni-executor to the Maven central repository
+        run: |
+          mvn -B release:prepare release:perform -DskipTests=true \
+            -Prelease-sign-artifacts \
+            -Dgpg.passphrase="${GPG_PASSPHRASE}" \
+            -Darguments="-Dgpg.passphrase='${GPG_PASSPHRASE}' -Dgpg.loopback=true" \
+            -Drepository.url=https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git \
+            --file ./jni-executor/pom.xml
+# The java module is released with its standalone POM, swapped with the other one, and with the version of jni-executor
+# just released. Then it depends again on the snapshot of jni-executor
+      - name: Publish Burningwave JVM Driver to the Maven central repository
+        run: |
+          jniExecutorVersion=$(git describe --tags --abbrev=0 --match 'jni-executor-*')
+          jniExecutorVersion=${jniExecutorVersion#jni-executor-}
+          echo "Burningwave JVM Driver will depend on jni-executor ${jniExecutorVersion}"
+          sed -r -i "s%<jni-executor.version>.*</jni-executor.version>%<jni-executor.version>${jniExecutorVersion}</jni-executor.version>%" ./java/pom.xml ./java/sa-pom.xml
           mv ./java/pom.xml ./java/temp-pom.xml
           mv ./java/sa-pom.xml ./java/pom.xml
           mv ./java/temp-pom.xml ./java/sa-pom.xml
-          git commit -am "Swithcing pom for releasing"
-          git push        
+          git commit -am "Switching pom for releasing"
+          git push
           mvn -B release:prepare release:perform -DskipTests=true \
             -Prelease-sign-artifacts \
             -Dgpg.passphrase="${GPG_PASSPHRASE}" \
@@ -325,9 +385,36 @@ jobs:
           mv ./java/temp-pom.xml ./java/sa-pom.xml
           newVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./java/sa-pom.xml)
           sed -r -i "s%<version>[[:space:]]*(.*-SNAPSHOT)</version>%<version>${newVersion}</version>%" ./java/pom.xml
+          jniExecutorSnapshotVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./jni-executor/pom.xml | head -n 1)
+          sed -r -i "s%<jni-executor.version>.*</jni-executor.version>%<jni-executor.version>${jniExecutorSnapshotVersion}</jni-executor.version>%" ./java/pom.xml ./java/sa-pom.xml
           git commit -am "Prepare for next development iteration"
-          git push    
-        env:
-          MAVEN_USERNAME: ${{ secrets.nexus_username }}
-          MAVEN_PASSWORD: ${{ secrets.nexus_password }}
-          GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}
+          git push
+# If the release fails, or it is cancelled, after swapping the POMs of the java module, the branch keeps them swapped:
+# this step swaps them back and makes the java module depend again on the snapshot of jni-executor
+      - name: Restore the POMs if the release has failed
+        if: failure() || cancelled()
+        run: |
+          git config user.name "${{ github.event.head_commit.committer.name }}"
+          git config user.email "${{ github.event.head_commit.committer.email }}"
+          git fetch origin ${{github.ref}}
+          git reset --hard FETCH_HEAD
+          if grep -q "<artifactId>jvm-driver-parent</artifactId>" ./java/sa-pom.xml; then
+            echo "The POMs of the java module are swapped: swapping them back"
+            mv ./java/pom.xml ./java/temp-pom.xml
+            mv ./java/sa-pom.xml ./java/pom.xml
+            mv ./java/temp-pom.xml ./java/sa-pom.xml
+            newVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./java/sa-pom.xml | head -n 1)
+            if [ -n "$newVersion" ]; then
+              sed -r -i "s%<version>[[:space:]]*(.*-SNAPSHOT)</version>%<version>${newVersion}</version>%" ./java/pom.xml
+            fi
+          fi
+          jniExecutorSnapshotVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./jni-executor/pom.xml | head -n 1)
+          if [ -n "$jniExecutorSnapshotVersion" ]; then
+            sed -r -i "s%<jni-executor.version>.*</jni-executor.version>%<jni-executor.version>${jniExecutorSnapshotVersion}</jni-executor.version>%" ./java/pom.xml ./java/sa-pom.xml
+          fi
+          if git diff --quiet; then
+            echo "The POMs do not need to be restored"
+          else
+            git commit -am "Restore the POMs after the failed release"
+            git push origin HEAD:${{github.ref}}
+          fi

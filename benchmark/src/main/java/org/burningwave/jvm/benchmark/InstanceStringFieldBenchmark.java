@@ -33,7 +33,7 @@ import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import org.burningwave.jvm.NativeExecutor;
+import org.burningwave.jni.Executor;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -65,12 +65,12 @@ import io.github.toolfactory.narcissus.Narcissus;
  * <li>{@code 16_jvm_driver_native_burningwave} and {@code 16_jvm_driver_native_narcissus}: the native
  * drivers of Burningwave JVM Driver and of ToolFactory JVM Driver, see {@link Drivers};</li>
  * <li>{@code 17_narcissus}: Narcissus;</li>
- * <li>{@code 20_burningwave_native_executor}: {@link NativeExecutor}, the JNI engine of Burningwave JVM
+ * <li>{@code 20_burningwave_native_executor}: {@link Executor}, the JNI engine of Burningwave JVM
  * Driver.</li>
  * </ul>
  * JMH runs the benchmarks in alphabetical order, so the approaches are measured in this order. The methods
  * with the {@code _typed} suffix are the ones dedicated to the type of the field ({@code getObjectField} of
- * Narcissus, {@code getObjectFieldValue} of {@link NativeExecutor}); the others accept fields of any type.
+ * Narcissus, {@code getObjectFieldValue} of {@link Executor}); the others accept fields of any type.
  */
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -135,12 +135,12 @@ public class InstanceStringFieldBenchmark {
 
 	@Benchmark
 	public void get20_burningwave_native_executor(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().getFieldValue(target, FIELD));
+		blackhole.consume(Executor.getInstance().getFieldValue(target, FIELD));
 	}
 
 	@Benchmark
 	public void get20_burningwave_native_executor_typed(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().getObjectFieldValue(target, FIELD));
+		blackhole.consume(Executor.getInstance().getObjectFieldValue(target, FIELD));
 	}
 
 	@Benchmark
@@ -185,12 +185,12 @@ public class InstanceStringFieldBenchmark {
 
 	@Benchmark
 	public void set20_burningwave_native_executor(BurningwaveEngine engine) {
-		NativeExecutor.getInstance().setFieldValue(target, FIELD, value);
+		Executor.getInstance().setFieldValue(target, FIELD, value);
 	}
 
 	@Benchmark
 	public void set20_burningwave_native_executor_typed(BurningwaveEngine engine) {
-		NativeExecutor.getInstance().setObjectFieldValue(target, FIELD, value);
+		Executor.getInstance().setObjectFieldValue(target, FIELD, value);
 	}
 
 }

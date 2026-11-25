@@ -31,7 +31,7 @@ package org.burningwave.jvm.benchmark;
 
 import java.util.concurrent.TimeUnit;
 
-import org.burningwave.jvm.NativeExecutor;
+import org.burningwave.jni.Executor;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -68,7 +68,7 @@ public class AllocateInstanceBenchmark {
 
 	@Benchmark
 	public void allocateInstance20_burningwave_native_executor(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().allocateInstance(Target.class));
+		blackhole.consume(Executor.getInstance().allocateInstance(Target.class));
 	}
 
 }

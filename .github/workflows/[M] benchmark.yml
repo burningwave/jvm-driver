@@ -122,12 +122,22 @@ jobs:
             fi
           fi
           mvn -B -v
-      # The benchmark uses the NativeExecutor class and the native libraries of this commit. The java module is
-      # installed with its standalone POM, the one used by the release: the other POM refers to a parent whose version
-      # is ${revision}, which Maven cannot resolve outside of the reactor. The standalone POM is java/sa-pom.xml, but
-      # the release swaps it with java/pom.xml while it runs, so the step looks for the POM without that parent.
-      - name: Build and install the java module
+      # The benchmark measures the Java and C++ code of this commit, so the native library of this platform is built
+      # from the sources of the commit: the libraries in native/bin are updated only when a release is requested
+      - name: Build the native library
         run: |
+          if [ "$RUNNER_OS" = "Linux" ] && ! command -v g++ > /dev/null; then
+            sudo apt-get update
+            sudo apt-get -y install g++
+          fi
+          mvn -B -ntp compile --file native/pom.xml
+      # The POM of the jni-executor module has no parent, so it is installed as it is. The java module is installed
+      # with its standalone POM, the one used by the release: the other POM refers to a parent whose version is
+      # ${revision}, which Maven cannot resolve outside of the reactor. The standalone POM is java/sa-pom.xml, but the
+      # release swaps it with java/pom.xml while it runs, so the step looks for the POM without that parent.
+      - name: Build and install the jni-executor and java modules
+        run: |
+          mvn -B -ntp install -Dproject_jdk_version=8 -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true --file jni-executor/pom.xml
           if grep -q "jvm-driver-parent" java/sa-pom.xml; then JAVA_POM=java/pom.xml; else JAVA_POM=java/sa-pom.xml; fi
           echo "Standalone POM of the java module: $JAVA_POM"
           echo "JAVA_POM=$JAVA_POM" >> "$GITHUB_ENV"

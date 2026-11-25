@@ -33,7 +33,7 @@ import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import org.burningwave.jvm.NativeExecutor;
+import org.burningwave.jni.Executor;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -118,12 +118,12 @@ public class StaticStringFieldBenchmark {
 
 	@Benchmark
 	public void get20_burningwave_native_executor(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().getFieldValue(null, FIELD));
+		blackhole.consume(Executor.getInstance().getFieldValue(null, FIELD));
 	}
 
 	@Benchmark
 	public void get20_burningwave_native_executor_typed(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().getStaticObjectFieldValue(FIELD));
+		blackhole.consume(Executor.getInstance().getStaticObjectFieldValue(FIELD));
 	}
 
 	@Benchmark
@@ -168,12 +168,12 @@ public class StaticStringFieldBenchmark {
 
 	@Benchmark
 	public void set20_burningwave_native_executor(BurningwaveEngine engine) {
-		NativeExecutor.getInstance().setFieldValue(null, FIELD, value);
+		Executor.getInstance().setFieldValue(null, FIELD, value);
 	}
 
 	@Benchmark
 	public void set20_burningwave_native_executor_typed(BurningwaveEngine engine) {
-		NativeExecutor.getInstance().setStaticObjectFieldValue(FIELD, value);
+		Executor.getInstance().setStaticObjectFieldValue(FIELD, value);
 	}
 
 }

@@ -27,24 +27,27 @@
 	OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 <!--
-	JMH benchmark that compares the JNI engine of Burningwave JVM Driver (org.burningwave.jvm.NativeExecutor) with
-	Narcissus (io.github.toolfactory.narcissus.Narcissus), directly and through the native drivers of Burningwave JVM
-	Driver and ToolFactory JVM Driver, using sun.misc.Unsafe, standard reflection, VarHandle and the default driver of
-	ToolFactory JVM Driver as reference. The names of the benchmarks follow the ones of the benchmark published in 2022
-	in https://github.com/toolfactory/narcissus/discussions/11.
+	JMH benchmark that compares the JNI engine of Burningwave JVM Driver (org.burningwave.jni.Executor, in the
+	jni-executor artifact) with Narcissus (io.github.toolfactory.narcissus.Narcissus), directly and through the native
+	drivers of Burningwave JVM Driver and ToolFactory JVM Driver, using sun.misc.Unsafe, standard reflection, VarHandle
+	and the default driver of ToolFactory JVM Driver as reference. The names of the benchmarks follow the ones of the
+	benchmark published in 2022 in https://github.com/toolfactory/narcissus/discussions/11.
 
 	This project is not a module of the parent project: it is never built by the release and it is not part of the
 	jvm-driver jar. By default it depends on the release of Burningwave JVM Driver set in the
-	burningwave-jvm-driver.version property, which Maven downloads from Maven Central:
+	burningwave-jvm-driver.version property, which Maven downloads from Maven Central with the jni-executor artifact:
 
 		mvn package -f benchmark/pom.xml
 		java -jar benchmark/target/benchmarks.jar
 
-	To measure the code of this repository, install the java module with its standalone POM and pass its version
-	with -Dburningwave-jvm-driver.version=<version>, as the '[M] benchmark' workflow does. The standalone POM is
-	java/sa-pom.xml, the one used by the release: java/pom.xml inherits its version from a parent whose version is
-	${revision}, so the POM that it installs cannot be read by other projects.
+	To measure the code of this repository, build the native library of your platform, install the jni-executor and
+	java modules and pass the version of the java module with -Dburningwave-jvm-driver.version=<version>, as the
+	'[M] benchmark' workflow does. The java module is installed with its standalone POM, java/sa-pom.xml, the one used
+	by the release: java/pom.xml inherits its version from a parent whose version is ${revision}, so the POM that it
+	installs cannot be read by other projects.
 
+		mvn compile -f native/pom.xml
+		mvn install -Dproject_jdk_version=8 -DskipTests=true -f jni-executor/pom.xml
 		mvn install -Dproject_jdk_version=8 -DskipTests=true -f java/sa-pom.xml
 		mvn package -f benchmark/pom.xml -Dburningwave-jvm-driver.version=<version>
 		java -jar benchmark/target/benchmarks.jar
@@ -78,9 +81,9 @@
 		<maven.compiler.release>11</maven.compiler.release>
 		<maven.deploy.skip>true</maven.deploy.skip>
 
-		<!-- A release published on Maven Central: the '[M] benchmark' workflow passes the version of the java module of
-		the commit -->
-		<burningwave-jvm-driver.version>8.21.0</burningwave-jvm-driver.version>
+		<!-- A release published on Maven Central, the first one with the jni-executor artifact: the '[M] benchmark'
+		workflow passes the version of the java module of the commit -->
+		<burningwave-jvm-driver.version>8.22.0</burningwave-jvm-driver.version>
 		<narcissus.version>1.0.14</narcissus.version>
 		<jmh.version>1.37</jmh.version>
 

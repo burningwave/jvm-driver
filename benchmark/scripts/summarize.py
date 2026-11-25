@@ -79,8 +79,8 @@ APPROACHES = (
     ("16_jvm_driver_native_narcissus", "ToolFactory `NativeDriver` with Narcissus"),
     ("17_narcissus", "Narcissus"),
     ("17_narcissus_typed", "Narcissus, typed methods"),
-    ("20_burningwave_native_executor", "Burningwave `NativeExecutor`"),
-    ("20_burningwave_native_executor_typed", "Burningwave `NativeExecutor`, typed methods"),
+    ("20_burningwave_native_executor", "Burningwave `Executor`"),
+    ("20_burningwave_native_executor_typed", "Burningwave `Executor`, typed methods"),
 )
 
 # The methods called by each approach, by operation
@@ -432,7 +432,7 @@ def methods_table():
 
 RATIOS_NOTE = (
     "Throughput of Burningwave divided by the one of Narcissus: above 1 Burningwave is faster. Engines: "
-    "`NativeExecutor` against `Narcissus` with the methods that accept fields of any type, as in the [benchmark "
+    "`Executor` against `Narcissus` with the methods that accept fields of any type, as in the [benchmark "
     "published in 2022](" + DISCUSSION_2022 + "), whose ratios are in the 2022 column; typed methods: the methods "
     "dedicated to the type of the field; native drivers: `Driver.getFieldValue` and `Driver.setFieldValue` of the "
     "native drivers of Burningwave JVM Driver and ToolFactory JVM Driver. `" + NOT_SIGNIFICANT + "` marks the "

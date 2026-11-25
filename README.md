@@ -39,6 +39,9 @@ To use Burningwave JMV Driver as a Java module, add the following to your `modul
 requires jdk.unsupported;
 
 requires org.burningwave.jvm;
+
+//Only if you use the JNI engine directly, through the org.burningwave.jni.Executor class
+requires org.burningwave.jni;
 ```
 
 <br/>
@@ -52,7 +55,7 @@ There are four kinds of driver:
 * the **hybrid driver** that extends the default driver and uses some JNI functions only when run on JVM 17 and later
 * the **native driver** that extends the hybrid driver and uses JNI functions more consistently regardless of the Java version it is running on
 
-All JNI methods used by the dynamic, hybrid and native driver are supplied by a **custom and highly optimized JNI engine written in C++** that works on the following system configurations:
+All JNI methods used by the dynamic, hybrid and native driver are supplied by a **custom and highly optimized JNI engine written in C++**, released as the separate [**JNI Executor**](#JNI-Executor) artifact, that works on the following system configurations:
 * Windows x86/x64
 * Linux x86/x64/aarch64
 * macOS x64/aarch64 (Apple Silicon)
@@ -157,14 +160,48 @@ public <T> T throwException(Throwable exception);
 
 <br/>
 
+## <a name="JNI-Executor"></a>JNI Executor
+
+The JNI engine of the dynamic, hybrid and native drivers is the `org.burningwave.jni.Executor` class of the **JNI Executor** artifact, which Burningwave JVM Driver includes as a dependency. JNI Executor has no dependencies and contains the native libraries of all the platforms listed above: it can also be used on its own to find fields, read and write their values, allocate instances without calling their constructors and throw exceptions, regardless of access modifiers and module encapsulation. To use it on its own, add it with **Apache Maven**:
+```xml
+<dependency>
+    <groupId>org.burningwave</groupId>
+    <artifactId>jni-executor</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+To use JNI Executor as a Java module, add the following to your `module-info.java`:
+```java
+requires org.burningwave.jni;
+```
+For example:
+```java
+org.burningwave.jni.Executor executor = org.burningwave.jni.Executor.getInstance();
+//The last parameter is the JNI signature of the type of the field
+java.lang.reflect.Field field = executor.getDeclaredField(Person.class, "name", "Ljava/lang/String;");
+Person person = (Person)executor.allocateInstance(Person.class);
+executor.setFieldValue(person, field, "Alice");
+String name = (String)executor.getFieldValue(person, field);
+```
+The `org.burningwave.jvm.NativeExecutor` class, which contained the JNI engine up to version 8.21.0 of Burningwave JVM Driver, is deprecated: it passes all the calls to `org.burningwave.jni.Executor` and it will be removed in version 9.0.0.
+
+<br/>
+
 ## Compilation requirements
 
-**A JDK version 9 or higher and a GCC compiler are required to compile the project**. On Windows you can find compiler and GDB debugger from [**MinGW-W64 project**](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/).
+**A JDK version 9 or higher and a GCC compiler are required to compile the project** (on Linux also g++, which links the native libraries). On Windows you can find compiler and GDB debugger from [**MinGW-W64 project**](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/).
+
+The modules are built in this order:
+1. **native** compiles the C++ sources of the JNI engine into the [native/bin](https://github.com/burningwave/jvm-driver/tree/main/native/bin) folder
+2. **jni-executor** builds the JNI Executor artifact, which contains the native libraries of the native/bin folder
+3. **java** builds Burningwave JVM Driver, which depends on JNI Executor
+
+Running `mvn package` in the root folder builds the three modules in this order. To build only the Java modules with the native libraries already in the native/bin folder, run `mvn package -pl jni-executor,java`. The tests run only with `-DskipTests=false`.
 
 <br />
 
 ## Contributing
-The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is currently compiled for Linux x86/x64/aarch64, Windows x86/x64 and macOS x64/aarch64: **feel free to contribute native code builds for other platforms or architectures**. Once compiled, the library must be added to the [native/bin](https://github.com/burningwave/jvm-driver/tree/main/native/bin) folder with the name expected by the [native library loader](https://github.com/burningwave/jvm-driver/blob/main/java/src/main/java/org/burningwave/jvm/util/Libraries.java).
+The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is currently compiled for Linux x86/x64/aarch64, Windows x86/x64 and macOS x64/aarch64: **feel free to contribute native code builds for other platforms or architectures**. Once compiled, the library must be added to the [native/bin](https://github.com/burningwave/jvm-driver/tree/main/native/bin) folder with the name expected by the [native library loader](https://github.com/burningwave/jvm-driver/blob/main/jni-executor/src/main/java/org/burningwave/jni/Libraries.java).
 
 <br />
 

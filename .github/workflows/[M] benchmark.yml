@@ -1,0 +1,189 @@
+#
+#	This file is part of Burningwave JVM driver.
+#
+#	Author: Roberto Gentili
+#
+#	Hosted at: https://github.com/burningwave/jvm-driver
+#
+#	- -
+#
+#	The MIT License (MIT)
+#
+#	Copyright (c) 2026 Roberto Gentili
+#
+#	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+#	documentation files (the "Software"), to deal in the Software without restriction, including without
+#	limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+#	the Software, and to permit persons to whom the Software is furnished to do so, subject to the following
+#	conditions:
+#
+#	The above copyright notice and this permission notice shall be included in all copies or substantial
+#	portions of the Software.
+#
+#	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+#	LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+#	EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+#	AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+#	OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# Compares the JNI engine of Burningwave JVM Driver with Narcissus by running the JMH benchmark of the benchmark
+# directory, first in throughput mode, as the benchmark published in 2022 in toolfactory/narcissus#11, and then in
+# average time mode. Both engines are measured in the same job, so on each platform they are compared on the same
+# machine at the same time, even if the absolute times of the shared runners vary from one run to another.
+#
+name: Benchmark the JNI engines
+
+on:
+  workflow_dispatch:
+    inputs:
+      benchmarks:
+        description: Regular expression of the benchmarks to run (all if empty), for example InstanceStringFieldBenchmark.get
+        required: false
+        default: ''
+  pull_request:
+    paths:
+      - "benchmark/**"
+      - ".github/workflows/*benchmark.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  # A new commit on a pull request cancels the benchmark of the previous one
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  benchmark:
+    name: ${{ matrix.platform }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # The Apple Silicon runners have little capacity and may stay queued for a long time: a failure of that job
+    # does not fail the run
+    continue-on-error: ${{ matrix.experimental }}
+    # About 90 benchmarks in two modes, 3 forks of 10 seconds each: about 100 minutes
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            id: linux-x64
+            platform: Linux x64
+            architecture: x64
+            experimental: false
+          - os: windows-latest
+            id: windows-x64
+            platform: Windows x64
+            architecture: x64
+            experimental: false
+          - os: macos-26-intel
+            id: macos-x64
+            platform: macOS x64
+            architecture: x64
+            experimental: false
+          - os: ubuntu-24.04-arm
+            id: linux-aarch64
+            platform: Linux aarch64
+            architecture: aarch64
+            experimental: false
+          - os: macos-latest
+            id: macos-aarch64
+            platform: macOS aarch64
+            architecture: aarch64
+            experimental: true
+    env:
+      JAVA_DISTRIBUTION: zulu
+      JAVA_VERSION: 21
+      RESULTS_DIRECTORY: benchmark/target/results/${{ matrix.id }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          architecture: ${{ matrix.architecture }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Set up Maven
+        run: |
+          if ! command -v mvn > /dev/null; then
+            if [ "$RUNNER_OS" = "Linux" ]; then
+              sudo apt-get update
+              sudo apt-get -y install maven
+            else
+              brew install maven
+            fi
+          fi
+          mvn -B -v
+      # The benchmark uses the NativeExecutor class and the native libraries of this commit. The java module is
+      # installed with its standalone POM, the one used by the release: the other POM refers to a parent whose version
+      # is ${revision}, which Maven cannot resolve outside of the reactor. The standalone POM is java/sa-pom.xml, but
+      # the release swaps it with java/pom.xml while it runs, so the step looks for the POM without that parent.
+      - name: Build and install the java module
+        run: |
+          if grep -q "jvm-driver-parent" java/sa-pom.xml; then JAVA_POM=java/pom.xml; else JAVA_POM=java/sa-pom.xml; fi
+          echo "Standalone POM of the java module: $JAVA_POM"
+          echo "JAVA_POM=$JAVA_POM" >> "$GITHUB_ENV"
+          mvn -B -ntp install -Dproject_jdk_version=8 -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true --file "$JAVA_POM"
+      - name: Build the benchmark
+        run: |
+          evaluate() {
+            mvn -B -q -ntp org.apache.maven.plugins:maven-help-plugin:3.5.1:evaluate -DforceStdout "-Dexpression=$1" --file "$2"
+          }
+          BURNINGWAVE_JVM_DRIVER_VERSION=$(evaluate project.version "$JAVA_POM")
+          NARCISSUS_VERSION=$(evaluate narcissus.version ./benchmark/pom.xml)
+          echo "Burningwave JVM Driver $BURNINGWAVE_JVM_DRIVER_VERSION, Narcissus $NARCISSUS_VERSION"
+          echo "BURNINGWAVE_JVM_DRIVER_VERSION=$BURNINGWAVE_JVM_DRIVER_VERSION" >> "$GITHUB_ENV"
+          echo "NARCISSUS_VERSION=$NARCISSUS_VERSION" >> "$GITHUB_ENV"
+          mvn -B -ntp package "-Dburningwave-jvm-driver.version=$BURNINGWAVE_JVM_DRIVER_VERSION" --file ./benchmark/pom.xml
+      - name: Run the benchmark
+        id: run
+        env:
+          BENCHMARKS: ${{ inputs.benchmarks }}
+          COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RESULTS_DIRECTORY"
+          cat > "$RESULTS_DIRECTORY/environment.json" << EOF
+          {
+            "platform": "${{ matrix.platform }}",
+            "runner": "${{ matrix.os }}",
+            "os": "$RUNNER_OS",
+            "arch": "$RUNNER_ARCH",
+            "javaDistribution": "$JAVA_DISTRIBUTION",
+            "burningwaveJvmDriverVersion": "$BURNINGWAVE_JVM_DRIVER_VERSION",
+            "narcissusVersion": "$NARCISSUS_VERSION",
+            "commit": "$COMMIT",
+            "runUrl": "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT"
+          }
+          EOF
+          java -version
+          # Without arguments JMH runs all the benchmarks
+          set -- ${BENCHMARKS:+"$BENCHMARKS"}
+          java -jar benchmark/target/benchmarks.jar -l "$@" > "$RESULTS_DIRECTORY/benchmark-list.txt"
+          # Throughput in ops/ms, as in the benchmark published in 2022, then average time in ns/op
+          java -jar benchmark/target/benchmarks.jar -bm thrpt -tu ms -rf json -rff "$RESULTS_DIRECTORY/jmh-result-thrpt.json" "$@" 2>&1 | tee "$RESULTS_DIRECTORY/jmh-output-thrpt.txt"
+          java -jar benchmark/target/benchmarks.jar -bm avgt -tu ns -rf json -rff "$RESULTS_DIRECTORY/jmh-result-avgt.json" "$@" 2>&1 | tee "$RESULTS_DIRECTORY/jmh-output-avgt.txt"
+      # Fails if a benchmark has no result: JMH reports the error and goes on with the next benchmark
+      - name: Write the summary
+        if: ${{ !cancelled() && steps.run.outcome != 'skipped' }}
+        run: |
+          status=0
+          python benchmark/scripts/summarize.py --check --methods --output "$RESULTS_DIRECTORY/summary.md" "$RESULTS_DIRECTORY" || status=$?
+          if [ -f "$RESULTS_DIRECTORY/summary.md" ]; then
+            cat "$RESULTS_DIRECTORY/summary.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit $status
+      - name: Upload the results
+        if: ${{ !cancelled() && steps.run.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ matrix.id }}
+          path: ${{ env.RESULTS_DIRECTORY }}
+          if-no-files-found: error

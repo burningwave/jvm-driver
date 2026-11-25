@@ -1,0 +1,178 @@
+<!--
+	This file is part of Burningwave JVM driver.
+
+	Author: Roberto Gentili
+
+	Hosted at: https://github.com/burningwave/jvm-driver
+
+	- -
+
+	The MIT License (MIT)
+
+	Copyright (c) 2026 Roberto Gentili
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+	documentation files (the "Software"), to deal in the Software without restriction, including without
+	limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so, subject to the following
+	conditions:
+
+	The above copyright notice and this permission notice shall be included in all copies or substantial
+	portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+	LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+	EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+	AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+	OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<!--
+	JMH benchmark that compares the JNI engine of Burningwave JVM Driver (org.burningwave.jvm.NativeExecutor) with
+	Narcissus (io.github.toolfactory.narcissus.Narcissus), directly and through the native drivers of Burningwave JVM
+	Driver and ToolFactory JVM Driver, using sun.misc.Unsafe, standard reflection, VarHandle and the default driver of
+	ToolFactory JVM Driver as reference. The names of the benchmarks follow the ones of the benchmark published in 2022
+	in https://github.com/toolfactory/narcissus/discussions/11.
+
+	This project is not a module of the parent project: it is never built by the release and it is not part of the
+	jvm-driver jar. By default it depends on the release of Burningwave JVM Driver set in the
+	burningwave-jvm-driver.version property, which Maven downloads from Maven Central:
+
+		mvn package -f benchmark/pom.xml
+		java -jar benchmark/target/benchmarks.jar
+
+	To measure the code of this repository, install the java module with its standalone POM and pass its version
+	with -Dburningwave-jvm-driver.version=<version>, as the '[M] benchmark' workflow does. The standalone POM is
+	java/sa-pom.xml, the one used by the release: java/pom.xml inherits its version from a parent whose version is
+	${revision}, so the POM that it installs cannot be read by other projects.
+
+		mvn install -Dproject_jdk_version=8 -DskipTests=true -f java/sa-pom.xml
+		mvn package -f benchmark/pom.xml -Dburningwave-jvm-driver.version=<version>
+		java -jar benchmark/target/benchmarks.jar
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.burningwave</groupId>
+	<artifactId>jvm-driver-benchmark</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<packaging>jar</packaging>
+
+	<name>Burningwave JVM Driver - Benchmark</name>
+	<description>JMH benchmark that compares the Burningwave JNI engine with Narcissus</description>
+	<url>https://burningwave.github.io/jvm-driver/</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://github.com/burningwave/jvm-driver/blob/main/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- VarHandle and MethodHandles.privateLookupIn require Java 9: 11 is the oldest LTS that has them -->
+		<maven.compiler.release>11</maven.compiler.release>
+		<maven.deploy.skip>true</maven.deploy.skip>
+
+		<!-- A release published on Maven Central: the '[M] benchmark' workflow passes the version of the java module of
+		the commit -->
+		<burningwave-jvm-driver.version>8.21.0</burningwave-jvm-driver.version>
+		<narcissus.version>1.0.14</narcissus.version>
+		<jmh.version>1.37</jmh.version>
+
+		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+		<maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
+		<uberjar.name>benchmarks</uberjar.name>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.burningwave</groupId>
+			<artifactId>jvm-driver</artifactId>
+			<version>${burningwave-jvm-driver.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.toolfactory</groupId>
+			<artifactId>narcissus</artifactId>
+			<version>${narcissus.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<version>${jmh.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<!-- Declared explicitly because javac 23 and later no longer run the annotation processors found
+					on the class path -->
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.openjdk.jmh</groupId>
+							<artifactId>jmh-generator-annprocess</artifactId>
+							<version>${jmh.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven-shade-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<finalName>${uberjar.name}</finalName>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.openjdk.jmh.Main</mainClass>
+								</transformer>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+							</transformers>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<!-- The uber jar runs on the class path -->
+										<exclude>module-info.class</exclude>
+										<exclude>META-INF/versions/*/module-info.class</exclude>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+								<filter>
+									<!-- Keep the jvm-driver.properties file of Burningwave JVM Driver -->
+									<artifact>io.github.toolfactory:jvm-driver</artifact>
+									<excludes>
+										<exclude>jvm-driver.properties</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

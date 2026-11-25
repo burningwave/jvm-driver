@@ -29,6 +29,11 @@ hs_err_pid*
 /java/.classpath
 /java/target/
 
+/benchmark/.project
+/benchmark/.settings
+/benchmark/.classpath
+/benchmark/target/
+
 /java-hook/.project
 /java-hook/.settings
 /java-hook/.classpath

@@ -44,12 +44,12 @@ With one directory it prints the ratios between Burningwave and Narcissus and th
 more directories it prints the ratios on each platform and, with --details, the results of each platform. The
 ratios of the benchmark published in 2022 in toolfactory/narcissus#11 are shown next to the current ones.
 
-The workflow uploads the directory of each platform as an artifact, which GitHub deletes after 90 days. To keep the
-results that the README refers to, save them in the repository:
+The workflow uploads the directory of each platform as an artifact, which GitHub deletes after 90 days together with
+the logs and the summaries of the run. To keep the results of a run, download them and write their tables:
 
-  gh run download <run id> --repo burningwave/jvm-driver --pattern "benchmark-results-*" --dir benchmark/results/<run id>
-  python benchmark/scripts/summarize.py --details --methods --heading-level 2 \\
-    --output benchmark/results/<run id>/RESULTS.md benchmark/results/<run id>/*/
+  gh run download <run id> --repo burningwave/jvm-driver --pattern "benchmark-results-*" --dir <directory>
+  python benchmark/scripts/summarize.py --details --methods --heading-level 2 --title "Results of run <run id>" \\
+    --output <directory>/RESULTS.md <directory>/*/
 
 Examples:
 
@@ -455,9 +455,9 @@ def failures_section(platforms):
     return "\n\n".join(lines)
 
 
-def summarize(platforms, details, methods, heading_level):
+def summarize(platforms, details, methods, heading_level, title=None):
     heading = "#" * heading_level
-    sections = []
+    sections = ["# " + title] if title else []
     if len(platforms) == 1:
         platform = platforms[0]
         sections += ["{} {}".format(heading, platform.label), environment_table(platforms)]
@@ -498,6 +498,7 @@ def main():
     parser.add_argument("--details", action="store_true", help="with more directories, add the results of each one")
     parser.add_argument("--methods", action="store_true", help="add the methods called by each approach")
     parser.add_argument("--heading-level", type=int, default=3, help="the level of the headings (default: 3)")
+    parser.add_argument("--title", help="a title, written as a level 1 heading before everything else")
     parser.add_argument(
         "--check", action="store_true",
         help="exit with status 1 if a benchmark listed in benchmark-list.txt has no result in a mode",
@@ -506,7 +507,7 @@ def main():
 
     platforms = [Platform(directory) for directory in arguments.directories]
     platforms.sort(key=lambda platform: PLATFORMS.index(platform.label) if platform.label in PLATFORMS else len(PLATFORMS))
-    markdown = summarize(platforms, arguments.details, arguments.methods, arguments.heading_level)
+    markdown = summarize(platforms, arguments.details, arguments.methods, arguments.heading_level, arguments.title)
     if arguments.output:
         with io.open(arguments.output, "w", encoding="utf-8", newline="\n") as stream:
             stream.write(markdown)

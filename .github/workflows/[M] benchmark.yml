@@ -123,19 +123,21 @@ jobs:
           fi
           mvn -B -v
       # The benchmark uses the NativeExecutor class and the native libraries of this commit. The java module is
-      # installed with its standalone POM, the one used by the release: the POM installed from java/pom.xml refers to
-      # a parent whose version is ${revision}, which Maven cannot resolve outside of the reactor.
+      # installed with its standalone POM, the one used by the release: the other POM refers to a parent whose version
+      # is ${revision}, which Maven cannot resolve outside of the reactor. The standalone POM is java/sa-pom.xml, but
+      # the release swaps it with java/pom.xml while it runs, so the step looks for the POM without that parent.
       - name: Build and install the java module
-        run: >-
-          mvn -B -ntp install
-          -Dproject_jdk_version=8 -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
-          --file ./java/sa-pom.xml
+        run: |
+          if grep -q "jvm-driver-parent" java/sa-pom.xml; then JAVA_POM=java/pom.xml; else JAVA_POM=java/sa-pom.xml; fi
+          echo "Standalone POM of the java module: $JAVA_POM"
+          echo "JAVA_POM=$JAVA_POM" >> "$GITHUB_ENV"
+          mvn -B -ntp install -Dproject_jdk_version=8 -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true --file "$JAVA_POM"
       - name: Build the benchmark
         run: |
           evaluate() {
             mvn -B -q -ntp org.apache.maven.plugins:maven-help-plugin:3.5.1:evaluate -DforceStdout "-Dexpression=$1" --file "$2"
           }
-          BURNINGWAVE_JVM_DRIVER_VERSION=$(evaluate project.version ./java/sa-pom.xml)
+          BURNINGWAVE_JVM_DRIVER_VERSION=$(evaluate project.version "$JAVA_POM")
           NARCISSUS_VERSION=$(evaluate narcissus.version ./benchmark/pom.xml)
           echo "Burningwave JVM Driver $BURNINGWAVE_JVM_DRIVER_VERSION, Narcissus $NARCISSUS_VERSION"
           echo "BURNINGWAVE_JVM_DRIVER_VERSION=$BURNINGWAVE_JVM_DRIVER_VERSION" >> "$GITHUB_ENV"

@@ -192,6 +192,31 @@ The `org.burningwave.jvm.NativeExecutor` class, which contained the JNI engine u
 
 <br/>
 
+## Benchmark
+
+The [**benchmark**](https://github.com/burningwave/jvm-driver/tree/main/benchmark) folder contains a [JMH](https://github.com/openjdk/jmh) benchmark that runs the same operations with several approaches. On a single thread it measures:
+* reading and writing private instance and static fields of type `String` and `int` with `sun.misc.Unsafe`, reflection, `VarHandle`, the default and native drivers of [ToolFactory JVM Driver](https://github.com/toolfactory/jvm-driver), the native driver of Burningwave JVM Driver, [Narcissus](https://github.com/toolfactory/narcissus) and `org.burningwave.jni.Executor`, the JNI engine of [JNI Executor](#JNI-Executor)
+* allocating an instance without calling its constructor with `sun.misc.Unsafe`, Narcissus and `Executor`
+* finding a field by name with reflection, Narcissus and `Executor`
+
+The benchmark runs on GitHub Actions on Linux and macOS, x64 and aarch64, and on Windows x64, when a pull request changes it or when it is started manually. Each run measures the throughput and the average time of every operation and shows the results in its summary: see the [**runs of the benchmark workflow**](https://github.com/burningwave/jvm-driver/actions/workflows/%5BM%5D%20benchmark.yml). Results on shared CI runners vary from run to run.
+
+To run the benchmark locally you need a JDK 11 or later and Apache Maven:
+```bash
+mvn package -f benchmark/pom.xml
+java -jar benchmark/target/benchmarks.jar
+```
+
+The last command measures the throughput in operations per millisecond: add `-bm avgt -tu ns` to measure the average time in nanoseconds per operation, or any other JMH option, for example `-f 1 -wi 1 -i 1 InstanceStringFieldBenchmark` for a quick run of a single class. By default the benchmark uses the release of Burningwave JVM Driver set in the `burningwave-jvm-driver.version` property of [`benchmark/pom.xml`](https://github.com/burningwave/jvm-driver/blob/main/benchmark/pom.xml), downloaded from Maven Central with JNI Executor. To measure the code of your working copy, build the native library of your platform, install the jni-executor and java modules and pass the version of the java module to the build of the benchmark:
+```bash
+mvn compile -f native/pom.xml
+mvn install -Dproject_jdk_version=8 -DskipTests=true -f jni-executor/pom.xml
+mvn install -Dproject_jdk_version=8 -DskipTests=true -f java/sa-pom.xml
+mvn package -f benchmark/pom.xml -Dburningwave-jvm-driver.version=<version>
+```
+
+<br/>
+
 ## Compilation requirements
 
 **A JDK version 9 or higher and a GCC compiler are required to compile the project** (on Linux also g++, which links the native libraries). On Windows you can find compiler and GDB debugger from [**MinGW-W64 project**](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/).

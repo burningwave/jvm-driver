@@ -40,6 +40,9 @@ requires jdk.unsupported;
 
 requires org.burningwave.jvm;
 
+//Mandatory to use io.github.toolfactory.jvm.Driver, because the org.burningwave.jvm module does not require it transitively
+requires io.github.toolfactory.jvm;
+
 //Only if you use the JNI engine directly, through the org.burningwave.jni.Executor class
 requires org.burningwave.jni;
 ```
@@ -59,6 +62,8 @@ All JNI methods used by the dynamic, hybrid and native driver are supplied by a 
 * Windows x86/x64
 * Linux x86/x64/aarch64
 * macOS x64/aarch64 (Apple Silicon)
+
+The native libraries for Linux link the C++ runtime statically, so they do not require libstdc++.
 
 <br/>
 

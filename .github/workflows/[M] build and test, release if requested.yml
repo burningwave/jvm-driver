@@ -137,11 +137,6 @@ jobs:
           distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
           cache: 'maven'
-      - name: Update repositories
-        run: |
-          git config user.name "${{ github.event.head_commit.committer.name }}"
-          git config user.email "${{ github.event.head_commit.committer.email }}"
-          git pull origin ${{github.ref}}  
       - name: Use the native libraries built in this run
         uses: actions/download-artifact@v4
         with:
@@ -176,11 +171,6 @@ jobs:
           distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
           cache: 'maven'
-      - name: Update repositories
-        run: |
-          git config user.name "${{ github.event.head_commit.committer.name }}"
-          git config user.email "${{ github.event.head_commit.committer.email }}"
-          git pull origin ${{github.ref}}  
       - name: Use the native libraries built in this run
         uses: actions/download-artifact@v4
         with:
@@ -215,11 +205,6 @@ jobs:
           distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
           cache: 'maven'
-      - name: Update repositories
-        run: |
-          git config user.name "${{ github.event.head_commit.committer.name }}"
-          git config user.email "${{ github.event.head_commit.committer.email }}"
-          git pull origin ${{github.ref}}
       - name: Use the native libraries built in this run
         uses: actions/download-artifact@v4
         with:
@@ -258,11 +243,6 @@ jobs:
       - name: Set up Maven
         shell: bash
         run: command -v mvn || (sudo apt-get update && sudo apt-get -y install maven)
-      - name: Update repositories
-        run: |
-          git config user.name "${{ github.event.head_commit.committer.name }}"
-          git config user.email "${{ github.event.head_commit.committer.email }}"
-          git pull origin ${{github.ref}}
       - name: Use the native libraries built in this run
         uses: actions/download-artifact@v4
         with:
@@ -298,11 +278,6 @@ jobs:
           distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
           cache: 'maven'
-      - name: Update repositories
-        run: |
-          git config user.name "${{ github.event.head_commit.committer.name }}"
-          git config user.email "${{ github.event.head_commit.committer.email }}"
-          git pull origin ${{github.ref}}
       - name: Use the native libraries built in this run
         uses: actions/download-artifact@v4
         with:

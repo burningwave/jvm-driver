@@ -45,13 +45,13 @@ public interface GetLoadedPackagesFunction extends io.github.toolfactory.jvm.fun
 
 		public static class ForJava7 implements Native {
 			Field packagesField;
-			org.burningwave.jvm.NativeExecutor nativeExecutor;
+			org.burningwave.jni.Executor nativeExecutor;
 
 			public ForJava7(Map<Object, Object> context) throws Throwable {
 				ObjectProvider functionProvider = ObjectProvider.get(context);
 				GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
 				packagesField = getDeclaredFieldFunction.apply(ClassLoader.class, "packages");
-				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				nativeExecutor = org.burningwave.jni.Executor.getInstance();
 			}
 
 			@Override

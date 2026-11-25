@@ -1,0 +1,367 @@
+<!--
+	This file is part of Burningwave JVM driver.
+
+	Author: Roberto Gentili
+
+	Hosted at: https://github.com/burningwave/jvm-driver
+
+	- -
+
+	The MIT License (MIT)
+
+	Copyright (c) 2026 Roberto Gentili
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+	documentation files (the "Software"), to deal in the Software without restriction, including without
+	limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so, subject to the following
+	conditions:
+
+	The above copyright notice and this permission notice shall be included in all copies or substantial
+	portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+	LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+	EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+	AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+	OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<!--
+	The JNI engine of Burningwave JVM Driver (org.burningwave.jni.Executor), with no dependencies. Its jar contains the
+	native libraries of the native module, built by the CI in the native/bin folder.
+
+	This POM has no parent, unlike java/pom.xml: the release builds it as it is, without swapping it with a standalone
+	copy, and other projects can read the POM that it installs.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.burningwave</groupId>
+	<artifactId>jni-executor</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<packaging>jar</packaging>
+
+	<name>Burningwave JNI Executor</name>
+	<description>
+		A JNI engine with no dependencies to access fields, allocate instances and throw exceptions without any restrictions
+	</description>
+	<url>https://burningwave.github.io/jvm-driver/</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://github.com/burningwave/jvm-driver/blob/main/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Burningwave</name>
+		<url>https://www.burningwave.org/</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Roberto Gentili</name>
+			<id>roberto.gentili</id>
+			<email>info@burningwave.org</email>
+			<organization>Burningwave</organization>
+			<organizationUrl>https://www.burningwave.org/</organizationUrl>
+			<roles>
+				<role>Administrator</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Alessio Perrotta</name>
+			<email>info@burningwave.org</email>
+			<organization>Burningwave</organization>
+			<organizationUrl>https://www.burningwave.org/</organizationUrl>
+			<roles>
+				<role>External relationship manager</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<properties>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project_jdk_version>7</project_jdk_version>
+		<javadocExecutable.relativePath>bin/javadoc</javadocExecutable.relativePath>
+		<skipTests>true</skipTests>
+		<repository.url>https://burningwave@github.com/burningwave/jvm-driver.git</repository.url>
+
+		<junit.version>4.13.2</junit.version>
+		<central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
+		<maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+		<maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
+		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+		<maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+		<maven-surefire-plugin.version>3.2.1</maven-surefire-plugin.version>
+	</properties>
+
+	<issueManagement>
+		<system>github.com</system>
+		<url>https://github.com/burningwave/jvm-driver/issues</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:${repository.url}</connection>
+		<developerConnection>scm:git:${repository.url}</developerConnection>
+		<url>https://github.com/burningwave/jvm-driver</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/../</directory>
+				<includes>
+					<include>LICENSE</include>
+				</includes>
+				<targetPath>META-INF</targetPath>
+			</resource>
+			<!-- The C++ sources of the native libraries: they go in the sources jar, not in the jar -->
+			<resource>
+				<directory>${project.basedir}/../native/src/main/c-c++</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${maven-antrun-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>copy-native-libraries</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<!-- The folder of the package of Executor, from which Libraries loads the libraries -->
+								<copy toDir="${project.build.outputDirectory}/org/burningwave/jni">
+									<fileset dir="${project.basedir}/../native/bin" />
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-module-info-to-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<jar update="true" destfile="${project.build.directory}/${project.build.finalName}.jar">
+									<zipfileset prefix="META-INF/versions/9" dir="${project.build.outputDirectory}" includes="module-info.class" />
+								</jar>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<configuration>
+							<!-- Compiles everything, so that module-info sees the package that it exports -->
+							<release>9</release>
+						</configuration>
+					</execution>
+					<execution>
+						<id>base-compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<!-- Compiles everything again for the target JVM, except module-info -->
+						<configuration>
+							<excludes>
+								<exclude>module-info.java</exclude>
+							</excludes>
+							<source>${project_jdk_version}</source>
+							<target>${project_jdk_version}</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<configuration>
+							<release>${project_jdk_version}</release>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+					<useModulePath>false</useModulePath>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${maven-bundle-plugin.version}</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>generate-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<manifestLocation>${project.build.outputDirectory}/META-INF/</manifestLocation>
+					<instructions>
+						<Bundle-Category>Utilities</Bundle-Category>
+						<built-by>${project.organization.name}</built-by>
+						<Bundle-License>https://github.com/burningwave/jvm-driver/blob/main/LICENSE</Bundle-License>
+						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+						<Bundle-Name>JNI Executor</Bundle-Name>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+						<Bundle-Description>${project.description}</Bundle-Description>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.7))"</Require-Capability>
+						<Export-Package>org.burningwave.jni</Export-Package>
+						<Multi-Release>true</Multi-Release>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>module-info.class</exclude>
+						<exclude>**/*.c</exclude>
+						<exclude>**/*.cpp</exclude>
+						<exclude>**/*.h</exclude>
+						<!-- The folder of the C++ sources, which would remain empty -->
+						<exclude>org/burningwave/jvm/</exclude>
+						<exclude>META-INF/maven/</exclude>
+					</excludes>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<configuration>
+					<javadocExecutable>${java.home}/${javadocExecutable.relativePath}</javadocExecutable>
+					<encoding>UTF-8</encoding>
+					<source>${project_jdk_version}</source>
+					<doclint>none</doclint>
+					<failOnError>false</failOnError>
+					<additionalOptions>
+						<additionalOption>-Xdoclint:none</additionalOption>
+					</additionalOptions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>${central-publishing-maven-plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<publishingServerId>central</publishingServerId>
+					<autoPublish>true</autoPublish>
+					<!-- The release of Burningwave JVM Driver, which depends on this artifact, starts only after Maven
+					Central has validated it -->
+					<waitUntil>validated</waitUntil>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- GPG signature on release -->
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven-gpg-plugin.version}</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/*.zip</exclude>
+									</excludes>
+									<gpgArguments>
+										<arg>--pinentry-mode</arg>
+										<arg>loopback</arg>
+									</gpgArguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

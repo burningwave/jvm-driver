@@ -44,7 +44,7 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 
 			public ForJava7(Map<Object, Object> context) throws NoSuchFieldException {
 				super(context);
-				org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				org.burningwave.jni.Executor nativeExecutor = org.burningwave.jni.Executor.getInstance();
 				Field allowedModesField = nativeExecutor.getDeclaredField(MethodHandles.Lookup.class, "allowedModes", "I");
 				nativeExecutor.setFieldValue(consulter, allowedModesField, -1);
 			}
@@ -53,7 +53,7 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 
 				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException {
 					super(context);
-					org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+					org.burningwave.jni.Executor nativeExecutor = org.burningwave.jni.Executor.getInstance();
 					Field allowedModesField = nativeExecutor.getDeclaredField(MethodHandles.Lookup.class, "accessMode", "I");
 					nativeExecutor.setFieldValue(
 						consulter,
@@ -70,7 +70,7 @@ public interface ConsulterSupplier extends io.github.toolfactory.jvm.function.ca
 
 				public ForSemeru(Map<Object, Object> context) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 					super(context);
-					org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+					org.burningwave.jni.Executor nativeExecutor = org.burningwave.jni.Executor.getInstance();
 					Field allowedModesField = nativeExecutor.getDeclaredField(MethodHandles.Lookup.class, "accessMode", "I");
 					nativeExecutor.setFieldValue(
 						consulter,

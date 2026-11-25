@@ -1,14 +1,13 @@
 package org.burningwave.jvm.test;
 
 
-import org.burningwave.jvm.util.LibrariesTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    LibrariesTest.class,
+    NativeExecutorCompatibilityTest.class,
     DefaultDriverTest.class,
     HybridDriverTest.class,
     NativeDriverTest.class,

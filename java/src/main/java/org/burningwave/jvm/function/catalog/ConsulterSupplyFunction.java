@@ -45,7 +45,7 @@ public interface ConsulterSupplyFunction extends io.github.toolfactory.jvm.funct
 
 				@Override
 				protected void empowerMainConsulter(MethodHandles.Lookup consulter, Map<Object, Object> context) throws Throwable {
-					org.burningwave.jvm.NativeExecutor nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+					org.burningwave.jni.Executor nativeExecutor = org.burningwave.jni.Executor.getInstance();
 					nativeExecutor.setFieldValue(
 						consulter,
 						nativeExecutor.getDeclaredField(MethodHandles.Lookup.class, "allowedModes", "I"),

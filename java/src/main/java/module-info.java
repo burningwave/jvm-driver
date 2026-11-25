@@ -29,7 +29,8 @@
 module org.burningwave.jvm {
 	
     requires io.github.toolfactory.jvm;
-	
+    requires org.burningwave.jni;
+
     exports org.burningwave.jvm;
     exports org.burningwave.jvm.function.catalog;
     exports org.burningwave.jvm.util;

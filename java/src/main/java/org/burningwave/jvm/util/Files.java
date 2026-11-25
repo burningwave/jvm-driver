@@ -41,6 +41,12 @@ import io.github.toolfactory.jvm.function.template.Consumer;
 import io.github.toolfactory.jvm.util.Strings;
 
 
+/**
+ * @deprecated Burningwave JVM Driver no longer uses this class, which has no replacement: the
+ * {@link org.burningwave.jni.Executor} class of the {@code org.burningwave:jni-executor} artifact extracts its native
+ * libraries by itself. This class will be removed in version 9.0.0.
+ */
+@Deprecated
 public class Files {
 
 

@@ -49,7 +49,11 @@
 		<org.codehaus.mojo.option.spec-include-dir-three>${java.home}/lib/</org.codehaus.mojo.option.spec-include-dir-three>
 		<org.codehaus.mojo.option.gcc-compiler.flags>-O3 -fPIC</org.codehaus.mojo.option.gcc-compiler.flags>
 		<org.codehaus.mojo.option.gcc-linker.flags>-fPIC -shared</org.codehaus.mojo.option.gcc-linker.flags>
-		<org.codehaus.mojo.option.gcc-linker.artifact-name>NativeExecutor</org.codehaus.mojo.option.gcc-linker.artifact-name>
+		<!-- The libraries are named after the org.burningwave.jni.Executor class, which loads them -->
+		<org.codehaus.mojo.option.gcc-linker.artifact-name>Executor</org.codehaus.mojo.option.gcc-linker.artifact-name>
+		<!-- The program that links the libraries and the options that link the C++ runtime -->
+		<org.codehaus.mojo.option.gcc-linker.executable>gcc</org.codehaus.mojo.option.gcc-linker.executable>
+		<org.codehaus.mojo.option.gcc-linker.runtime-libraries>-lstdc++</org.codehaus.mojo.option.gcc-linker.runtime-libraries>
 		<native.arch.suffix>x${sun.arch.data.model}</native.arch.suffix>
 	</properties>
 	
@@ -79,6 +83,10 @@
 				<org.codehaus.mojo.option.gcc-linker.final-name>lib${org.codehaus.mojo.option.gcc-linker.artifact-name}</org.codehaus.mojo.option.gcc-linker.final-name>
 				<packaging.type>so</packaging.type>
 				<org.codehaus.mojo.option.spec-include-dir-two>${java.home}/include/linux/</org.codehaus.mojo.option.spec-include-dir-two>
+				<!-- libstdc++ and libgcc are linked statically, so that the libraries do not require libstdc++.so.6 and
+				libgcc_s.so.1: only the g++ program applies the -static-libstdc++ option -->
+				<org.codehaus.mojo.option.gcc-linker.executable>g++</org.codehaus.mojo.option.gcc-linker.executable>
+				<org.codehaus.mojo.option.gcc-linker.runtime-libraries>-static-libstdc++ -static-libgcc</org.codehaus.mojo.option.gcc-linker.runtime-libraries>
 			</properties>
 		</profile>	
 		<profile>
@@ -111,7 +119,7 @@
 								<linkerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-three}</linkerStartOption>
 							</linkerStartOptions>
 							<linkerEndOptions>
-								<linkerEndOption>-lstdc++</linkerEndOption>
+								<linkerEndOption>${org.codehaus.mojo.option.gcc-linker.runtime-libraries}</linkerEndOption>
 							</linkerEndOptions>
 							<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>
 						</configuration>
@@ -192,7 +200,7 @@
 								<compilerEndOption>${org.codehaus.mojo.option.gcc-compiler.flags}</compilerEndOption>
 							</compilerEndOptions>
 							<linkerEndOptions combine.self="override">
-								<linkerEndOption>-lstdc++</linkerEndOption>
+								<linkerEndOption>${org.codehaus.mojo.option.gcc-linker.runtime-libraries}</linkerEndOption>
 							</linkerEndOptions>
 						</configuration>
 					</plugin>
@@ -241,7 +249,7 @@
 				<configuration>
 					<compilerProvider>generic</compilerProvider>
 					<compilerExecutable>gcc</compilerExecutable>
-					<linkerExecutable>gcc</linkerExecutable>
+					<linkerExecutable>${org.codehaus.mojo.option.gcc-linker.executable}</linkerExecutable>
 					<compilerStartOptions>
 						<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-one}</compilerStartOption>
 						<compilerStartOption>-I ${org.codehaus.mojo.option.spec-include-dir-two}</compilerStartOption>
@@ -258,7 +266,7 @@
 					</linkerStartOptions>
 					<linkerEndOptions>
 						<linkerEndOption>-m${sun.arch.data.model}</linkerEndOption>
-						<linkerEndOption>-lstdc++</linkerEndOption>
+						<linkerEndOption>${org.codehaus.mojo.option.gcc-linker.runtime-libraries}</linkerEndOption>
 					</linkerEndOptions>
 					<linkerOutputDirectory>${project.basedir}/bin</linkerOutputDirectory>
 				</configuration>

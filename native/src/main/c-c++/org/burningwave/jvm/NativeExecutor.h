@@ -32,7 +32,8 @@
 	#define org_burningwave_jvm_NativeExecutor_H
 
 	#ifndef CLASS_00001_NAME
-		#define CLASS_00001_NAME org_burningwave_jvm_NativeExecutor
+		/* The JNI name of the org.burningwave.jni.Executor class of the jni-executor module */
+		#define CLASS_00001_NAME org_burningwave_jni_Executor
 	#endif
 
 	#define org_burningwave_jvm_NativeExecutor_GENERATE_FIELD_ACCESSOR_FUNCTIONS_DECLARATION(typeName, jtype) \

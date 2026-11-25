@@ -35,6 +35,12 @@ import java.util.UUID;
 
 import io.github.toolfactory.jvm.util.Strings;
 
+/**
+ * @deprecated Burningwave JVM Driver no longer uses this class, which has no replacement: the
+ * {@link org.burningwave.jni.Executor} class of the {@code org.burningwave:jni-executor} artifact extracts its native
+ * libraries by itself. This class will be removed in version 9.0.0.
+ */
+@Deprecated
 public class TempFileHolder implements Closeable {
 	private static File mainTemporaryFolder;
 	private File file = null;

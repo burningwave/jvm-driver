@@ -40,10 +40,10 @@ public interface GetFieldValueFunction extends io.github.toolfactory.jvm.functio
 	public static interface Native extends GetFieldValueFunction {
 
 		public static class ForJava7 implements Native {
-			org.burningwave.jvm.NativeExecutor nativeExecutor;
+			org.burningwave.jni.Executor nativeExecutor;
 
 			public ForJava7(Map<Object, Object> context) {
-				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
+				nativeExecutor = org.burningwave.jni.Executor.getInstance();
 			}
 
 			@Override

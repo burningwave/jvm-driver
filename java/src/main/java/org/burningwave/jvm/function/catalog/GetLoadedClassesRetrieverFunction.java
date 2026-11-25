@@ -49,12 +49,19 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 
 		public static class ForJava7 implements Native {
 			protected Field classesField;
+			/**
+			 * @deprecated This class now uses {@link org.burningwave.jni.Executor} and no longer reads this field, which is kept
+			 * for the classes that extend this one. It will be removed in version 9.0.0.
+			 */
+			@Deprecated
 			protected org.burningwave.jvm.NativeExecutor nativeExecutor;
+			private final org.burningwave.jni.Executor executor;
 
 			public ForJava7(Map<Object, Object> context) throws Throwable {
 				ObjectProvider functionProvider = ObjectProvider.get(context);
 				GetDeclaredFieldFunction getDeclaredFieldFunction = functionProvider.getOrBuildObject(GetDeclaredFieldFunction.class, context);
 				classesField = getDeclaredFieldFunction.apply(ClassLoader.class, "classes");
+				executor = org.burningwave.jni.Executor.getInstance();
 				nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
 			}
 
@@ -71,7 +78,7 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 						if (classes != null) {
 							return classes;
 						}
-						return classes = (Collection<Class<?>>)nativeExecutor.getFieldValue(classLoader, classesField);
+						return classes = (Collection<Class<?>>)executor.getFieldValue(classLoader, classesField);
 					}
 
 					@Override
@@ -86,11 +93,18 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 			}
 
 			public static class ForSemeru extends GetLoadedClassesRetrieverFunction.ForJava7.ForSemeru {
+				/**
+				 * @deprecated This class now uses {@link org.burningwave.jni.Executor} and no longer reads this field, which is kept
+				 * for the classes that extend this one. It will be removed in version 9.0.0.
+				 */
+				@Deprecated
 				protected org.burningwave.jvm.NativeExecutor nativeExecutor;
+				private final org.burningwave.jni.Executor executor;
 
 
 				public ForSemeru(Map<Object, Object> context) throws Throwable {
 					super(context);
+					executor = org.burningwave.jni.Executor.getInstance();
 					nativeExecutor = org.burningwave.jvm.NativeExecutor.getInstance();
 				}
 
@@ -102,12 +116,12 @@ public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory
 
 						@Override
 						public Hashtable<String, Object> get(ClassLoader classLoader) {
-							return (Hashtable<String, Object>)nativeExecutor.getFieldValue(classLoader, classNameBasedLockField);
+							return (Hashtable<String, Object>)executor.getFieldValue(classLoader, classNameBasedLockField);
 						}
 
 						@Override
 						protected ClassLoader getClassLoader(Class<?> cls) {
-							return (ClassLoader)nativeExecutor.getFieldValue(cls, classLoaderField);
+							return (ClassLoader)executor.getFieldValue(cls, classLoaderField);
 						}
 
 					};

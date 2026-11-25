@@ -31,7 +31,7 @@ package org.burningwave.jvm.benchmark;
 
 import java.util.concurrent.TimeUnit;
 
-import org.burningwave.jvm.NativeExecutor;
+import org.burningwave.jni.Executor;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -73,7 +73,7 @@ public class FieldLookupBenchmark {
 
 	@Benchmark
 	public void findField20_burningwave_native_executor(BurningwaveEngine engine, Blackhole blackhole) {
-		blackhole.consume(NativeExecutor.getInstance().getDeclaredField(Target.class, FIELD_NAME, FIELD_SIGNATURE));
+		blackhole.consume(Executor.getInstance().getDeclaredField(Target.class, FIELD_NAME, FIELD_SIGNATURE));
 	}
 
 }

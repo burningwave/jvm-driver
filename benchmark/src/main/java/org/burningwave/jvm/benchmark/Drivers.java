@@ -78,7 +78,7 @@ public final class Drivers {
 
 	/**
 	 * The native driver of Burningwave JVM Driver ({@link org.burningwave.jvm.NativeDriver}), which accesses the
-	 * fields with {@link org.burningwave.jvm.NativeExecutor}.
+	 * fields with {@link org.burningwave.jni.Executor}.
 	 */
 	@State(Scope.Benchmark)
 	public static class BurningwaveNative {

@@ -29,6 +29,11 @@ hs_err_pid*
 /java/.classpath
 /java/target/
 
+/jni-executor/.project
+/jni-executor/.settings
+/jni-executor/.classpath
+/jni-executor/target/
+
 /benchmark/.project
 /benchmark/.settings
 /benchmark/.classpath

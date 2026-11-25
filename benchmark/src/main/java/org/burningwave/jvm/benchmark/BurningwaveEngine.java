@@ -31,7 +31,7 @@ package org.burningwave.jvm.benchmark;
 
 import java.lang.reflect.Field;
 
-import org.burningwave.jvm.NativeExecutor;
+import org.burningwave.jni.Executor;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -39,7 +39,7 @@ import org.openjdk.jmh.annotations.State;
 
 
 /**
- * Loads the native library of the Burningwave JNI engine ({@link NativeExecutor}) before the measurement and checks
+ * Loads the native library of the Burningwave JNI engine ({@link Executor}) before the measurement and checks
  * that the engine reads a field correctly.
  * <p>
  * Only the benchmarks that declare this state as a parameter load the library: if it cannot be loaded on a
@@ -51,7 +51,7 @@ public class BurningwaveEngine {
 	@Setup(Level.Trial)
 	public void loadAndCheck() throws NoSuchFieldException {
 		Field field = Target.class.getDeclaredField("intValue");
-		int value = NativeExecutor.getInstance().getIntFieldValue(new Target(), field);
+		int value = Executor.getInstance().getIntFieldValue(new Target(), field);
 		if (value != Target.INITIAL_INT_VALUE) {
 			throw new IllegalStateException(
 				"Burningwave read " + value + " instead of " + Target.INITIAL_INT_VALUE + " from " + field

@@ -194,10 +194,7 @@ The `org.burningwave.jvm.NativeExecutor` class, which contained the JNI engine u
 
 ## Benchmark
 
-The [**benchmark**](https://github.com/burningwave/jvm-driver/tree/main/benchmark) folder contains a [JMH](https://github.com/openjdk/jmh) benchmark that runs the same operations with several approaches. On a single thread it measures:
-* reading and writing private instance and static fields of type `String` and `int` with `sun.misc.Unsafe`, reflection, `VarHandle`, the default and native drivers of [ToolFactory JVM Driver](https://github.com/toolfactory/jvm-driver), the native driver of Burningwave JVM Driver, [Narcissus](https://github.com/toolfactory/narcissus) and `org.burningwave.jni.Executor`, the JNI engine of [JNI Executor](#JNI-Executor)
-* allocating an instance without calling its constructor with `sun.misc.Unsafe`, Narcissus and `Executor`
-* finding a field by name with reflection, Narcissus and `Executor`
+The [**benchmark**](https://github.com/burningwave/jvm-driver/tree/main/benchmark) folder contains a [JMH](https://github.com/openjdk/jmh) benchmark that runs the same operations with several approaches.
 
 The benchmark runs on GitHub Actions on Linux and macOS, x64 and aarch64, and on Windows x64, when a pull request changes it or when it is started manually. Each run measures the throughput and the average time of every operation and shows the results in its summary: see the [**runs of the benchmark workflow**](https://github.com/burningwave/jvm-driver/actions/workflows/%5BM%5D%20benchmark.yml). Results on shared CI runners vary from run to run.
 

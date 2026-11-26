@@ -59,7 +59,7 @@ There are four kinds of driver:
 * the **native driver** that extends the hybrid driver and uses JNI functions more consistently regardless of the Java version it is running on
 
 All JNI methods used by the dynamic, hybrid and native driver are supplied by a **custom and highly optimized JNI engine written in C++**, released as the separate [**JNI Executor**](#JNI-Executor) artifact, that works on the following system configurations:
-* Windows x86/x64
+* Windows x86/x64/aarch64
 * Linux x86/x64/aarch64
 * macOS x64/aarch64 (Apple Silicon)
 
@@ -219,7 +219,7 @@ mvn package -f benchmark/pom.xml -Dburningwave-jvm-driver.version=<version>
 
 ## Compilation requirements
 
-**A JDK version 9 or higher and a GCC compiler are required to compile the project** (on Linux also g++, which links the native libraries). On Windows you can find compiler and GDB debugger from [**MinGW-W64 project**](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/).
+**A JDK version 9 or higher and a GCC compiler are required to compile the project** (on Linux also g++, which links the native libraries). On Windows you can find compiler and GDB debugger from [**MinGW-W64 project**](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-win32/seh/). On Windows aarch64 the native library is compiled with [**llvm-mingw**](https://github.com/mstorsjo/llvm-mingw), whose gcc program accepts the same options: its C++ runtime, libc++, is linked statically.
 
 The modules are built in this order:
 1. **native** compiles the C++ sources of the JNI engine into the [native/bin](https://github.com/burningwave/jvm-driver/tree/main/native/bin) folder
@@ -231,7 +231,7 @@ Running `mvn package` in the root folder builds the three modules in this order.
 <br />
 
 ## Contributing
-The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is currently compiled for Linux x86/x64/aarch64, Windows x86/x64 and macOS x64/aarch64: **feel free to contribute native code builds for other platforms or architectures**. Once compiled, the library must be added to the [native/bin](https://github.com/burningwave/jvm-driver/tree/main/native/bin) folder with the name expected by the [native library loader](https://github.com/burningwave/jvm-driver/blob/main/jni-executor/src/main/java/org/burningwave/jni/Libraries.java).
+The [native module](https://github.com/burningwave/jvm-driver/tree/main/native) is currently compiled for Linux x86/x64/aarch64, Windows x86/x64/aarch64 and macOS x64/aarch64: **feel free to contribute native code builds for other platforms or architectures**. Once compiled, the library must be added to the [native/bin](https://github.com/burningwave/jvm-driver/tree/main/native/bin) folder with the name expected by the [native library loader](https://github.com/burningwave/jvm-driver/blob/main/jni-executor/src/main/java/org/burningwave/jni/Libraries.java).
 
 <br />
 

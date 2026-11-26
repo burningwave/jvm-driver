@@ -20,6 +20,8 @@
 
 A driver derived from [**ToolFactory JVM Driver**](https://toolfactory.github.io/jvm-driver/) with a fully extensible architecture and with a custom and [**extremely optimized JNI engine**](https://github.com/burningwave/jvm-driver/issues/3#issuecomment-1149840706) to allow deep interaction with the JVM **without any restrictions**. 
 
+**The drivers of Burningwave JVM Driver are deprecated since version 8.24.0 and they will be removed in version 9.0.0**: starting from version 10.0.0 the drivers of [ToolFactory JVM Driver](https://github.com/toolfactory/jvm-driver) use the JNI engine of Burningwave by default, so replace the dependency on `org.burningwave:jvm-driver` with the one on `io.github.toolfactory:jvm-driver` 10.0.0 or later and use the classes with the same names in the `io.github.toolfactory.jvm` package.
+
 <br/>
 
 To include Burningwave JVM Driver in your projects simply use with **Apache Maven**:
@@ -27,7 +29,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>8.22.0</version>
+    <version>8.24.0</version>
 </dependency>	
 ```
 ### Requiring the Burningwave JVM Driver module
@@ -172,7 +174,7 @@ The JNI engine of the dynamic, hybrid and native drivers is the `org.burningwave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jni-executor</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 To use JNI Executor as a Java module, add the following to your `module-info.java`:

@@ -33,7 +33,7 @@
 
 	<groupId>org.burningwave</groupId>
 	<artifactId>jvm-driver</artifactId>
-	<version>8.22.1-SNAPSHOT</version>
+	<version>8.23.0-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 
@@ -97,7 +97,7 @@
 		<junit-jupiter.version>5.10.0</junit-jupiter.version>
 		<junit.version>1.10.0</junit.version>
 		<!-- The release sets the version of jni-executor that it has just released, then the next snapshot -->
-		<jni-executor.version>1.0.1-SNAPSHOT</jni-executor.version>
+		<jni-executor.version>1.1.0-SNAPSHOT</jni-executor.version>
 		<jvm-driver.version>9.10.1</jvm-driver.version>
 		<maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
 		<maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>

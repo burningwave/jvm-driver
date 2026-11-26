@@ -29,7 +29,7 @@ To include Burningwave JVM Driver in your projects simply use with **Apache Mave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>8.22.0</version>
+    <version>8.24.0</version>
 </dependency>	
 ```
 ### Requiring the Burningwave JVM Driver module
@@ -174,7 +174,7 @@ The JNI engine of the dynamic, hybrid and native drivers is the `org.burningwave
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jni-executor</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 To use JNI Executor as a Java module, add the following to your `module-info.java`:

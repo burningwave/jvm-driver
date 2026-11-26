@@ -180,6 +180,22 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>windows-aarch64</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+					<arch>aarch64</arch>
+				</os>
+			</activation>
+			<properties>
+				<org.codehaus.mojo.option.gcc-linker.flags>-Wl,--kill-at -fPIC -shared -static</org.codehaus.mojo.option.gcc-linker.flags>
+				<!-- On Windows arm64 the library is built with llvm-mingw, whose gcc program accepts the same options as
+				the one of MinGW-w64. Its C++ runtime is libc++, not libstdc++: -static links it statically, with
+				libunwind, so that the library does not require libc++.dll and libunwind.dll -->
+				<org.codehaus.mojo.option.gcc-linker.runtime-libraries>-lc++</org.codehaus.mojo.option.gcc-linker.runtime-libraries>
+			</properties>
+		</profile>
+		<profile>
 			<id>aarch64</id>
 			<activation>
 				<os>

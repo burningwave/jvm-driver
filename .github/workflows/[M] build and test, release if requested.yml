@@ -37,13 +37,20 @@ jobs:
         exclude:
           - os: macos-26-intel
             architecture: x86
+        # The library for Windows arm64 is built on a Windows arm64 runner, with the JDK of Liberica like the tests on
+        # that platform
+        include:
+          - os: windows-11-arm
+            java: 19
+            distribution: liberica
+            architecture: aarch64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'zulu'
+          distribution: ${{ matrix.distribution }}
           architecture: ${{ matrix.architecture }}
       - if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.architecture, 'x64')
         name: Set up C/C++ compiler
@@ -62,6 +69,21 @@ jobs:
         with:
           platform: ${{ matrix.architecture }}
           version: 12.2.0
+      - if: matrix.os == 'windows-11-arm'
+        # setup-mingw installs a MinGW-w64 GCC that targets only x86 and x64: on Windows arm64 the library is built with
+        # llvm-mingw, which is based on Clang and has a gcc program that accepts the same options. Its folder goes first
+        # in the PATH, so that its gcc is used instead of the one installed on the runner
+        name: Set up C/C++ compiler
+        run: |
+          $llvmMingw = "llvm-mingw-20261020-ucrt-aarch64"
+          $archive = "$env:RUNNER_TEMP\$llvmMingw.zip"
+          Invoke-WebRequest -Uri "https://github.com/mstorsjo/llvm-mingw/releases/download/20261020/$llvmMingw.zip" -OutFile $archive
+          if ((Get-FileHash -Path $archive -Algorithm SHA256).Hash -ne "8f24fedd0b75c674c6c83dec2d76a7ac31a690120212843a17e465ef49854f69") {
+            throw "$llvmMingw.zip does not have the expected SHA-256 checksum"
+          }
+          Expand-Archive -Path $archive -DestinationPath $env:RUNNER_TEMP
+          Add-Content -Path $env:GITHUB_PATH -Value "$env:RUNNER_TEMP\$llvmMingw\bin"
+          & "$env:RUNNER_TEMP\$llvmMingw\bin\gcc.exe" --version
       - uses: actions/checkout@v4
       - name: Build native library
         run: mvn -B clean compile -Dproject_jdk_version=${{ matrix.java }} -DskipTests=true --file ./native/pom.xml
@@ -93,6 +115,31 @@ jobs:
             fi
           done
           exit $status
+      - if: matrix.os == 'windows-11-arm'
+        name: Check that the Windows arm64 library does not require the C++ runtime
+        shell: bash
+        run: |
+          # libc++ and libunwind are linked statically, so the library built by this job must require only system libraries
+          library=native/bin/Executor-aarch64.dll
+          if [ ! -f "$library" ]; then
+            echo "::error::This job has not built $library"
+            exit 1
+          fi
+          if ! llvm-objdump -f "$library" | grep -i -q 'coff-arm64'; then
+            echo "::error::$library is not an arm64 library"
+            exit 1
+          fi
+          imports=$(llvm-objdump -p "$library" | grep 'DLL Name' || true)
+          echo "Libraries required by $library:"
+          echo "$imports"
+          if [ -z "$imports" ]; then
+            echo "::error::The libraries required by $library cannot be read"
+            exit 1
+          fi
+          if echo "$imports" | grep -E -i -q 'c\+\+|unwind|winpthread|gcc|stdc'; then
+            echo "::error::$library requires the C++ runtime"
+            exit 1
+          fi
       - name: Collect the native libraries built by this job
         shell: bash
         run: |
@@ -256,6 +303,41 @@ jobs:
         if: ${{ fromJSON(matrix.java) > 19}}
         run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
 
+  build-and-test-on-windows-arm:
+    name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
+    needs: [elaborate-native-module]
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        architecture: [aarch64]
+        # Zulu has no JDK 11 and 26 for Windows arm64, while Liberica has all these versions
+        distribution: [liberica]
+        os: [windows-11-arm]
+        java: [11, 17, 21, 25, 26]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: ${{ matrix.distribution }}
+          architecture: ${{ matrix.architecture }}
+          cache: 'maven'
+      - name: Use the native libraries built in this run
+        uses: actions/download-artifact@v4
+        with:
+          pattern: native-libraries-*
+          path: native/bin
+          merge-multiple: true
+      - name: Build and test with Java 7 target
+        if: ${{ fromJSON(matrix.java) <= 19 }}
+        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
+      - name: Build and test with Java 8 target
+        if: ${{ fromJSON(matrix.java) > 19}}
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
+
 # The release does not wait for these tests: the GitHub hosted Apple Silicon runners have limited capacity
   build-and-test-on-macos-arm:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
@@ -294,7 +376,7 @@ jobs:
 
 #To ensure compatibility with the Java 7 version the build must never be run with a JDK version higher than 19
   release:
-    needs: [build-and-test-with-zulu-JDK, build-and-test-with-semeru-JDK, build-and-test-with-temurin-JDK, build-and-test-on-linux-arm]
+    needs: [build-and-test-with-zulu-JDK, build-and-test-with-semeru-JDK, build-and-test-with-temurin-JDK, build-and-test-on-linux-arm, build-and-test-on-windows-arm]
     name: Release if requested
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && endsWith(github.event.head_commit.message, 'Releasing new version')

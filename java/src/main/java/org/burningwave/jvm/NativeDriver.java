@@ -41,6 +41,13 @@ import org.burningwave.jvm.function.catalog.SetAccessibleFunction;
 import org.burningwave.jvm.function.catalog.SetFieldValueFunction;
 
 
+/**
+ * @deprecated Starting from version 10.0.0 the drivers of ToolFactory JVM Driver use the JNI engine of Burningwave
+ * by default: use {@link io.github.toolfactory.jvm.NativeDriver} instead, replacing the dependency on
+ * {@code org.burningwave:jvm-driver} with the one on {@code io.github.toolfactory:jvm-driver} 10.0.0 or later. This
+ * class will be removed in version 9.0.0.
+ */
+@Deprecated
 public class NativeDriver extends io.github.toolfactory.jvm.NativeDriver {
 
 	@Override

@@ -42,6 +42,12 @@ import io.github.toolfactory.jvm.util.CleanableSupplier;
 import io.github.toolfactory.jvm.util.ObjectProvider;
 
 
+/**
+ * @deprecated This interface is used only by the drivers of Burningwave JVM Driver, which are deprecated: starting
+ * from version 10.0.0 ToolFactory JVM Driver contains the native versions of its functions and uses the JNI engine of
+ * Burningwave by default. This interface will be removed in version 9.0.0.
+ */
+@Deprecated
 @SuppressWarnings("all")
 public interface GetLoadedClassesRetrieverFunction extends io.github.toolfactory.jvm.function.catalog.GetLoadedClassesRetrieverFunction {
 

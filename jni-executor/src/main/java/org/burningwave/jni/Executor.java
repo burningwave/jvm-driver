@@ -61,10 +61,27 @@ public class Executor {
 		INSTANCE = new Executor();
 	}
 
+	/**
+	 * Returns the single instance of this class, whose native library was loaded when the class was initialized.
+	 *
+	 * @return the instance of the engine
+	 */
 	public final static Executor getInstance() {
 		return INSTANCE;
 	}
 
+	/**
+	 * Returns the value of a field of any type, whatever its access modifiers.
+	 * <p>
+	 * If the field is static, {@code target} is ignored and the value is read from the class that declares the field.
+	 * The value of a primitive field is returned in its wrapper class.
+	 *
+	 * @param target the object whose field is read, ignored if the field is static
+	 * @param field the field to read
+	 * @return the value of the field, in its wrapper class if the field is primitive
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, or if the field is not static and
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public Object getFieldValue(Object target, Field field) {
 		check(field, "Field is null");
 		Class<?> fieldType = field.getType();
@@ -119,6 +136,21 @@ public class Executor {
 	}
 
 
+	/**
+	 * Sets the value of a field of any type, whatever its access modifiers.
+	 * <p>
+	 * If the field is static, {@code origTarget} is ignored and the value is written in the class that declares the
+	 * field. The value of a primitive field must be passed in its wrapper class.
+	 *
+	 * @param origTarget the object whose field is written, ignored if the field is static
+	 * @param field the field to write
+	 * @param value the new value, in its wrapper class if the field is primitive; it can be {@code null} only if the
+	 * type of the field is not primitive
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if {@code value} is not assignable to the type
+	 * of the field, or if the field is not static and {@code origTarget} is {@code null} or is not an instance of the
+	 * class that declares the field
+	 * @throws NullPointerException if {@code value} is {@code null} and the type of the field is primitive
+	 */
 	public void setFieldValue(Object origTarget, Field field, Object value) {
 		check(field, "Field is null");
 		if (value != null && !isAssignableFrom(field.getType(), value.getClass())) {
@@ -178,6 +210,20 @@ public class Executor {
 		}
 	}
 
+	/**
+	 * Finds a non-static field by name and JNI type signature, whatever its access modifiers.
+	 * <p>
+	 * The field is looked up as the JNI function {@code GetFieldID} does, so it can also be inherited from a superclass
+	 * of {@code target}, and the lookup initializes {@code target} if it is not initialized yet.
+	 *
+	 * @param target the class in which the field is looked up
+	 * @param name the name of the field
+	 * @param signature the JNI type signature of the field, for example {@code I} for {@code int} or
+	 * {@code Ljava/lang/String;} for {@link String}
+	 * @return the field
+	 * @throws IllegalArgumentException if one of the parameters is {@code null}
+	 * @throws NoSuchFieldError if no non-static field with that name and signature is found
+	 */
 	public Field getDeclaredField(Class<?> target, String name, String signature) {
 		return getDeclaredField0(
 			check(target, "Target class is null"),
@@ -186,6 +232,21 @@ public class Executor {
 		);
 	}
 
+	/**
+	 * Finds a static field by name and JNI type signature, whatever its access modifiers.
+	 * <p>
+	 * The field is looked up as the JNI function {@code GetStaticFieldID} does, so it can also be inherited from a
+	 * superclass or an interface of {@code target}, and the lookup initializes {@code target} if it is not initialized
+	 * yet.
+	 *
+	 * @param target the class in which the field is looked up
+	 * @param name the name of the field
+	 * @param signature the JNI type signature of the field, for example {@code I} for {@code int} or
+	 * {@code Ljava/lang/String;} for {@link String}
+	 * @return the field
+	 * @throws IllegalArgumentException if one of the parameters is {@code null}
+	 * @throws NoSuchFieldError if no static field with that name and signature is found
+	 */
 	public Field getDeclaredStaticField(Class<?> target, String name, String signature) {
 		return getDeclaredStaticField0(
 			check(target, "Target class is null"),
@@ -248,46 +309,127 @@ public class Executor {
 		checkTargetAndField(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of a reference type, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of a reference type
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is primitive, or if {@code target}
+	 * is {@code null} or is not an instance of the class that declares the field
+	 */
 	public Object getObjectFieldValue(Object target, Field field) {
 		checkGet(Object.class, target, field);
 		return getObjectFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code short}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code short}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code short}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public short getShortFieldValue(Object target, Field field) {
 		checkGet(short.class, target, field);
 		return getShortFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code int}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code int}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code int}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public int getIntFieldValue(Object target, Field field) {
 		checkGet(int.class, target, field);
 		return getIntegerFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code long}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code long}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code long}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public long getLongFieldValue(Object target, Field field) {
 		checkGet(long.class, target, field);
 		return getLongFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code float}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code float}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code float}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public float getFloatFieldValue(Object target, Field field) {
 		checkGet(float.class, target, field);
 		return getFloatFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code double}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code double}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code double}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public double getDoubleFieldValue(Object target, Field field) {
 		checkGet(double.class, target, field);
 		return getDoubleFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code boolean}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code boolean}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code boolean}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public boolean getBooleanFieldValue(Object target, Field field) {
 		checkGet(boolean.class, target, field);
 		return getBooleanFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code byte}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code byte}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code byte}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public byte getByteFieldValue(Object target, Field field) {
 		checkGet(byte.class, target, field);
 		return getByteFieldValue0(target, field);
 	}
 
+	/**
+	 * Returns the value of a non-static field of type {@code char}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is read
+	 * @param field a non-static field of type {@code char}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code char}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public char getCharFieldValue(Object target, Field field) {
 		checkGet(char.class, target, field);
 		return getCharacterFieldValue0(target, field);
@@ -301,46 +443,109 @@ public class Executor {
 		checkGet0(returnType, field);
 	}
 
+	/**
+	 * Returns the value of a static field of a reference type, whatever its access modifiers.
+	 *
+	 * @param field a static field of a reference type
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is primitive
+	 */
 	public Object getStaticObjectFieldValue(Field field) {
 		checkStaticGet(Object.class, field);
 		return getStaticObjectFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code short}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code short}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code short}
+	 */
 	public short getStaticShortFieldValue(Field field) {
 		checkStaticGet(short.class, field);
 		return getStaticShortFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code int}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code int}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code int}
+	 */
 	public int getStaticIntFieldValue(Field field) {
 		checkStaticGet(int.class, field);
 		return getStaticIntegerFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code long}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code long}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code long}
+	 */
 	public long getStaticLongFieldValue(Field field) {
 		checkStaticGet(long.class, field);
 		return getStaticLongFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code float}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code float}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code float}
+	 */
 	public float getStaticFloatFieldValue(Field field) {
 		checkStaticGet(float.class, field);
 		return getStaticFloatFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code double}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code double}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code double}
+	 */
 	public double getStaticDoubleFieldValue(Field field) {
 		checkStaticGet(double.class, field);
 		return getStaticDoubleFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code boolean}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code boolean}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code boolean}
+	 */
 	public boolean getStaticBooleanFieldValue(Field field) {
 		checkStaticGet(boolean.class, field);
 		return getStaticBooleanFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code byte}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code byte}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code byte}
+	 */
 	public byte getStaticByteFieldValue(Field field) {
 		checkStaticGet(byte.class, field);
 		return getStaticByteFieldValue0(field.getDeclaringClass(), field);
 	}
 
+	/**
+	 * Returns the value of a static field of type {@code char}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code char}
+	 * @return the value of the field
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code char}
+	 */
 	public char getStaticCharFieldValue(Field field) {
 		checkStaticGet(char.class, field);
 		return getStaticCharacterFieldValue0(field.getDeclaringClass(), field);
@@ -360,6 +565,15 @@ public class Executor {
 		checkTargetAndField(target, field);
 	}
 
+	/**
+	 * Sets the value of a non-static field of a reference type, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of a reference type
+	 * @param value the new value, {@code null} or an object assignable to the type of the field
+	 * @throws IllegalArgumentException if the type of the field is primitive, if {@code value} is not assignable to it,
+	 * or if {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setObjectFieldValue(Object target, Field field, Object value) {
 		if (null == value) {
 			if (field.getType().isPrimitive()) {
@@ -373,41 +587,113 @@ public class Executor {
 		setObjectFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code short}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code short}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code short}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setShortFieldValue(Object target, Field field, short value) {
 		checkSet(short.class, target, field);
 		setShortFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code int}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code int}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code int}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setIntFieldValue(Object target, Field field, int value) {
 		checkSet(int.class, target, field);
 		setIntegerFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code long}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code long}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code long}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setLongFieldValue(Object target, Field field, long value) {
 		checkSet(long.class, target, field);
 		setLongFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code float}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code float}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code float}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setFloatFieldValue(Object target, Field field, float value) {
 		checkSet(float.class, target, field);
 		setFloatFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code double}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code double}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code double}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setDoubleFieldValue(Object target, Field field, double value) {
 		checkSet(double.class, target, field);
 		setDoubleFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code boolean}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code boolean}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code boolean}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setBooleanFieldValue(Object target, Field field, boolean value) {
 		checkSet(boolean.class, target, field);
 		setBooleanFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code byte}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code byte}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code byte}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setByteFieldValue(Object target, Field field, byte value) {
 		checkSet(byte.class, target, field);
 		setByteFieldValue0(target, field, value);
 	}
 
+	/**
+	 * Sets the value of a non-static field of type {@code char}, whatever its access modifiers.
+	 *
+	 * @param target the object whose field is written
+	 * @param field a non-static field of type {@code char}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if {@code field} is {@code null}, if its type is not {@code char}, or if
+	 * {@code target} is {@code null} or is not an instance of the class that declares the field
+	 */
 	public void setCharFieldValue(Object target, Field field, char value) {
 		checkSet(char.class, target, field);
 		setCharacterFieldValue0(target, field, value);
@@ -421,6 +707,14 @@ public class Executor {
 		checkSet0(valueType, field);
 	}
 
+	/**
+	 * Sets the value of a static field of a reference type, whatever its access modifiers.
+	 *
+	 * @param field a static field of a reference type
+	 * @param value the new value, {@code null} or an object assignable to the type of the field
+	 * @throws IllegalArgumentException if the type of the field is primitive, if {@code value} is not assignable to it
+	 * or if the field is not static
+	 */
 	public void setStaticObjectFieldValue(Field field, Object value) {
 		if (null == value) {
 			if (field.getType().isPrimitive()) {
@@ -433,49 +727,120 @@ public class Executor {
 		setStaticObjectFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code short}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code short}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code short}
+	 */
 	public void setStaticShortFieldValue(Field field, short value) {
 		checkStaticSet(short.class, field);
 		setStaticShortFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code int}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code int}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code int}
+	 */
 	public void setStaticIntFieldValue(Field field, int value) {
 		checkStaticSet(int.class, field);
 		setStaticIntegerFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code long}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code long}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code long}
+	 */
 	public void setStaticLongFieldValue(Field field, long value) {
 		checkStaticSet(long.class, field);
 		setStaticLongFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code float}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code float}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code float}
+	 */
 	public void setStaticFloatFieldValue(Field field, float value) {
 		checkStaticSet(float.class, field);
 		setStaticFloatFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code double}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code double}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code double}
+	 */
 	public void setStaticDoubleFieldValue(Field field, double value) {
 		checkStaticSet(double.class, field);
 		setStaticDoubleFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code boolean}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code boolean}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code boolean}
+	 */
 	public void setStaticBooleanFieldValue(Field field, boolean value) {
 		checkStaticSet(boolean.class, field);
 		setStaticBooleanFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code byte}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code byte}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code byte}
+	 */
 	public void setStaticByteFieldValue(Field field, byte value) {
 		checkStaticSet(byte.class, field);
 		setStaticByteFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
+	/**
+	 * Sets the value of a static field of type {@code char}, whatever its access modifiers.
+	 *
+	 * @param field a static field of type {@code char}
+	 * @param value the new value
+	 * @throws IllegalArgumentException if the field is not static or if its type is not {@code char}
+	 */
 	public void setStaticCharFieldValue(Field field, char value) {
 		checkStaticSet(char.class, field);
 		setStaticCharacterFieldValue0(field.getDeclaringClass(), field, value);
 	}
 
 
+	/**
+	 * Creates an instance of a class without calling any of its constructors: its fields keep their default values.
+	 * <p>
+	 * If {@code cls} is an interface or an abstract class, the method throws {@link InstantiationException}, although
+	 * it does not declare it.
+	 *
+	 * @param cls the class to instantiate, which cannot be an interface, an abstract class or an array class
+	 * @return the new instance
+	 */
 	public native Object allocateInstance(Class<?> cls);
 
+	/**
+	 * Throws an exception or an error, even a checked exception that the calling method does not declare: the method
+	 * never returns normally.
+	 *
+	 * @param exc the exception or the error to throw, not {@code null}
+	 */
 	public native void throwException(Throwable exc);
 
 	private native Object getObjectFieldValue0(Object target, Field field);
@@ -558,6 +923,10 @@ public class Executor {
 	private native Field getDeclaredStaticField0(Class<?> target, String name, String signature);
 
 
+	/**
+	 * Chooses the native library of {@link Executor} before the class is initialized, instead of the library of the
+	 * current platform that the jar contains.
+	 */
 	public static class Initializer {
 
 		private static String nativeLibraryName;
@@ -569,6 +938,17 @@ public class Executor {
 			nativeLibraryName = name;
 		}
 
+		/**
+		 * Initializes {@link Executor} with the native library that has the given name and returns its instance.
+		 * <p>
+		 * The library is loaded with {@link System#loadLibrary(String)}, so it must be in {@code java.library.path}.
+		 * The method must be called before {@link Executor} is initialized, which happens the first time the class is
+		 * used.
+		 *
+		 * @param name the name of the native library, in the form expected by {@link System#loadLibrary(String)}
+		 * @return the instance of {@link Executor}
+		 * @throws IllegalStateException if {@link Executor} is already initialized
+		 */
 		public static Executor setNativeLibraryNameAndInit(String name) {
 			setNativeLibraryName(name);
 			return Executor.getInstance();

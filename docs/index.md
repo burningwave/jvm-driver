@@ -7,9 +7,9 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.burningwave/jni-executor)](https://central.sonatype.com/artifact/org.burningwave/jni-executor)
 [![GitHub](https://img.shields.io/github/license/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/blob/main/LICENSE)
 
-[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/45650376569)
+[![Platforms](https://img.shields.io/badge/platforms-Windows%2C%20Mac%20OS%2C%20Linux-orange)](https://github.com/burningwave/jvm-driver/actions/runs/45988448525)
 
-[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(26)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/45650376569)
+[![Supported JVM](https://img.shields.io/badge/supported%20JVM-7%2C%208%2C%209+%20(27)-blueviolet)](https://github.com/burningwave/jvm-driver/actions/runs/45988448525)
 
 [![GitHub open issues](https://img.shields.io/github/issues/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/burningwave/jvm-driver)](https://github.com/burningwave/jvm-driver/issues?q=is%3Aissue+is%3Aclosed)
@@ -19,7 +19,7 @@
 
 **JNI Executor** is a custom and [**extremely optimized JNI engine**](https://github.com/burningwave/jvm-driver/issues/3#issuecomment-1149840706) written in C++ that allows deep interaction with the JVM **without any restrictions**: it finds fields, reads and writes their values, allocates instances without calling their constructors and throws exceptions, regardless of access modifiers and module encapsulation. Since version 10.0.0 it is the default JNI engine of the drivers of [**ToolFactory JVM Driver**](https://toolfactory.github.io/jvm-driver/).
 
-**Since version 9.0.0 Burningwave JVM Driver no longer contains drivers**: the drivers deprecated in version 8.24.0 have been removed, because the drivers of ToolFactory JVM Driver do the same with the JNI engine of Burningwave. Version 9.0.0 of the `org.burningwave:jvm-driver` artifact is a [**relocation**](https://maven.apache.org/guides/mini/guide-relocation.html) to `io.github.toolfactory:jvm-driver` 10.1.0: see how to [**move to ToolFactory JVM Driver**](#Moving-to-ToolFactory-JVM-Driver).
+**Since version 9.0.0 Burningwave JVM Driver no longer contains drivers**: the drivers deprecated in version 8.24.0 have been removed, because the drivers of ToolFactory JVM Driver do the same with the JNI engine of Burningwave. Since version 9.0.0 the `org.burningwave:jvm-driver` artifact is a [**relocation**](https://maven.apache.org/guides/mini/guide-relocation.html) to `io.github.toolfactory:jvm-driver`: see how to [**move to ToolFactory JVM Driver**](#Moving-to-ToolFactory-JVM-Driver).
 
 <br/>
 
@@ -28,7 +28,7 @@ To include JNI Executor in your projects simply use with **Apache Maven**:
 <dependency>
     <groupId>org.burningwave</groupId>
     <artifactId>jni-executor</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 ### Requiring the JNI Executor module
@@ -84,13 +84,13 @@ The drivers of Burningwave JVM Driver extended the ones of ToolFactory JVM Drive
 <dependency>
     <groupId>io.github.toolfactory</groupId>
     <artifactId>jvm-driver</artifactId>
-    <version>10.1.0</version>
+    <version>10.1.1</version>
 </dependency>
 ```
 * use the classes with the same names of the `io.github.toolfactory.jvm` package instead of the `DynamicDriver`, `HybridDriver` and `NativeDriver` classes of the `org.burningwave.jvm` package, and `org.burningwave.jni.Executor` instead of `org.burningwave.jvm.NativeExecutor`;
 * in your `module-info.java`, require `io.github.toolfactory.jvm` instead of `org.burningwave.jvm`, as described in the [**README of ToolFactory JVM Driver**](https://github.com/toolfactory/jvm-driver#requiring-the-toolfactory-jvm-driver-module).
 
-The `io.github.toolfactory.jvm.Driver` interface and its `Factory` stay the same. If you keep declaring version 9.0.0 of `org.burningwave:jvm-driver`, Maven resolves it as ToolFactory JVM Driver 10.1.0 and prints a warning that suggests to update the dependency.
+The `io.github.toolfactory.jvm.Driver` interface and its `Factory` stay the same. If you keep declaring `org.burningwave:jvm-driver` from version 9.0.0 on, Maven resolves it as ToolFactory JVM Driver and prints a warning that suggests to update the dependency.
 
 <br/>
 

@@ -406,8 +406,23 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
-# jni-executor is released first. Its POM has no parent, so the release uses it as it is
+# jni-executor is released first, but only when its sources or the native ones changed since its last release: every
+# release rebuilds the native libraries of the native/bin folder, so they are not compared. Its POM has no parent, so
+# the release uses it as it is
+      - name: Check whether jni-executor changed since its last release
+        id: jni-executor-changes
+        run: |
+          git fetch --quiet --unshallow --tags origin 2>/dev/null || git fetch --quiet --tags origin
+          lastTag=$(git describe --tags --abbrev=0 --match 'jni-executor-*' 2>/dev/null || true)
+          if [ -n "$lastTag" ] && git diff --quiet "$lastTag" HEAD -- jni-executor/src native/src native/pom.xml; then
+            echo "jni-executor has not changed since $lastTag: it will not be released"
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "jni-executor has changed since ${lastTag:-its first release}: it will be released"
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Publish jni-executor to the Maven central repository
+        if: steps.jni-executor-changes.outputs.release == 'true'
         run: |
           mvn -B release:prepare release:perform -DskipTests=true \
             -Prelease-sign-artifacts \

@@ -28,14 +28,22 @@
 	AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 	OR OTHER DEALINGS IN THE SOFTWARE.
 -->
+<!--
+	Relocation POM: since version 9.0.0 Burningwave JVM Driver contains no classes and Maven resolves this artifact as
+	ToolFactory JVM Driver. The release publishes only this POM to Maven Central, signed and with the metadata that
+	Maven Central requires.
+
+	This is the standalone copy of java/pom.xml, which inherits from the parent POM of the project: the release swaps
+	the two files while it runs.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.burningwave</groupId>
 	<artifactId>jvm-driver</artifactId>
-	<version>8.24.1-SNAPSHOT</version>
+	<version>9.0.0-SNAPSHOT</version>
 
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>Burningwave JVM Driver</name>
 	<description>
@@ -81,35 +89,10 @@
 	</developers>
 
 	<properties>
-		<copyright.holder>Roberto Gentili</copyright.holder>
-		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project_jdk_version>7</project_jdk_version>
-		<javadocExecutable.relativePath>bin/javadoc</javadocExecutable.relativePath>
-		<skipTests>true</skipTests>
-		<project.test.testSuite>AllTestsSuite</project.test.testSuite>
-		<project.test.includes>**/${project.test.testSuite}.java</project.test.includes>
-		<project.test.excludes>**/*Test.java</project.test.excludes>
 		<repository.url>https://burningwave@github.com/burningwave/jvm-driver.git</repository.url>
 
-		<coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
-		<jacoco-maven-plugin.version>0.7.6.201602180812</jacoco-maven-plugin.version>
-		<junit-jupiter.version>5.10.0</junit-jupiter.version>
-		<junit.version>1.10.0</junit.version>
-		<!-- The release sets the version of jni-executor that it has just released, then the next snapshot -->
-		<jni-executor.version>1.1.2-SNAPSHOT</jni-executor.version>
-		<jvm-driver.version>9.10.1</jvm-driver.version>
-		<maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-		<maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
-		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-		<maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-		<maven-jxr-plugin.version>3.1.1</maven-jxr-plugin.version>
-		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-		<maven-scm-provider-gitexe.version>2.1.0</maven-scm-provider-gitexe.version>
-		<maven-surefire-plugin.version>3.2.1</maven-surefire-plugin.version>
 	</properties>
 
 	<issueManagement>
@@ -125,207 +108,17 @@
 		<tag>jvm-driver-8.21.0</tag>
   	</scm>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>org.burningwave</groupId>
-			<artifactId>jni-executor</artifactId>
-			<version>${jni-executor.version}</version>
-		</dependency>
-
-		<dependency>
+	<distributionManagement>
+		<relocation>
 			<groupId>io.github.toolfactory</groupId>
 			<artifactId>jvm-driver</artifactId>
-			<version>${jvm-driver.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.github.toolfactory</groupId>
-					<artifactId>narcissus</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-engine</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-commons</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-runner</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
+			<version>10.1.0</version>
+			<message>The drivers of Burningwave JVM Driver moved to ToolFactory JVM Driver, which uses the JNI engine of Burningwave (org.burningwave:jni-executor) by default</message>
+		</relocation>
+	</distributionManagement>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>${project.basedir}/../</directory>
-				<includes>
-					<include>**LICENSE</include>
-				</includes>
-				<targetPath>META-INF</targetPath>
-			</resource>
-			<resource>
-				<directory>${project.basedir}/src/main/resources</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>${project.basedir}/src/test/resources</directory>
-			</testResource>
-		</testResources>
 		<plugins>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>${maven-antrun-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>add-module-info-to-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<jar update="true" destfile="${project.build.directory}/${project.build.finalName}.jar">
-									<zipfileset prefix="META-INF/versions/9" dir="${project.build.directory}/classes" includes="module-info.class" />
-								</jar>
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<configuration>
-							<!-- compile everything to ensure module-info contains right entries -->
-							<release>9</release>
-							<!-- <excludes> <exclude>module-info.java</exclude> </excludes> -->
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<configuration>
-							<testExcludes>
-								<testExclude>module-info.java</testExclude>
-							</testExcludes>
-							<release>${project_jdk_version}</release>
-							<verbose>true</verbose>
-						</configuration>
-					</execution>
-					<execution>
-						<id>base-compile</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<!-- recompile everything for target VM except the module-info.java -->
-						<configuration>
-							<excludes>
-								<exclude>module-info.java</exclude>
-							</excludes>
-							<source>${project_jdk_version}</source>
-							<target>${project_jdk_version}</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin.version}</version>
-				<configuration>
-					<skipTests>${skipTests}</skipTests>
-					<excludes>
-						<exclude>${project.test.excludes}</exclude>
-					</excludes>
-					<includes>
-						<include>${project.test.includes}</include>
-					</includes>
-					<useModulePath>false</useModulePath>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${maven-bundle-plugin.version}</version>
-				<extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>generate-manifest</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                    </execution>
-                </executions>
-				<configuration>
-					<manifestLocation>${project.build.outputDirectory}/META-INF/</manifestLocation>
-					<exportScr>true</exportScr>
-					<instructions>					
-						<Bundle-Category>Utilities</Bundle-Category>
-						<built-by>${organization.name}</built-by>
-						<Bundle-License>https://github.com/burningwave/jvm-driver/blob/master/LICENSE</Bundle-License>
-						<Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-						<Bundle-Name>JVM Driver</Bundle-Name>
-						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Vendor>${organization.name}</Bundle-Vendor>
-						<Bundle-Description>${project.description}</Bundle-Description>
-						<Bundle-Version>${project.version}</Bundle-Version>
-						<Require-Capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=1.7))"</Require-Capability>
-						<Import-Package>io.github.toolfactory.jvm;version="${jvm-driver.version}",io.github.toolfactory.jvm.function.catalog;version="${jvm-driver.version}",io.github.toolfactory.jvm.function.template;version="${jvm-driver.version}",io.github.toolfactory.jvm.util;version="${jvm-driver.version}",org.burningwave.jni</Import-Package>
-						<Multi-Release>true</Multi-Release>
-    					<_dsannotations>*</_dsannotations><!-- Enable processing of OSGI DS component annotations -->
-						<_metatypeannotations>*</_metatypeannotations><!-- Enable processing of OSGI metatype annotations -->
-					</instructions>
-				</configuration>
-		 	</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven-jar-plugin.version}</version>
-				<configuration>
-					<excludes>
-						<exclude>module-info.class</exclude>
-						<exclude>**/*.c</exclude>
-						<exclude>**/*.cpp</exclude>
-						<exclude>**/*.h</exclude>
-						<exclude>META-INF/maven/</exclude>
-					</excludes>
-					<archive>
-						<addMavenDescriptor>false</addMavenDescriptor>
-						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>${maven-deploy-plugin.version}</version>
@@ -341,44 +134,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-javadoc-plugin</artifactId>
-			    <version>${maven-javadoc-plugin.version}</version>
-			    <configuration>
-			        <javadocExecutable>${java.home}/${javadocExecutable.relativePath}</javadocExecutable>
-			        <encoding>UTF-8</encoding>
-			        <source>${project_jdk_version}</source>
-			        <doclint>none</doclint>
-			        <failOnError>false</failOnError>
-			        <additionalOptions>
-			        		<additionalOption>-Xdoclint:none</additionalOption>
-			        </additionalOptions>
-			    </configuration>
-			    <executions>
-			        <execution>
-			            <id>attach-javadoc</id>
-			            <goals>
-			                <goal>jar</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>
-			
-			<plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
                 <version>0.8.0</version>
@@ -391,16 +146,6 @@
             </plugin>
 		</plugins>
 	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>${maven-jxr-plugin.version}</version>
-			</plugin>
-		</plugins>
-	</reporting>
 
 	<profiles>
 		<!-- GPG Signature on release -->
@@ -436,40 +181,6 @@
                             </execution>
                         </executions>
                     </plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>run-coveralls</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<!-- Generate coveralls reports from CI server. -->
-					<plugin>
-						<groupId>org.eluder.coveralls</groupId>
-						<artifactId>coveralls-maven-plugin</artifactId>
-						<version>${coveralls-maven-plugin.version}</version>
-						<configuration>
-							<sourceDirectories>
-								<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-							</sourceDirectories>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco-maven-plugin.version}</version>
-						<executions>
-							<execution>
-								<id>prepare-agent</id>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>

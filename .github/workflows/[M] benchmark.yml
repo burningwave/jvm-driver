@@ -131,28 +131,21 @@ jobs:
             sudo apt-get -y install g++
           fi
           mvn -B -ntp compile --file native/pom.xml
-      # The POM of the jni-executor module has no parent, so it is installed as it is. The java module is installed
-      # with its standalone POM, the one used by the release: the other POM refers to a parent whose version is
-      # ${revision}, which Maven cannot resolve outside of the reactor. The standalone POM is java/sa-pom.xml, but the
-      # release swaps it with java/pom.xml while it runs, so the step looks for the POM without that parent.
-      - name: Build and install the jni-executor and java modules
+      # The POM of the jni-executor module has no parent, so it is installed as it is
+      - name: Build and install the jni-executor module
         run: |
           mvn -B -ntp install -Dproject_jdk_version=8 -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true --file jni-executor/pom.xml
-          if grep -q "jvm-driver-parent" java/sa-pom.xml; then JAVA_POM=java/pom.xml; else JAVA_POM=java/sa-pom.xml; fi
-          echo "Standalone POM of the java module: $JAVA_POM"
-          echo "JAVA_POM=$JAVA_POM" >> "$GITHUB_ENV"
-          mvn -B -ntp install -Dproject_jdk_version=8 -DskipTests=true -Dmaven.javadoc.skip=true -Dmaven.source.skip=true --file "$JAVA_POM"
       - name: Build the benchmark
         run: |
           evaluate() {
             mvn -B -q -ntp org.apache.maven.plugins:maven-help-plugin:3.5.1:evaluate -DforceStdout "-Dexpression=$1" --file "$2"
           }
-          BURNINGWAVE_JVM_DRIVER_VERSION=$(evaluate project.version "$JAVA_POM")
+          JNI_EXECUTOR_VERSION=$(evaluate project.version ./jni-executor/pom.xml)
           NARCISSUS_VERSION=$(evaluate narcissus.version ./benchmark/pom.xml)
-          echo "Burningwave JVM Driver $BURNINGWAVE_JVM_DRIVER_VERSION, Narcissus $NARCISSUS_VERSION"
-          echo "BURNINGWAVE_JVM_DRIVER_VERSION=$BURNINGWAVE_JVM_DRIVER_VERSION" >> "$GITHUB_ENV"
+          echo "JNI Executor $JNI_EXECUTOR_VERSION, Narcissus $NARCISSUS_VERSION"
+          echo "JNI_EXECUTOR_VERSION=$JNI_EXECUTOR_VERSION" >> "$GITHUB_ENV"
           echo "NARCISSUS_VERSION=$NARCISSUS_VERSION" >> "$GITHUB_ENV"
-          mvn -B -ntp package "-Dburningwave-jvm-driver.version=$BURNINGWAVE_JVM_DRIVER_VERSION" --file ./benchmark/pom.xml
+          mvn -B -ntp package "-Djni-executor.version=$JNI_EXECUTOR_VERSION" --file ./benchmark/pom.xml
       - name: Run the benchmark
         id: run
         env:
@@ -167,7 +160,7 @@ jobs:
             "os": "$RUNNER_OS",
             "arch": "$RUNNER_ARCH",
             "javaDistribution": "$JAVA_DISTRIBUTION",
-            "burningwaveJvmDriverVersion": "$BURNINGWAVE_JVM_DRIVER_VERSION",
+            "jniExecutorVersion": "$JNI_EXECUTOR_VERSION",
             "narcissusVersion": "$NARCISSUS_VERSION",
             "commit": "$COMMIT",
             "runUrl": "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT"

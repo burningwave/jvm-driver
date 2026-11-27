@@ -102,11 +102,6 @@ public class StaticStringFieldBenchmark {
 	}
 
 	@Benchmark
-	public void get16_jvm_driver_native_narcissus(Drivers.NarcissusNative driver, Blackhole blackhole) {
-		blackhole.consume(driver.instance.<Object>getFieldValue(null, FIELD));
-	}
-
-	@Benchmark
 	public void get17_narcissus(NarcissusEngine engine, Blackhole blackhole) {
 		blackhole.consume(Narcissus.getStaticField(FIELD));
 	}
@@ -148,11 +143,6 @@ public class StaticStringFieldBenchmark {
 
 	@Benchmark
 	public void set16_jvm_driver_native_burningwave(Drivers.BurningwaveNative driver) {
-		driver.instance.setFieldValue(null, FIELD, value);
-	}
-
-	@Benchmark
-	public void set16_jvm_driver_native_narcissus(Drivers.NarcissusNative driver) {
 		driver.instance.setFieldValue(null, FIELD, value);
 	}
 

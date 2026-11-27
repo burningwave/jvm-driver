@@ -198,10 +198,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -DskipTests=false -pl jni-executor
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl jni-executor
  
   build-and-test-with-semeru-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
@@ -232,10 +232,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -DskipTests=false -pl jni-executor
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl jni-executor
   
   build-and-test-with-temurin-JDK:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
@@ -270,10 +270,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -DskipTests=false -pl jni-executor
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl jni-executor
 
 
   build-and-test-on-linux-arm:
@@ -308,10 +308,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -DskipTests=false -pl jni-executor
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl jni-executor
 
   build-and-test-on-windows-arm:
     name: ${{ matrix.os }} ${{ matrix.architecture }}, JVM ${{ matrix.distribution }} ${{ matrix.java }}
@@ -343,10 +343,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -DskipTests=false -pl jni-executor
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl jni-executor
 
 # The release does not wait for these tests: the GitHub hosted Apple Silicon runners have limited capacity
   build-and-test-on-macos-arm:
@@ -378,10 +378,10 @@ jobs:
           merge-multiple: true
       - name: Build and test with Java 7 target
         if: ${{ fromJSON(matrix.java) <= 19 }}
-        run: mvn -B clean test -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -DskipTests=false -pl jni-executor
       - name: Build and test with Java 8 target
         if: ${{ fromJSON(matrix.java) > 19}}
-        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl "jni-executor,java"
+        run: mvn -B clean test -Dproject_jdk_version=8 -DskipTests=false -pl jni-executor
 
 
 #To ensure compatibility with the Java 7 version the build must never be run with a JDK version higher than 19
@@ -412,8 +412,7 @@ jobs:
           git config user.name "${{ github.event.head_commit.committer.name }}"
           git config user.email "${{ github.event.head_commit.committer.email }}"
           git pull origin ${{github.ref}}
-# jni-executor is released first, because Burningwave JVM Driver depends on it. Its POM has no parent, so the release
-# uses it as it is
+# jni-executor is released first. Its POM has no parent, so the release uses it as it is
       - name: Publish jni-executor to the Maven central repository
         run: |
           mvn -B release:prepare release:perform -DskipTests=true \
@@ -422,14 +421,10 @@ jobs:
             -Darguments="-Dgpg.passphrase='${GPG_PASSPHRASE}' -Dgpg.loopback=true" \
             -Drepository.url=https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git \
             --file ./jni-executor/pom.xml
-# The java module is released with its standalone POM, swapped with the other one, and with the version of jni-executor
-# just released. Then it depends again on the snapshot of jni-executor
+# The java module, which contains only the relocation to ToolFactory JVM Driver, is released with its standalone POM,
+# swapped with the other one
       - name: Publish Burningwave JVM Driver to the Maven central repository
         run: |
-          jniExecutorVersion=$(git describe --tags --abbrev=0 --match 'jni-executor-*')
-          jniExecutorVersion=${jniExecutorVersion#jni-executor-}
-          echo "Burningwave JVM Driver will depend on jni-executor ${jniExecutorVersion}"
-          sed -r -i "s%<jni-executor.version>.*</jni-executor.version>%<jni-executor.version>${jniExecutorVersion}</jni-executor.version>%" ./java/pom.xml ./java/sa-pom.xml
           mv ./java/pom.xml ./java/temp-pom.xml
           mv ./java/sa-pom.xml ./java/pom.xml
           mv ./java/temp-pom.xml ./java/sa-pom.xml
@@ -446,12 +441,10 @@ jobs:
           mv ./java/temp-pom.xml ./java/sa-pom.xml
           newVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./java/sa-pom.xml)
           sed -r -i "s%<version>[[:space:]]*(.*-SNAPSHOT)</version>%<version>${newVersion}</version>%" ./java/pom.xml
-          jniExecutorSnapshotVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./jni-executor/pom.xml | head -n 1)
-          sed -r -i "s%<jni-executor.version>.*</jni-executor.version>%<jni-executor.version>${jniExecutorSnapshotVersion}</jni-executor.version>%" ./java/pom.xml ./java/sa-pom.xml
           git commit -am "Prepare for next development iteration"
           git push
 # If the release fails, or it is cancelled, after swapping the POMs of the java module, the branch keeps them swapped:
-# this step swaps them back and makes the java module depend again on the snapshot of jni-executor
+# this step swaps them back
       - name: Restore the POMs if the release has failed
         if: failure() || cancelled()
         run: |
@@ -468,10 +461,6 @@ jobs:
             if [ -n "$newVersion" ]; then
               sed -r -i "s%<version>[[:space:]]*(.*-SNAPSHOT)</version>%<version>${newVersion}</version>%" ./java/pom.xml
             fi
-          fi
-          jniExecutorSnapshotVersion=$(sed -n -r 's%.*<version>[[:space:]]*(.*-SNAPSHOT)</version>.*%\1%p' ./jni-executor/pom.xml | head -n 1)
-          if [ -n "$jniExecutorSnapshotVersion" ]; then
-            sed -r -i "s%<jni-executor.version>.*</jni-executor.version>%<jni-executor.version>${jniExecutorSnapshotVersion}</jni-executor.version>%" ./java/pom.xml ./java/sa-pom.xml
           fi
           if git diff --quiet; then
             echo "The POMs do not need to be restored"

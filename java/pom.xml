@@ -30,20 +30,16 @@
 -->
 <!--
 	Relocation POM: since version 9.0.0 Burningwave JVM Driver contains no classes and Maven resolves this artifact as
-	ToolFactory JVM Driver. The release publishes sa-pom.xml, the standalone copy of this POM, swapping the two files
-	while it runs.
+	ToolFactory JVM Driver. The release publishes only this POM to Maven Central, signed and with the metadata that
+	Maven Central requires.
+
+	This is the standalone copy of java/pom.xml, which inherits from the parent POM of the project: the release swaps
+	the two files while it runs.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.burningwave</groupId>
-		<artifactId>jvm-driver-parent</artifactId>
-		<version>${revision}</version>
-	</parent>
-
+	<groupId>org.burningwave</groupId>
 	<artifactId>jvm-driver</artifactId>
 	<version>9.0.1-SNAPSHOT</version>
 
@@ -92,6 +88,26 @@
 		</developer>
 	</developers>
 
+	<properties>
+		<repository.url>https://burningwave@github.com/burningwave/jvm-driver.git</repository.url>
+
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+	</properties>
+
+	<issueManagement>
+		<system>github.com</system>
+		<url>https://github.com/burningwave/jvm-driver/issues</url>
+	</issueManagement>
+
+
+	<scm>
+		<connection>scm:git:${repository.url}</connection>
+		<developerConnection>scm:git:${repository.url}</developerConnection>
+		<url>https://github.com/burningwave/jvm-driver</url>
+		<tag>jvm-driver-8.21.0</tag>
+  	</scm>
+
 	<distributionManagement>
 		<relocation>
 			<groupId>io.github.toolfactory</groupId>
@@ -100,4 +116,73 @@
 			<message>The drivers of Burningwave JVM Driver moved to ToolFactory JVM Driver, which uses the JNI engine of Burningwave (org.burningwave:jni-executor) by default</message>
 		</relocation>
 	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>uploaded</waitUntil>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- GPG Signature on release -->
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <excludes>
+                                        <exclude>**/*.zip</exclude>
+                                    </excludes>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

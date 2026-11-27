@@ -170,7 +170,7 @@ jobs:
         architecture: [x64]
         distribution: [zulu]
         os: [ubuntu-latest, macos-26-intel, windows-latest]
-        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
         exclude:
           - architecture: x64
             java: 10
@@ -207,7 +207,7 @@ jobs:
         architecture: [x64]
         distribution: [semeru]
         os: [ubuntu-24.04, macos-26-intel, windows-latest]
-        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -241,7 +241,7 @@ jobs:
         architecture: [x64]
         distribution: [temurin]
         os: [ubuntu-latest, macos-26-intel, windows-latest]
-        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+        java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -276,7 +276,7 @@ jobs:
         architecture: [aarch64]
         distribution: [zulu]
         os: [ubuntu-24.04-arm]
-        java: [11, 17, 21, 25, 26]
+        java: [11, 17, 21, 25, 26, 27]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -314,7 +314,7 @@ jobs:
         # Zulu has no JDK 11 and 26 for Windows arm64, while Liberica has all these versions
         distribution: [liberica]
         os: [windows-11-arm]
-        java: [11, 17, 21, 25, 26]
+        java: [11, 17, 21, 25, 26, 27]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -349,7 +349,7 @@ jobs:
         architecture: [aarch64]
         distribution: [zulu]
         os: [macos-latest]
-        java: [11, 17, 21, 25, 26]
+        java: [11, 17, 21, 25, 26, 27]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

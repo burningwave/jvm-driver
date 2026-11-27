@@ -96,7 +96,7 @@
 		<relocation>
 			<groupId>io.github.toolfactory</groupId>
 			<artifactId>jvm-driver</artifactId>
-			<version>10.1.0</version>
+			<version>10.1.1</version>
 			<message>The drivers of Burningwave JVM Driver moved to ToolFactory JVM Driver, which uses the JNI engine of Burningwave (org.burningwave:jni-executor) by default</message>
 		</relocation>
 	</distributionManagement>

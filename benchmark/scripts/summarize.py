@@ -75,8 +75,7 @@ APPROACHES = (
     ("03_java_reflect_field_typed", "Reflection, typed methods"),
     ("05_java_invoke_varHandle", "`VarHandle`"),
     ("15_jvm_driver_default", "ToolFactory `DefaultDriver`"),
-    ("16_jvm_driver_native_burningwave", "Burningwave `NativeDriver`"),
-    ("16_jvm_driver_native_narcissus", "ToolFactory `NativeDriver` with Narcissus"),
+    ("16_jvm_driver_native_burningwave", "ToolFactory `NativeDriver` with the Burningwave engine"),
     ("17_narcissus", "Narcissus"),
     ("17_narcissus_typed", "Narcissus, typed methods"),
     ("20_burningwave_native_executor", "Burningwave `Executor`"),
@@ -92,7 +91,6 @@ METHODS = {
     "05_java_invoke_varHandle": ("`VarHandle.get`", "`VarHandle.set`", "", ""),
     "15_jvm_driver_default": ("`Driver.getFieldValue`", "`Driver.setFieldValue`", "", ""),
     "16_jvm_driver_native_burningwave": ("`Driver.getFieldValue`", "`Driver.setFieldValue`", "", ""),
-    "16_jvm_driver_native_narcissus": ("`Driver.getFieldValue`", "`Driver.setFieldValue`", "", ""),
     "17_narcissus": (
         "`getField`, `getStaticField`", "`setField`, `setStaticField`", "`allocateInstance`",
         "`findField(class, name)`"),
@@ -129,7 +127,6 @@ OPERATIONS = tuple(
 COMPARISONS = (
     ("Engines", "20_burningwave_native_executor", "17_narcissus"),
     ("Engines, typed methods", "20_burningwave_native_executor_typed", "17_narcissus_typed"),
-    ("Native drivers", "16_jvm_driver_native_burningwave", "16_jvm_driver_native_narcissus"),
 )
 
 # Throughput in ops/ms of get/set20_burningwave_native_executor and get/set17_narcissus in the benchmark published
@@ -312,7 +309,7 @@ def jmh_description(platform):
 
 
 def burningwave_description(platform):
-    version = platform.environment.get("burningwaveJvmDriverVersion", "?")
+    version = platform.environment.get("jniExecutorVersion", "?")
     commit = platform.environment.get("commit")
     return "{} (commit `{}`)".format(version, commit[:7]) if commit else version
 
@@ -330,7 +327,7 @@ def environment_table(platforms):
             jmh_description(platform),
         ))
     return table(
-        ("Platform", "Runner", "JVM", "Burningwave JVM Driver", "Narcissus", "JMH"),
+        ("Platform", "Runner", "JVM", "JNI Executor", "Narcissus", "JMH"),
         ("left",) * 6,
         rows,
     )
@@ -434,9 +431,8 @@ RATIOS_NOTE = (
     "Throughput of Burningwave divided by the one of Narcissus: above 1 Burningwave is faster. Engines: "
     "`Executor` against `Narcissus` with the methods that accept fields of any type, as in the [benchmark "
     "published in 2022](" + DISCUSSION_2022 + "), whose ratios are in the 2022 column; typed methods: the methods "
-    "dedicated to the type of the field; native drivers: `Driver.getFieldValue` and `Driver.setFieldValue` of the "
-    "native drivers of Burningwave JVM Driver and ToolFactory JVM Driver. `" + NOT_SIGNIFICANT + "` marks the "
-    "ratios of two throughputs whose 99.9% confidence intervals overlap, so the difference may not be significant."
+    "dedicated to the type of the field. `" + NOT_SIGNIFICANT + "` marks the ratios of two throughputs whose 99.9% "
+    "confidence intervals overlap, so the difference may not be significant."
 )
 
 RESULTS_NOTE = (

@@ -110,11 +110,6 @@ public class InstanceIntFieldBenchmark {
 	}
 
 	@Benchmark
-	public void get16_jvm_driver_native_narcissus(Drivers.NarcissusNative driver, Blackhole blackhole) {
-		blackhole.consume(driver.instance.<Object>getFieldValue(target, FIELD));
-	}
-
-	@Benchmark
 	public void get17_narcissus(NarcissusEngine engine, Blackhole blackhole) {
 		blackhole.consume(Narcissus.getField(target, FIELD));
 	}
@@ -161,11 +156,6 @@ public class InstanceIntFieldBenchmark {
 
 	@Benchmark
 	public void set16_jvm_driver_native_burningwave(Drivers.BurningwaveNative driver) {
-		driver.instance.setFieldValue(target, FIELD, boxedValue);
-	}
-
-	@Benchmark
-	public void set16_jvm_driver_native_narcissus(Drivers.NarcissusNative driver) {
 		driver.instance.setFieldValue(target, FIELD, boxedValue);
 	}
 

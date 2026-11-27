@@ -44,8 +44,8 @@ import io.github.toolfactory.jvm.Driver;
  * {@link Driver#setFieldValue(Object, Field, Object)} methods are measured.
  * <p>
  * Each driver is created directly and initialized with {@link Driver#init()} instead of being obtained from
- * {@code Driver.Factory}, which returns the drivers of Burningwave when its jar is on the class path: this way it is
- * always clear which engine is measured. Only the benchmarks that declare a driver as a parameter create it.
+ * {@code Driver.Factory}, which returns the first driver that can be initialized: this way it is always clear which
+ * driver is measured. Only the benchmarks that declare a driver as a parameter create it.
  */
 public final class Drivers {
 
@@ -77,25 +77,15 @@ public final class Drivers {
 	}
 
 	/**
-	 * The native driver of Burningwave JVM Driver ({@link org.burningwave.jvm.NativeDriver}), which accesses the
-	 * fields with {@link org.burningwave.jni.Executor}.
+	 * The native driver of ToolFactory JVM Driver ({@link io.github.toolfactory.jvm.NativeDriver}), which since
+	 * version 10 accesses the fields with the JNI engine of Burningwave, {@link org.burningwave.jni.Executor}, by
+	 * default. It replaces the native driver of Burningwave JVM Driver, removed in version 9.0.0.
+	 * <p>
+	 * ToolFactory JVM Driver uses Narcissus only with its Narcissus plugin, which replaces the engine of the native
+	 * driver in the whole JVM: for this reason the native driver is not measured with Narcissus.
 	 */
 	@State(Scope.Benchmark)
 	public static class BurningwaveNative {
-		Driver instance;
-
-		@Setup(Level.Trial)
-		public void init() throws NoSuchFieldException {
-			instance = check(new org.burningwave.jvm.NativeDriver().init());
-		}
-	}
-
-	/**
-	 * The native driver of ToolFactory JVM Driver ({@link io.github.toolfactory.jvm.NativeDriver}), which accesses the
-	 * fields with Narcissus.
-	 */
-	@State(Scope.Benchmark)
-	public static class NarcissusNative {
 		Driver instance;
 
 		@Setup(Level.Trial)

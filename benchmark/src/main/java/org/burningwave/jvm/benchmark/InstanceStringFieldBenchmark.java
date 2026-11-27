@@ -62,8 +62,8 @@ import io.github.toolfactory.narcissus.Narcissus;
  * {@code setAccessible(true)};</li>
  * <li>{@code 05_java_invoke_varHandle}: {@link VarHandle};</li>
  * <li>{@code 15_jvm_driver_default}: the default driver of ToolFactory JVM Driver;</li>
- * <li>{@code 16_jvm_driver_native_burningwave} and {@code 16_jvm_driver_native_narcissus}: the native
- * drivers of Burningwave JVM Driver and of ToolFactory JVM Driver, see {@link Drivers};</li>
+ * <li>{@code 16_jvm_driver_native_burningwave}: the native driver of ToolFactory JVM Driver, which uses the
+ * JNI engine of Burningwave, see {@link Drivers};</li>
  * <li>{@code 17_narcissus}: Narcissus;</li>
  * <li>{@code 20_burningwave_native_executor}: {@link Executor}, the JNI engine of Burningwave JVM
  * Driver.</li>
@@ -119,11 +119,6 @@ public class InstanceStringFieldBenchmark {
 	}
 
 	@Benchmark
-	public void get16_jvm_driver_native_narcissus(Drivers.NarcissusNative driver, Blackhole blackhole) {
-		blackhole.consume(driver.instance.<Object>getFieldValue(target, FIELD));
-	}
-
-	@Benchmark
 	public void get17_narcissus(NarcissusEngine engine, Blackhole blackhole) {
 		blackhole.consume(Narcissus.getField(target, FIELD));
 	}
@@ -165,11 +160,6 @@ public class InstanceStringFieldBenchmark {
 
 	@Benchmark
 	public void set16_jvm_driver_native_burningwave(Drivers.BurningwaveNative driver) {
-		driver.instance.setFieldValue(target, FIELD, value);
-	}
-
-	@Benchmark
-	public void set16_jvm_driver_native_narcissus(Drivers.NarcissusNative driver) {
 		driver.instance.setFieldValue(target, FIELD, value);
 	}
 

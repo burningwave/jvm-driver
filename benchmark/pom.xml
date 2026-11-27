@@ -79,7 +79,7 @@
 
 		<!-- A release published on Maven Central: the '[M] benchmark' workflow passes the version of the jni-executor
 		module of the commit -->
-		<jni-executor.version>1.1.1</jni-executor.version>
+		<jni-executor.version>1.1.2</jni-executor.version>
 		<!-- Since version 10 the native driver of ToolFactory JVM Driver uses the JNI engine of Burningwave by default -->
 		<toolfactory-jvm-driver.version>10.1.1</toolfactory-jvm-driver.version>
 		<narcissus.version>1.0.14</narcissus.version>

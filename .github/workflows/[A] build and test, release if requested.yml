@@ -29,6 +29,9 @@ on:
 
 jobs:
 
+# Every job but the release stops after 30 minutes, so that a job that hangs does not block the run for up to 6 hours.
+# The value leaves a wide margin: in the runs of November 2026 the longest job took 4 minutes, the native builds 2.5
+# and the arm64 jobs 2 at most. The release keeps the default timeout, so that it is not stopped halfway
   elaborate-native-module:
     name: Elaborate native module (${{ matrix.os }} ${{ matrix.architecture }})
     strategy:
@@ -50,6 +53,7 @@ jobs:
             distribution: liberica
             architecture: aarch64
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v4
@@ -181,6 +185,7 @@ jobs:
           - architecture: x64
             java: 10
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java }}
@@ -215,6 +220,7 @@ jobs:
         os: [ubuntu-24.04, macos-26-intel, windows-latest]
         java: [11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java }}
@@ -253,6 +259,7 @@ jobs:
           - os: macos-26-intel
             java: 27
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java }}
@@ -288,6 +295,7 @@ jobs:
         os: [ubuntu-24.04-arm]
         java: [11, 17, 21, 25, 26, 27]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java }}
@@ -326,6 +334,7 @@ jobs:
         os: [windows-11-arm]
         java: [11, 17, 21, 25, 26, 27]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java }}
@@ -361,6 +370,7 @@ jobs:
         os: [macos-latest]
         java: [11, 17, 21, 25, 26, 27]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java }}
